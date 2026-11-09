@@ -1,0 +1,621 @@
+/**
+ * Prime Fleet marketing homepage ([prime_fleet_home]).
+ */
+
+/* Full-bleed out of theme/Elementor content column */
+.elementor-location-single .prime-fleet-home,
+.page .entry-content > .prime-fleet-home,
+.site-main .prime-fleet-home {
+	width: 100vw;
+	max-width: 100vw;
+	margin-left: calc(50% - 50vw);
+	margin-right: calc(50% - 50vw);
+}
+
+body.home .entry-title,
+body.home .page-header,
+body.page-id-19 .entry-header,
+body.home .breadcrumb,
+body.home .breadcrumbs {
+	display: none !important;
+}
+
+.prime-fleet-home {
+	--sle-navy: #071526;
+	--sle-navy-mid: #0f2744;
+	--sle-gold: #d7a64a;
+	--sle-gold-deep: #b8892f;
+	--sle-ink: #e8eef6;
+	--sle-paper: #f6f2eb;
+	--sle-font: "Outfit", "Segoe UI", sans-serif;
+	--sle-display: "Cormorant Garamond", Georgia, serif;
+	color: var(--sle-navy);
+	font-family: var(--sle-font);
+	background: var(--sle-paper);
+	overflow-x: clip;
+}
+
+.prime-fleet-home *,
+.prime-fleet-home *::before,
+.prime-fleet-home *::after {
+	box-sizing: border-box;
+}
+
+.prime-fleet-home img {
+	display: block;
+	max-width: 100%;
+	/* height: auto; */
+}
+
+/* Hero media must fill the frame — do not inherit height:auto. */
+.prime-fleet-home__hero-bg,
+.prime-fleet-home__hero-car {
+	max-width: none;
+	height: 100%;
+}
+
+.prime-fleet-home__wrap {
+	width: min(1120px, calc(100% - 2.75rem));
+	margin-inline: auto;
+}
+
+/* —— Hero: coastal full-bleed + car on right, tighter height —— */
+.prime-fleet-home__hero {
+	position: relative;
+	/* ~520px typical; scales with viewport, rem-based floor/ceiling */
+	height: clamp(32.5rem, 70svh, 40rem);
+	display: grid;
+	align-items: center;
+	color: var(--sle-ink);
+	isolation: isolate;
+	overflow: hidden;
+}
+
+.prime-fleet-home__hero-visual {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	background: #071526;
+}
+
+.prime-fleet-home__hero-bg {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center 42%;
+}
+
+.prime-fleet-home__hero-veil {
+	position: absolute;
+	inset: 0;
+	background:
+		linear-gradient(105deg, rgba(7, 21, 38, 0.88) 0%, rgba(7, 21, 38, 0.55) 38%, rgba(7, 21, 38, 0.22) 62%, rgba(7, 21, 38, 0.35) 100%),
+		linear-gradient(180deg, rgba(7, 21, 38, 0.25) 0%, rgba(7, 21, 38, 0.45) 55%, rgba(7, 21, 38, 0.72) 100%);
+	pointer-events: none;
+}
+
+.prime-fleet-home__hero-grain {
+	position: absolute;
+	inset: 0;
+	opacity: 0.16;
+	pointer-events: none;
+	mix-blend-mode: soft-light;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+.prime-fleet-home__hero-car {
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: min(52%, 720px);
+	height: 100%;
+	object-fit: cover;
+	object-position: 58% 42%;
+	mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 22%, #000 42%);
+	-webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 22%, #000 42%);
+	filter: brightness(0.68) saturate(0.8) contrast(1.08);
+	pointer-events: none;
+}
+
+.prime-fleet-home__hero-inner {
+	position: relative;
+	z-index: 2;
+	width: min(560px, calc(100% - 2.75rem));
+	margin: 0 auto 0 clamp(1.25rem, 5vw, 4rem);
+	padding: clamp(2rem, 5vh, 3rem) 0;
+	animation: sle-home-copy 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.prime-fleet-home__brand {
+	margin: 0 0 0.7rem;
+	font-family: var(--sle-display);
+	font-size: clamp(2.6rem, 6vw, 4.25rem);
+	font-weight: 600;
+	letter-spacing: 0.05em;
+	line-height: 0.95;
+	color: var(--sle-gold);
+	text-shadow: 0 10px 40px rgba(7, 21, 38, 0.35);
+}
+
+.prime-fleet-home__brand--light {
+	color: var(--sle-gold);
+	font-size: clamp(2rem, 4.5vw, 3rem);
+	margin-bottom: 0.4rem;
+	text-shadow: none;
+}
+
+.prime-fleet-home__headline {
+	margin: 0 0 0.85rem;
+	font-family: var(--sle-display);
+	font-size: clamp(1.75rem, 4vw, 2.65rem);
+	font-weight: 500;
+	line-height: 1.15;
+	color: #f8f4ec;
+	max-width: 14ch;
+}
+
+.prime-fleet-home__lede {
+	margin: 0 0 1.45rem;
+	font-size: clamp(0.98rem, 1.8vw, 1.1rem);
+	line-height: 1.55;
+	color: rgba(248, 244, 236, 0.82);
+	max-width: 34ch;
+}
+
+.prime-fleet-home__cta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.7rem;
+}
+
+.prime-fleet-home__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 2.9rem;
+	padding: 0.7rem 1.3rem;
+	border-radius: 4px;
+	font-size: 0.92rem;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	text-decoration: none;
+	transition: transform 0.18s ease, filter 0.18s ease, border-color 0.18s ease;
+}
+
+.prime-fleet-home__btn--primary {
+	background: var(--sle-gold);
+	color: var(--sle-navy);
+	box-shadow: 0 12px 28px rgba(215, 166, 74, 0.25);
+}
+
+.prime-fleet-home__btn--primary:hover,
+.prime-fleet-home__btn--primary:focus {
+	filter: brightness(1.06);
+	transform: translateY(-1px);
+	color: var(--sle-navy);
+}
+
+.prime-fleet-home__btn--ghost {
+	background: rgba(248, 244, 236, 0.06);
+	color: #f8f4ec;
+	border: 1px solid rgba(248, 244, 236, 0.42);
+}
+
+.prime-fleet-home__btn--ghost:hover,
+.prime-fleet-home__btn--ghost:focus {
+	border-color: var(--sle-gold);
+	color: var(--sle-gold);
+}
+
+/* —— Shared section chrome —— */
+.prime-fleet-home__section {
+	padding: clamp(3.25rem, 7vw, 5rem) 0;
+}
+
+.prime-fleet-home__eyebrow {
+	margin: 0 0 0.45rem;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: var(--sle-gold-deep);
+}
+
+.prime-fleet-home__title {
+	margin: 0 0 0.6rem;
+	font-family: var(--sle-display);
+	font-size: clamp(1.85rem, 3.5vw, 2.55rem);
+	font-weight: 600;
+	line-height: 1.15;
+	color: var(--sle-navy);
+}
+
+.prime-fleet-home__sub {
+	margin: 0;
+	font-size: 1.02rem;
+	line-height: 1.55;
+	color: #5c6a7a;
+}
+
+/* —— How it works —— */
+.prime-fleet-home__how {
+	background: linear-gradient(180deg, #f8f5ef 0%, #efe9df 100%);
+}
+
+.prime-fleet-home__how-intro {
+	text-align: center;
+	margin-bottom: 2.25rem;
+}
+
+.prime-fleet-home__how-intro .prime-fleet-home__title {
+	max-width: 18ch;
+	margin-inline: auto;
+}
+
+.prime-fleet-home__how-intro .prime-fleet-home__sub {
+	max-width: 42ch;
+	margin-inline: auto;
+}
+
+.prime-fleet-home__steps {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 1.5rem 2rem;
+}
+
+.prime-fleet-home__step {
+	display: grid;
+	gap: 0.4rem;
+	align-content: start;
+	padding: 1.35rem 1.25rem 1.45rem;
+	background: rgba(255, 255, 255, 0.55);
+	border-top: 3px solid var(--sle-gold);
+}
+
+.prime-fleet-home__step-num {
+	font-family: var(--sle-display);
+	font-size: 2rem;
+	font-weight: 600;
+	color: var(--sle-gold-deep);
+	line-height: 1;
+}
+
+.prime-fleet-home__step-label {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: var(--sle-navy);
+}
+
+.prime-fleet-home__step-copy {
+	font-size: 0.95rem;
+	line-height: 1.55;
+	color: #5c6a7a;
+}
+
+/* —— Fleet —— */
+.prime-fleet-home__fleet {
+	background: var(--sle-navy);
+	color: var(--sle-ink);
+	padding-bottom: 0;
+}
+
+.prime-fleet-home__fleet-intro {
+	text-align: center;
+	padding-bottom: 0.25rem;
+	margin-bottom: 2rem;
+}
+
+.prime-fleet-home__fleet .prime-fleet-home__eyebrow {
+	color: var(--sle-gold);
+}
+
+.prime-fleet-home__fleet .prime-fleet-home__title {
+	color: #f8f4ec;
+	max-width: 18ch;
+	margin-inline: auto;
+}
+
+.prime-fleet-home__fleet .prime-fleet-home__sub {
+	color: rgba(232, 238, 246, 0.72);
+	max-width: 44ch;
+	margin-inline: auto;
+}
+
+.prime-fleet-home__fleet-strip {
+	margin-top: 0;
+	border-top: 1px solid rgba(215, 166, 74, 0.22);
+}
+
+.prime-fleet-home__fleet-item {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	border-bottom: 1px solid rgba(215, 166, 74, 0.18);
+}
+
+.prime-fleet-home__fleet-item--flip .prime-fleet-home__fleet-art {
+	order: 2;
+}
+
+.prime-fleet-home__fleet-art {
+	margin: 0;
+	overflow: hidden;
+	background: #0a1a2e;
+	aspect-ratio: 16 / 10;
+}
+
+.prime-fleet-home__fleet-art img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.prime-fleet-home__fleet-item:hover .prime-fleet-home__fleet-art img {
+	transform: scale(1.04);
+}
+
+.prime-fleet-home__fleet-copy {
+	display: grid;
+	align-content: center;
+	gap: 0.5rem;
+	padding: clamp(1.5rem, 4vw, 2.75rem);
+	background: linear-gradient(160deg, rgba(15, 39, 68, 0.95) 0%, rgba(7, 21, 38, 0.98) 100%);
+}
+
+.prime-fleet-home__fleet-meta {
+	margin: 0;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--sle-gold);
+}
+
+.prime-fleet-home__fleet-copy h3 {
+	margin: 0;
+	font-family: var(--sle-display);
+	font-size: clamp(1.5rem, 2.8vw, 2rem);
+	font-weight: 600;
+	color: #f8f4ec;
+	line-height: 1.15;
+}
+
+.prime-fleet-home__fleet-copy p:last-child {
+	margin: 0.1rem 0 0;
+	font-size: 0.98rem;
+	line-height: 1.55;
+	color: rgba(232, 238, 246, 0.78);
+	max-width: 36ch;
+}
+
+/* —— Trust —— */
+.prime-fleet-home__trust {
+	padding: 0;
+	background: var(--sle-paper);
+}
+
+.prime-fleet-home__trust-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	min-height: 420px;
+}
+
+.prime-fleet-home__trust-photo {
+	margin: 0;
+	overflow: hidden;
+	background: var(--sle-navy);
+	aspect-ratio: 4 / 3;
+}
+
+.prime-fleet-home__trust-photo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.prime-fleet-home__trust-copy {
+	display: grid;
+	align-content: center;
+	gap: 0.35rem;
+	padding: clamp(2rem, 5vw, 3.5rem);
+	background:
+		radial-gradient(ellipse 60% 50% at 100% 100%, rgba(215, 166, 74, 0.1), transparent 55%),
+		var(--sle-paper);
+}
+
+.prime-fleet-home__quote {
+	margin: 0.75rem 0 1.35rem;
+	padding: 0;
+	border: 0;
+	max-width: 34rem;
+}
+
+.prime-fleet-home__quote p {
+	margin: 0 0 0.75rem;
+	font-family: var(--sle-display);
+	font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+	font-weight: 500;
+	font-style: italic;
+	line-height: 1.35;
+	color: var(--sle-navy);
+}
+
+.prime-fleet-home__quote footer {
+	font-size: 0.9rem;
+	font-weight: 600;
+	font-style: normal;
+	color: var(--sle-gold-deep);
+}
+
+.prime-fleet-home__trust-points {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 0.6rem;
+}
+
+.prime-fleet-home__trust-points li {
+	position: relative;
+	padding-left: 1.2rem;
+	font-size: 0.98rem;
+	color: #3d4b5c;
+}
+
+.prime-fleet-home__trust-points li::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0.55em;
+	width: 0.45rem;
+	height: 0.45rem;
+	border-radius: 50%;
+	background: var(--sle-gold);
+}
+
+/* —— Finale —— */
+.prime-fleet-home__finale {
+	position: relative;
+	isolation: isolate;
+	color: var(--sle-ink);
+	padding: clamp(3.5rem, 8vw, 5.5rem) 0;
+	text-align: center;
+	overflow: hidden;
+}
+
+.prime-fleet-home__finale-bg {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+}
+
+.prime-fleet-home__finale-bg img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center 60%;
+	filter: saturate(0.85);
+}
+
+.prime-fleet-home__finale-bg::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(160deg, rgba(7, 21, 38, 0.92) 0%, rgba(11, 29, 57, 0.88) 55%, rgba(22, 58, 74, 0.9) 100%);
+}
+
+.prime-fleet-home__finale-inner {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	justify-items: center;
+	gap: 0.3rem;
+}
+
+.prime-fleet-home__finale-title {
+	margin: 0;
+	font-family: var(--sle-display);
+	font-size: clamp(1.85rem, 3.8vw, 2.6rem);
+	font-weight: 600;
+	color: #f8f4ec;
+}
+
+.prime-fleet-home__finale-copy {
+	margin: 0 0 1.35rem;
+	font-size: 1.02rem;
+	color: rgba(248, 244, 236, 0.78);
+}
+
+.prime-fleet-home__finale .prime-fleet-home__cta {
+	justify-content: center;
+}
+
+/* Reveal */
+.prime-fleet-home [data-pf-reveal] {
+	opacity: 0;
+	transform: translateY(18px);
+	transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.prime-fleet-home [data-pf-reveal].is-in {
+	opacity: 1;
+	transform: none;
+}
+
+@keyframes sle-home-copy {
+	from {
+		opacity: 0;
+		transform: translateY(18px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.prime-fleet-home__hero-inner,
+	.prime-fleet-home [data-pf-reveal],
+	.prime-fleet-home__fleet-art img {
+		animation: none !important;
+		transition: none !important;
+		opacity: 1 !important;
+		transform: none !important;
+	}
+}
+
+@media (max-width: 900px) {
+	.prime-fleet-home__hero {
+		height: clamp(26rem, 58svh, 32rem);
+		align-items: start;
+	}
+
+	.prime-fleet-home__hero-car {
+		width: 78%;
+		opacity: 0.5;
+		mask-image: linear-gradient(90deg, transparent 0%, #000 45%);
+		-webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 45%);
+	}
+
+	.prime-fleet-home__hero-inner {
+		margin-left: 1.25rem;
+		margin-right: 1.25rem;
+		width: auto;
+		padding: 1.5rem 0 1.75rem;
+	}
+
+	.prime-fleet-home__steps {
+		grid-template-columns: 1fr;
+		gap: 0.85rem;
+	}
+
+	.prime-fleet-home__fleet-item,
+	.prime-fleet-home__fleet-item--flip {
+		grid-template-columns: 1fr;
+	}
+
+	.prime-fleet-home__fleet-item--flip .prime-fleet-home__fleet-art {
+		order: 0;
+	}
+
+	.prime-fleet-home__fleet-art {
+		aspect-ratio: 16 / 10;
+	}
+
+	.prime-fleet-home__trust-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.prime-fleet-home__trust-photo {
+		aspect-ratio: 16 / 10;
+	}
+}

@@ -1,0 +1,112 @@
+/**
+ * Mobile sticky Book + WhatsApp (M5 Phase C).
+ * Reserves bottom space via CSS var so CLS is not introduced on load.
+ */
+
+:root {
+	--sle-sticky-h: 0px;
+}
+
+body.prime-fleet-has-sticky {
+	/* Desktop: no reserved space (bar hidden). */
+	padding-bottom: 0;
+}
+
+@media (max-width: 860px) {
+	:root {
+		--sle-sticky-h: 4.25rem;
+	}
+
+	body.prime-fleet-has-sticky {
+		padding-bottom: calc(var(--sle-sticky-h) + env(safe-area-inset-bottom, 0px));
+	}
+
+	/* Keep wizard toasts / scroll targets clear of the bar. */
+	body.prime-fleet-has-sticky .prime-fleet {
+		scroll-padding-bottom: calc(var(--sle-sticky-h) + 1rem);
+	}
+
+	body.prime-fleet-has-sticky .prime-fleet__toasts {
+		bottom: calc(0.85rem + var(--sle-sticky-h) + env(safe-area-inset-bottom, 0px));
+	}
+}
+
+.prime-fleet-sticky {
+	display: none;
+}
+
+@media (max-width: 860px) {
+	.prime-fleet-sticky {
+		display: block;
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 9990;
+		height: var(--sle-sticky-h);
+		padding-bottom: env(safe-area-inset-bottom, 0px);
+		background: #0b1d39;
+		border-top: 1px solid rgba(45, 212, 191, 0.35);
+		box-shadow: 0 -8px 24px rgba(7, 21, 38, 0.28);
+	}
+
+	.prime-fleet-sticky__inner {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.55rem;
+		align-items: stretch;
+		height: 4.25rem;
+		width: min(1120px, calc(100% - 1.1rem));
+		margin: 0 auto;
+		padding: 0.55rem 0;
+		box-sizing: border-box;
+	}
+
+	.prime-fleet-sticky__btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 44px;
+		padding: 0.55rem 0.75rem;
+		border-radius: 10px;
+		font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+		font-size: 0.92rem;
+		font-weight: 700;
+		text-decoration: none;
+		letter-spacing: 0.01em;
+		transition: filter 0.15s ease, transform 0.15s ease;
+	}
+
+	.prime-fleet-sticky__btn--book {
+		background: #2dd4bf;
+		color: #0b1d39;
+	}
+
+	.prime-fleet-sticky__btn--wa {
+		background: transparent;
+		color: #f7f4ee;
+		border: 1px solid rgba(247, 244, 238, 0.4);
+	}
+
+	.prime-fleet-sticky__btn:hover,
+	.prime-fleet-sticky__btn:focus {
+		filter: brightness(1.06);
+		outline: none;
+	}
+
+	.prime-fleet-sticky__btn:focus-visible {
+		outline: 2px solid #2dd4bf;
+		outline-offset: 2px;
+	}
+
+	/* Single button: full width */
+	.prime-fleet-sticky__inner:has(> :only-child) {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.prime-fleet-sticky__btn {
+		transition: none;
+	}
+}

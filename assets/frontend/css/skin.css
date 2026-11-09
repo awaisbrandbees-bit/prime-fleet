@@ -1,0 +1,1778 @@
+/**
+ * Prime Fleet guest skin — full visual rebrand (not a Sletci color swap).
+ * Loaded after booking.css. Geometric, numbered progress, stacked services.
+ */
+
+.prime-fleet {
+	--pf-ink-bg: #070b14;
+	--pf-panel: #0e1524;
+	--pf-line: rgba(255, 255, 255, 0.1);
+	--pf-accent: #5eead4;
+	--pf-accent-deep: #2dd4bf;
+	--pf-accent-dim: rgba(94, 234, 212, 0.14);
+	--pf-ink: #f1f5f9;
+	--pf-muted: #8b95a8;
+	--pf-radius: 4px;
+	--sle-chip: 4px;
+	--sle-radius: 4px;
+	--sle-gold: var(--pf-accent-deep);
+	--sle-navy: var(--pf-ink-bg);
+	--sle-surface: var(--pf-ink-bg);
+	--sle-font: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+	--sle-display: "Sora", "Plus Jakarta Sans", sans-serif;
+	--sle-heading: "Sora", "Plus Jakarta Sans", sans-serif;
+	font-family: var(--sle-font) !important;
+	background:
+		radial-gradient(90% 50% at 0% 0%, rgba(45, 212, 191, 0.09), transparent 55%),
+		radial-gradient(70% 40% at 100% 10%, rgba(56, 189, 248, 0.06), transparent 50%),
+		var(--pf-ink-bg) !important;
+}
+
+.prime-fleet__shell {
+	max-width: 1120px;
+	margin: 0 auto;
+}
+
+/* —— Header —— */
+.prime-fleet__header {
+	margin-bottom: 22px;
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
+/*
+ * Theme (flex-car-rental) paints ALL button / button:hover with
+ * --primary-theme-color (#C19932) !important. Steps/cats are role=button
+ * spans; remaining wizard buttons still need this nuclear reset.
+ */
+body.prime-fleet-has-booking #prime-fleet button,
+body.prime-fleet-has-booking #prime-fleet button:hover,
+body.prime-fleet-has-booking #prime-fleet button:focus,
+body.prime-fleet-has-booking #prime-fleet button:active,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:focus,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:active,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:focus,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:active,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__service,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__service:hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__service:focus {
+	background-image: none !important;
+	box-shadow: none !important;
+	text-transform: none !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:not(.is-active),
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:not(.is-active):hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:not(.is-active):focus,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:not(.is-active):active,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:focus,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:active {
+	background: transparent !important;
+	background-color: transparent !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step.is-active,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step.is-active:hover {
+	background: rgba(94, 234, 212, 0.12) !important;
+	background-color: rgba(94, 234, 212, 0.12) !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step.is-active,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step.is-active:hover {
+	background: rgba(15, 118, 110, 0.14) !important;
+	background-color: rgba(15, 118, 110, 0.14) !important;
+	color: #042f2e !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-num,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-label {
+	color: #042f2e !important;
+	opacity: 1 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step:not(.is-active) .prime-fleet__step-num,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step:not(.is-active) .prime-fleet__step-label {
+	color: #5a6578 !important;
+}
+
+.prime-fleet__brand-row {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.65rem;
+	margin-bottom: 18px;
+}
+
+.prime-fleet__brand-mark {
+	width: 2rem !important;
+	height: 2rem !important;
+	border-radius: 4px !important;
+	background: var(--pf-accent) !important;
+	color: #042f2e !important;
+	font-size: 0.7rem !important;
+	font-weight: 800 !important;
+}
+
+.prime-fleet__brand-name {
+	font-family: var(--sle-heading);
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--pf-ink) !important;
+}
+
+.prime-fleet__kicker {
+	margin: 0 0 8px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--pf-accent) !important;
+}
+
+.prime-fleet__title {
+	margin: 0 0 10px !important;
+	font-family: var(--sle-display) !important;
+	font-size: clamp(2.15rem, 5vw, 3.35rem) !important;
+	font-weight: 700 !important;
+	letter-spacing: -0.035em !important;
+	line-height: 1.05 !important;
+	color: #fff !important;
+}
+
+.prime-fleet__panel h2,
+.prime-fleet__brand-name,
+.prime-fleet__service-name,
+.prime-fleet__rail-total,
+.prime-fleet__rail-placeholder {
+	font-family: var(--sle-heading) !important;
+}
+
+.prime-fleet__subtitle {
+	margin: 0;
+	max-width: 36rem;
+	font-size: 1.05rem;
+	color: var(--pf-muted) !important;
+}
+
+/* —— Progress (active underline only — no track / double borders) —— */
+.prime-fleet__progress {
+	margin: 0 0 28px;
+	padding: 0;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet__progress-bar {
+	display: none !important;
+}
+
+.prime-fleet__steps {
+	display: flex !important;
+	flex-wrap: nowrap !important;
+	gap: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	list-style: none !important;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: thin;
+	border: 0 !important;
+	border-bottom: 0 !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet__step-item {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	flex: 1 0 auto;
+	min-width: 4.75rem;
+}
+
+.prime-fleet__step,
+.prime-fleet__step:hover,
+.prime-fleet__step:focus,
+.prime-fleet__step:active,
+.prime-fleet__step.is-clickable:hover,
+.prime-fleet__step.is-locked:hover,
+.prime-fleet__step.is-done:hover,
+.prime-fleet__step.is-active:hover {
+	appearance: none;
+	cursor: pointer;
+	width: 100%;
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: flex-start !important;
+	justify-content: flex-end !important;
+	gap: 6px !important;
+	min-height: 56px !important;
+	margin: 0 !important;
+	padding: 12px 14px 14px !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	border-bottom: 2px solid transparent !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	color: var(--pf-muted) !important;
+	box-shadow: none !important;
+	outline: none !important;
+	transform: none !important;
+	filter: none !important;
+	text-transform: none !important;
+	font-family: var(--sle-font) !important;
+}
+
+.prime-fleet__step-num {
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	color: inherit !important;
+	opacity: 0.7;
+}
+
+.prime-fleet__step-label {
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: inherit !important;
+}
+
+.prime-fleet__step.is-done,
+.prime-fleet__step.is-done:hover {
+	color: #cbd5e1 !important;
+	border-bottom-color: rgba(94, 234, 212, 0.28) !important;
+	background: transparent !important;
+	background-color: transparent !important;
+}
+
+.prime-fleet__step.is-active,
+.prime-fleet__step.is-active:hover {
+	color: #fff !important;
+	border-bottom-color: var(--pf-accent) !important;
+	background: rgba(94, 234, 212, 0.1) !important;
+	background-color: rgba(94, 234, 212, 0.1) !important;
+}
+
+.prime-fleet__step.is-active .prime-fleet__step-num {
+	color: var(--pf-accent) !important;
+	opacity: 1;
+}
+
+.prime-fleet__step.is-locked {
+	opacity: 0.4;
+}
+
+.prime-fleet__step.is-clickable:hover {
+	color: #fff !important;
+}
+
+/* —— Layout —— */
+.prime-fleet__layout {
+	display: grid;
+	gap: 28px;
+	align-items: start;
+}
+
+@media (min-width: 960px) {
+	.prime-fleet__layout {
+		grid-template-columns: minmax(0, 1fr) 280px;
+		gap: 40px;
+	}
+}
+
+.prime-fleet__panel h2 {
+	margin: 0 0 6px;
+	font-size: 1.55rem !important;
+	font-weight: 700 !important;
+	letter-spacing: -0.02em;
+	color: #fff !important;
+}
+
+.prime-fleet__hint {
+	margin: 0 0 20px !important;
+	color: var(--pf-muted) !important;
+}
+
+/* —— Category tabs (underline only — no track line) —— */
+.prime-fleet__cats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0;
+	margin: 0 0 22px;
+	border: 0 !important;
+	border-bottom: 0 !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet__cat,
+.prime-fleet__cat:hover,
+.prime-fleet__cat:focus,
+.prime-fleet__cat:active {
+	appearance: none;
+	cursor: pointer;
+	display: inline-flex !important;
+	align-items: center;
+	gap: 0.4rem;
+	margin: 0 !important;
+	padding: 12px 14px !important;
+	border: 0 !important;
+	border-bottom: 2px solid transparent !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	color: var(--pf-muted) !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.88rem !important;
+	font-weight: 600 !important;
+	box-shadow: none !important;
+	text-transform: none !important;
+}
+
+.prime-fleet__cat:hover {
+	color: #fff !important;
+}
+
+.prime-fleet__cat.is-active {
+	color: #fff !important;
+	background: transparent !important;
+	border-bottom-color: var(--pf-accent) !important;
+}
+
+.prime-fleet__cat-count {
+	display: inline !important;
+	min-width: 0 !important;
+	height: auto !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	color: var(--pf-muted) !important;
+	font-size: 0.78rem !important;
+	font-weight: 600 !important;
+	opacity: 0.75;
+	place-items: unset !important;
+}
+
+.prime-fleet__cat.is-active .prime-fleet__cat-count {
+	background: transparent !important;
+	background-color: transparent !important;
+	color: var(--pf-accent) !important;
+	opacity: 1;
+}
+
+/* —— Service / vehicle cards: 2-up (6+6) from tablet up —— */
+.prime-fleet__services,
+.prime-fleet__services.is-compact,
+.prime-fleet__services--stack {
+	display: grid !important;
+	grid-template-columns: 1fr !important;
+	gap: 10px !important;
+	margin: 0 0 22px !important;
+	padding: 0 !important;
+	list-style: none !important;
+	flex-direction: unset !important;
+}
+
+@media (min-width: 720px) {
+	.prime-fleet__services,
+	.prime-fleet__services.is-compact,
+	.prime-fleet__services--stack {
+		grid-template-columns: 1fr 1fr !important;
+	}
+}
+
+.prime-fleet__service-item {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	min-width: 0;
+	height: 100%;
+}
+
+.prime-fleet__service {
+	display: grid !important;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	height: 100%;
+	min-height: 72px !important;
+	padding: 14px 14px !important;
+	text-align: left;
+	border: 1px solid var(--pf-line) !important;
+	border-left: 3px solid transparent !important;
+	border-radius: var(--pf-radius) !important;
+	background: var(--pf-panel) !important;
+	color: var(--pf-ink) !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet__service-index {
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	color: var(--pf-muted) !important;
+	align-self: start;
+	padding-top: 2px;
+}
+
+.prime-fleet__service-body {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	min-width: 0;
+}
+
+.prime-fleet__service-name {
+	font-size: 0.98rem !important;
+	font-weight: 700 !important;
+	color: #fff !important;
+	line-height: 1.3 !important;
+}
+
+.prime-fleet__service-desc {
+	font-size: 0.82rem !important;
+	color: var(--pf-muted) !important;
+	line-height: 1.35 !important;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.prime-fleet__service-check {
+	width: 16px;
+	height: 16px;
+	flex: 0 0 auto;
+	border-radius: 50%;
+	border: 1.5px solid rgba(255, 255, 255, 0.25);
+	transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.prime-fleet__service:hover,
+.prime-fleet__service:focus {
+	border-color: rgba(94, 234, 212, 0.35) !important;
+	background: #121a2c !important;
+	background-color: #121a2c !important;
+	transform: none;
+}
+
+.prime-fleet__service.is-selected {
+	border-color: rgba(94, 234, 212, 0.45) !important;
+	border-left-color: var(--pf-accent) !important;
+	background: var(--pf-accent-dim) !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet__service.is-selected .prime-fleet__service-index {
+	color: var(--pf-accent) !important;
+}
+
+.prime-fleet__service.is-selected .prime-fleet__service-check {
+	border-color: var(--pf-accent);
+	background: var(--pf-accent);
+	box-shadow: inset 0 0 0 4px var(--pf-panel);
+	transform: scale(1.08);
+}
+
+/* —— Rail (quote card) —— */
+.prime-fleet__rail {
+	position: sticky;
+	top: 1rem;
+	padding: 22px 20px 20px !important;
+	border: 1px solid rgba(94, 234, 212, 0.22) !important;
+	border-radius: 6px !important;
+	background:
+		linear-gradient(165deg, rgba(94, 234, 212, 0.08) 0%, transparent 42%),
+		rgba(14, 21, 36, 0.92) !important;
+	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28) !important;
+	overflow: hidden;
+}
+
+.prime-fleet__rail::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 2px;
+	background: linear-gradient(90deg, var(--pf-accent), rgba(94, 234, 212, 0.15));
+	pointer-events: none;
+}
+
+.prime-fleet__rail-head {
+	margin: 0 0 14px;
+}
+
+.prime-fleet__rail-label {
+	margin: 0 !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.68rem !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.16em !important;
+	text-transform: uppercase !important;
+	color: var(--pf-accent) !important;
+}
+
+.prime-fleet__rail-body {
+	min-height: 4.5rem;
+}
+
+.prime-fleet__rail-amount.is-empty {
+	margin: 0 0 8px !important;
+	font-family: var(--sle-display) !important;
+	font-size: 2rem !important;
+	font-weight: 600 !important;
+	line-height: 1 !important;
+	letter-spacing: 0.04em;
+	color: rgba(255, 255, 255, 0.22) !important;
+}
+
+.prime-fleet__rail-status {
+	margin: 0 0 6px !important;
+	font-family: var(--sle-heading) !important;
+	font-size: 1.05rem !important;
+	font-weight: 650 !important;
+	letter-spacing: -0.01em;
+	line-height: 1.3 !important;
+	color: #fff !important;
+}
+
+.prime-fleet__rail-detail {
+	margin: 0 !important;
+	font-size: 0.86rem !important;
+	line-height: 1.45 !important;
+	color: var(--pf-muted) !important;
+}
+
+.prime-fleet__rail-placeholder,
+.prime-fleet__rail-total {
+	margin: 0 0 8px !important;
+	font-family: var(--sle-display) !important;
+	font-size: clamp(1.85rem, 3vw, 2.35rem) !important;
+	font-weight: 700 !important;
+	letter-spacing: -0.03em;
+	line-height: 1.1 !important;
+	color: #fff !important;
+}
+
+.prime-fleet__rail-note {
+	margin: 16px 0 0 !important;
+	padding-top: 14px !important;
+	border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+	color: var(--pf-muted) !important;
+	font-size: 0.78rem !important;
+	line-height: 1.45 !important;
+}
+
+.prime-fleet__rail-msg {
+	margin: 8px 0 0 !important;
+	color: var(--pf-muted) !important;
+	font-size: 0.86rem !important;
+	line-height: 1.45 !important;
+}
+
+.prime-fleet__rail-lines {
+	margin: 12px 0 0 !important;
+	padding: 12px 0 0 !important;
+	border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.prime-fleet__rail.is-priced .prime-fleet__rail-total {
+	color: #fff !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail {
+	background:
+		linear-gradient(165deg, rgba(15, 118, 110, 0.06) 0%, transparent 42%),
+		#fff !important;
+	border-color: rgba(15, 118, 110, 0.2) !important;
+	box-shadow: 0 10px 28px rgba(11, 18, 32, 0.08) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail-amount.is-empty {
+	color: rgba(11, 18, 32, 0.18) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail-status,
+.prime-fleet[data-theme="light"] .prime-fleet__rail-total {
+	color: #0b1220 !important;
+}
+
+/* —— Buttons —— */
+.prime-fleet__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 8px;
+}
+
+.prime-fleet__btn {
+	min-height: 48px;
+	padding: 0 22px !important;
+	border-radius: 4px !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.02em;
+}
+
+.prime-fleet__btn--primary,
+.prime-fleet__btn--primary:hover,
+.prime-fleet__btn--primary:focus,
+.prime-fleet__btn--primary:active {
+	background: var(--pf-accent) !important;
+	background-color: var(--pf-accent) !important;
+	color: #042f2e !important;
+	border: 1px solid var(--pf-accent) !important;
+}
+
+.prime-fleet__btn--ghost,
+.prime-fleet__btn--ghost:hover,
+.prime-fleet__btn--ghost:focus {
+	background: transparent !important;
+	background-color: transparent !important;
+	color: #fff !important;
+	border: 1px solid rgba(255, 255, 255, 0.28) !important;
+}
+
+.prime-fleet__btn.is-disabled,
+.prime-fleet__btn[aria-disabled="true"] {
+	opacity: 0.4;
+}
+
+/* Light theme skin — high contrast, teal selection, no theme gold */
+.prime-fleet[data-theme="light"] {
+	--pf-ink-bg: #f4f6f8;
+	--pf-panel: #ffffff;
+	--pf-line: rgba(11, 18, 32, 0.14);
+	--pf-accent: #0f766e;
+	--pf-accent-deep: #0d9488;
+	--pf-accent-dim: rgba(15, 118, 110, 0.12);
+	--pf-ink: #0b1220;
+	--pf-muted: #3f4a5a;
+	color: #0b1220 !important;
+	background: #f4f6f8 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__title,
+.prime-fleet[data-theme="light"] .prime-fleet__panel h2,
+.prime-fleet[data-theme="light"] .prime-fleet__service-name,
+.prime-fleet[data-theme="light"] .prime-fleet__brand-name,
+.prime-fleet[data-theme="light"] .prime-fleet__kicker,
+.prime-fleet[data-theme="light"] .prime-fleet__step-label,
+.prime-fleet[data-theme="light"] .prime-fleet__step-num {
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__subtitle,
+.prime-fleet[data-theme="light"] .prime-fleet__hint,
+.prime-fleet[data-theme="light"] .prime-fleet__service-desc,
+.prime-fleet[data-theme="light"] .prime-fleet__field label {
+	color: #3f4a5a !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__steps {
+	border-bottom: 0 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__step,
+.prime-fleet[data-theme="light"] .prime-fleet__step:hover,
+.prime-fleet[data-theme="light"] .prime-fleet__step:focus,
+.prime-fleet[data-theme="light"] .prime-fleet__step:active {
+	background: transparent !important;
+	background-color: transparent !important;
+	border: 0 !important;
+	border-bottom: 2px solid transparent !important;
+	border-radius: 0 !important;
+	color: #5a6578 !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__step.is-done,
+.prime-fleet[data-theme="light"] .prime-fleet__step.is-done:hover {
+	color: #0b1220 !important;
+	border-bottom-color: rgba(15, 118, 110, 0.28) !important;
+	background: transparent !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__step.is-active,
+.prime-fleet[data-theme="light"] .prime-fleet__step.is-active:hover {
+	color: #042f2e !important;
+	background: rgba(15, 118, 110, 0.14) !important;
+	background-color: rgba(15, 118, 110, 0.14) !important;
+	border-bottom-color: var(--pf-accent) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-num,
+.prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-label {
+	color: #042f2e !important;
+	opacity: 1 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__step.is-clickable:hover {
+	color: #0b1220 !important;
+	background: rgba(15, 118, 110, 0.06) !important;
+	background-color: rgba(15, 118, 110, 0.06) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__cat,
+.prime-fleet[data-theme="light"] .prime-fleet__cat:hover,
+.prime-fleet[data-theme="light"] .prime-fleet__cat:focus,
+.prime-fleet[data-theme="light"] .prime-fleet__cat:active {
+	background: transparent !important;
+	background-color: transparent !important;
+	border: 0 !important;
+	border-bottom: 2px solid transparent !important;
+	border-radius: 0 !important;
+	color: #5a6578 !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__cat:hover {
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__cat.is-active {
+	color: #0b1220 !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	border-bottom-color: var(--pf-accent) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__cat-count,
+.prime-fleet[data-theme="light"] .prime-fleet__cat.is-active .prime-fleet__cat-count {
+	display: inline !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	color: #0f766e !important;
+	border-radius: 0 !important;
+	min-width: 0 !important;
+	height: auto !important;
+	padding: 0 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__service {
+	background: #fff !important;
+	border-color: #d8dee8 !important;
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__service:hover,
+.prime-fleet[data-theme="light"] .prime-fleet__service:focus {
+	background: #f3faf9 !important;
+	background-color: #f3faf9 !important;
+	border-color: rgba(15, 118, 110, 0.45) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__service.is-selected {
+	background: rgba(15, 118, 110, 0.1) !important;
+	border-color: rgba(15, 118, 110, 0.45) !important;
+	border-left-color: var(--pf-accent) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__service.is-selected .prime-fleet__service-check {
+	box-shadow: inset 0 0 0 4px #fff;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__service-index {
+	color: #5a6578 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__btn--primary,
+.prime-fleet[data-theme="light"] .prime-fleet__btn--primary:hover,
+.prime-fleet[data-theme="light"] .prime-fleet__btn--primary:focus {
+	background: var(--pf-accent) !important;
+	background-color: var(--pf-accent) !important;
+	color: #fff !important;
+	border-color: var(--pf-accent) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__btn--ghost,
+.prime-fleet[data-theme="light"] .prime-fleet__btn--ghost:hover,
+.prime-fleet[data-theme="light"] .prime-fleet__btn--ghost:focus {
+	background: #fff !important;
+	background-color: #fff !important;
+	color: #0b1220 !important;
+	border: 1px solid #c5ccd8 !important;
+}
+
+body.prime-fleet-has-booking .prime-fleet[data-theme="light"] .prime-fleet__segment-btn,
+body.prime-fleet-has-booking .prime-fleet[data-theme="light"] .prime-fleet__segment-btn:hover,
+body.prime-fleet-has-booking .prime-fleet[data-theme="light"] .prime-fleet__segment-btn:focus,
+body.prime-fleet-has-booking .prime-fleet[data-theme="light"] .prime-fleet__segment-btn:active {
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+	color: #5a6578 !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	text-transform: none !important;
+}
+
+body.prime-fleet-has-booking .prime-fleet[data-theme="light"] .prime-fleet__segment-btn:hover {
+	color: #0b1220 !important;
+	background: rgba(15, 118, 110, 0.06) !important;
+	background-color: rgba(15, 118, 110, 0.06) !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__segment-btn.is-active,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__segment-btn.is-active:hover,
+body.prime-fleet-has-booking .prime-fleet[data-theme="light"] .prime-fleet__segment-btn.is-active,
+body.prime-fleet-has-booking .prime-fleet[data-theme="light"] .prime-fleet__segment-btn.is-active:hover {
+	background: rgba(15, 118, 110, 0.14) !important;
+	background-color: rgba(15, 118, 110, 0.14) !important;
+	color: #042f2e !important;
+	box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.35) !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__btn--ghost,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__btn--ghost:hover {
+	background: #fff !important;
+	background-color: #fff !important;
+	color: #0b1220 !important;
+	border: 1px solid #c5ccd8 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__field--trip-type {
+	margin-bottom: 18px !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail {
+	background:
+		linear-gradient(165deg, rgba(15, 118, 110, 0.07) 0%, transparent 42%),
+		#fff !important;
+	border: 1px solid rgba(15, 118, 110, 0.22) !important;
+	box-shadow: 0 10px 28px rgba(11, 18, 32, 0.08) !important;
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail-label {
+	color: var(--pf-accent) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail-status,
+.prime-fleet[data-theme="light"] .prime-fleet__rail-total,
+.prime-fleet[data-theme="light"] .prime-fleet__rail-placeholder {
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail-detail,
+.prime-fleet[data-theme="light"] .prime-fleet__rail-note,
+.prime-fleet[data-theme="light"] .prime-fleet__rail-msg,
+.prime-fleet[data-theme="light"] .prime-fleet__rail-lines,
+.prime-fleet[data-theme="light"] .prime-fleet__rail-lines li {
+	color: #3f4a5a !important;
+}
+
+/* —— Custom select (zones, time, etc.) —— */
+.prime-fleet__field label {
+	margin-bottom: 10px !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.82rem !important;
+	font-weight: 600 !important;
+	letter-spacing: 0.02em;
+	color: var(--pf-muted) !important;
+}
+
+.prime-fleet__field input[type="text"],
+.prime-fleet__field input[type="email"],
+.prime-fleet__field input[type="tel"],
+.prime-fleet__field input[type="number"],
+.prime-fleet__field input[type="date"],
+.prime-fleet__field input[type="time"] {
+	min-height: 52px !important;
+	padding: 14px 16px !important;
+	border: 1px solid rgba(255, 255, 255, 0.14) !important;
+	border-radius: 6px !important;
+	background: rgba(255, 255, 255, 0.04) !important;
+	color: #fff !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.95rem !important;
+	transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+.prime-fleet__field input:hover {
+	border-color: rgba(255, 255, 255, 0.28) !important;
+}
+
+.prime-fleet__field input:focus,
+.prime-fleet__field input:focus-visible {
+	outline: none !important;
+	border-color: rgba(94, 234, 212, 0.65) !important;
+	background: rgba(94, 234, 212, 0.06) !important;
+	box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.12) !important;
+}
+
+.prime-fleet__select {
+	position: relative;
+	width: 100%;
+}
+
+.prime-fleet__select-native {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	clip: rect(0, 0, 0, 0) !important;
+	border: 0 !important;
+	opacity: 0 !important;
+	pointer-events: none !important;
+}
+
+.prime-fleet__select-trigger {
+	appearance: none;
+	display: flex !important;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: 100%;
+	min-height: 52px !important;
+	margin: 0 !important;
+	padding: 14px 16px !important;
+	border: 1px solid rgba(255, 255, 255, 0.14) !important;
+	border-radius: 6px !important;
+	background: rgba(255, 255, 255, 0.04) !important;
+	background-color: rgba(255, 255, 255, 0.04) !important;
+	color: #fff !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.95rem !important;
+	font-weight: 500 !important;
+	text-align: left !important;
+	text-transform: none !important;
+	cursor: pointer;
+	transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet__select-trigger:hover {
+	border-color: rgba(255, 255, 255, 0.28) !important;
+	background: rgba(255, 255, 255, 0.06) !important;
+	background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.prime-fleet__select.is-open .prime-fleet__select-trigger,
+.prime-fleet__select-trigger:focus-visible {
+	outline: none !important;
+	border-color: rgba(94, 234, 212, 0.65) !important;
+	background: rgba(94, 234, 212, 0.06) !important;
+	background-color: rgba(94, 234, 212, 0.06) !important;
+	box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.12) !important;
+}
+
+.prime-fleet__select-value {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #fff !important;
+}
+
+.prime-fleet__select-value.is-placeholder {
+	color: var(--pf-muted) !important;
+}
+
+.prime-fleet__select-chevron {
+	flex: 0 0 auto;
+	width: 10px;
+	height: 10px;
+	border-right: 2px solid rgba(255, 255, 255, 0.55);
+	border-bottom: 2px solid rgba(255, 255, 255, 0.55);
+	transform: rotate(45deg) translateY(-2px);
+	transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.prime-fleet__select.is-open .prime-fleet__select-chevron {
+	border-color: var(--pf-accent);
+	transform: rotate(225deg) translateY(-2px);
+}
+
+.prime-fleet__select-panel {
+	position: absolute;
+	z-index: 40;
+	top: calc(100% + 6px);
+	left: 0;
+	right: 0;
+	display: flex;
+	flex-direction: column;
+	max-height: min(320px, 55vh);
+	padding: 8px;
+	border: 1px solid rgba(94, 234, 212, 0.28) !important;
+	border-radius: 10px !important;
+	background: #0c1422 !important;
+	box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5) !important;
+	animation: pf-select-in 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.prime-fleet__select-search-wrap {
+	flex: 0 0 auto;
+	margin: 0 0 6px;
+}
+
+.prime-fleet__select-search {
+	width: 100%;
+	min-height: 42px !important;
+	margin: 0 !important;
+	padding: 10px 12px !important;
+	border: 1px solid rgba(255, 255, 255, 0.12) !important;
+	border-radius: 6px !important;
+	background: rgba(255, 255, 255, 0.05) !important;
+	color: #fff !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.9rem !important;
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet__select-search::placeholder {
+	color: var(--pf-muted);
+}
+
+.prime-fleet__select-search:focus {
+	border-color: rgba(94, 234, 212, 0.55) !important;
+	background: rgba(94, 234, 212, 0.06) !important;
+}
+
+.prime-fleet__select-menu {
+	flex: 1 1 auto;
+	margin: 0;
+	padding: 2px !important;
+	list-style: none !important;
+	overflow-y: auto;
+	overflow-x: hidden;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(94, 234, 212, 0.45) transparent;
+}
+
+.prime-fleet__select-menu::-webkit-scrollbar {
+	width: 6px;
+}
+
+.prime-fleet__select-menu::-webkit-scrollbar-track {
+	background: transparent;
+	margin: 4px 0;
+}
+
+.prime-fleet__select-menu::-webkit-scrollbar-thumb {
+	background: rgba(94, 234, 212, 0.35);
+	border-radius: 999px;
+}
+
+.prime-fleet__select-menu::-webkit-scrollbar-thumb:hover {
+	background: rgba(94, 234, 212, 0.55);
+}
+
+.prime-fleet__select-option {
+	display: block;
+	margin: 0;
+	padding: 11px 12px !important;
+	border-radius: 5px;
+	color: rgba(255, 255, 255, 0.88) !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.92rem !important;
+	font-weight: 500 !important;
+	cursor: pointer;
+	transition: background 0.12s ease, color 0.12s ease;
+}
+
+.prime-fleet__select-option[hidden] {
+	display: none !important;
+}
+
+.prime-fleet__select-option:hover,
+.prime-fleet__select-option:focus {
+	background: rgba(94, 234, 212, 0.12) !important;
+	color: #fff !important;
+}
+
+.prime-fleet__select-option.is-selected {
+	background: rgba(94, 234, 212, 0.18) !important;
+	color: var(--pf-accent) !important;
+	font-weight: 650 !important;
+}
+
+.prime-fleet__select-option.is-placeholder {
+	color: var(--pf-muted) !important;
+	font-weight: 500 !important;
+}
+
+.prime-fleet__select-empty {
+	margin: 8px 4px !important;
+	padding: 10px 8px !important;
+	color: var(--pf-muted) !important;
+	font-size: 0.86rem !important;
+	text-align: center;
+}
+
+@keyframes pf-select-in {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* —— Custom date calendar —— */
+.prime-fleet__date {
+	position: relative;
+	width: 100%;
+}
+
+.prime-fleet__date-trigger {
+	appearance: none;
+	display: flex !important;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	width: 100%;
+	min-height: 52px !important;
+	margin: 0 !important;
+	padding: 14px 16px !important;
+	border: 1px solid rgba(255, 255, 255, 0.14) !important;
+	border-radius: 6px !important;
+	background: rgba(255, 255, 255, 0.04) !important;
+	background-color: rgba(255, 255, 255, 0.04) !important;
+	color: #fff !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.95rem !important;
+	font-weight: 500 !important;
+	text-align: left !important;
+	text-transform: none !important;
+	cursor: pointer;
+	box-shadow: none !important;
+	transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+.prime-fleet__date-trigger:hover {
+	border-color: rgba(255, 255, 255, 0.28) !important;
+	background: rgba(255, 255, 255, 0.06) !important;
+	background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.prime-fleet__date.is-open .prime-fleet__date-trigger,
+.prime-fleet__date-trigger:focus-visible {
+	outline: none !important;
+	border-color: rgba(94, 234, 212, 0.65) !important;
+	background: rgba(94, 234, 212, 0.06) !important;
+	background-color: rgba(94, 234, 212, 0.06) !important;
+	box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.12) !important;
+}
+
+.prime-fleet__date-value.is-placeholder {
+	color: var(--pf-muted) !important;
+}
+
+.prime-fleet__date-icon {
+	flex: 0 0 auto;
+	width: 16px;
+	height: 16px;
+	border: 1.5px solid rgba(255, 255, 255, 0.55);
+	border-radius: 3px;
+	position: relative;
+}
+
+.prime-fleet__date-icon::before {
+	content: "";
+	position: absolute;
+	left: 2px;
+	right: 2px;
+	top: 4px;
+	height: 1.5px;
+	background: rgba(255, 255, 255, 0.55);
+}
+
+.prime-fleet__date.is-open .prime-fleet__date-icon {
+	border-color: var(--pf-accent);
+}
+
+.prime-fleet__date.is-open .prime-fleet__date-icon::before {
+	background: var(--pf-accent);
+}
+
+.prime-fleet__date-panel {
+	position: absolute;
+	z-index: 80;
+	top: calc(100% + 6px);
+	bottom: auto;
+	left: 0;
+	width: min(100%, 300px);
+	padding: 12px;
+	border: 1px solid rgba(94, 234, 212, 0.28) !important;
+	border-radius: 10px !important;
+	background: #0c1422 !important;
+	box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5) !important;
+	animation: pf-select-in 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.prime-fleet__date.is-up .prime-fleet__date-panel {
+	top: auto;
+	bottom: calc(100% + 6px);
+}
+
+.prime-fleet__cal-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 10px;
+}
+
+.prime-fleet__cal-title {
+	margin: 0 !important;
+	font-family: var(--sle-heading) !important;
+	font-size: 0.95rem !important;
+	font-weight: 700 !important;
+	color: #fff !important;
+}
+
+.prime-fleet__cal-nav,
+.prime-fleet__cal-nav:hover,
+.prime-fleet__cal-nav:focus {
+	appearance: none;
+	width: 34px !important;
+	height: 34px !important;
+	min-height: 34px !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 1px solid rgba(255, 255, 255, 0.12) !important;
+	border-radius: 6px !important;
+	background: rgba(255, 255, 255, 0.04) !important;
+	background-color: rgba(255, 255, 255, 0.04) !important;
+	color: #fff !important;
+	font-size: 1.1rem !important;
+	line-height: 1 !important;
+	text-transform: none !important;
+	box-shadow: none !important;
+	cursor: pointer;
+}
+
+.prime-fleet__cal-nav:hover {
+	border-color: rgba(94, 234, 212, 0.45) !important;
+	background: rgba(94, 234, 212, 0.1) !important;
+	background-color: rgba(94, 234, 212, 0.1) !important;
+	color: var(--pf-accent) !important;
+}
+
+.prime-fleet__cal-dow {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 2px;
+	margin-bottom: 4px;
+}
+
+.prime-fleet__cal-dow span {
+	display: grid;
+	place-items: center;
+	height: 28px;
+	font-size: 0.68rem !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.04em;
+	color: var(--pf-muted) !important;
+}
+
+.prime-fleet__cal-grid {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 2px;
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cal-day,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cal-day:hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cal-day:focus,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cal-day:active {
+	appearance: none;
+	display: grid !important;
+	place-items: center;
+	width: 100%;
+	aspect-ratio: 1;
+	min-height: 34px !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 8px !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+	color: rgba(255, 255, 255, 0.92) !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.86rem !important;
+	font-weight: 600 !important;
+	text-transform: none !important;
+	box-shadow: none !important;
+	cursor: pointer;
+}
+
+.prime-fleet__cal-day.is-empty {
+	visibility: hidden;
+	pointer-events: none;
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cal-day:hover:not(:disabled) {
+	background: rgba(94, 234, 212, 0.14) !important;
+	background-color: rgba(94, 234, 212, 0.14) !important;
+	color: #fff !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cal-day.is-selected,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cal-day.is-selected:hover {
+	background: var(--pf-accent) !important;
+	background-color: var(--pf-accent) !important;
+	color: #042f2e !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cal-day.is-disabled,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cal-day:disabled {
+	opacity: 1;
+	cursor: not-allowed;
+	color: #8b93a3 !important;
+	pointer-events: none;
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cal-day.is-today:not(.is-selected):not(:disabled) {
+	box-shadow: inset 0 0 0 1.5px rgba(94, 234, 212, 0.65) !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__date-trigger,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__date-trigger:hover,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__date-trigger:focus {
+	background: #fff !important;
+	background-color: #fff !important;
+	border-color: #d5dae3 !important;
+	color: #0b1220 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__date-value {
+	color: #0b1220 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__date-value.is-placeholder {
+	color: #5b6577 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__date-icon {
+	border-color: #5b6577;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__date-icon::before {
+	background: #5b6577;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__date-panel {
+	background: #fff !important;
+	border-color: rgba(15, 118, 110, 0.28) !important;
+	box-shadow: 0 14px 36px rgba(11, 18, 32, 0.14) !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-title {
+	color: #0b1220 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-nav,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-nav:hover,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-nav:focus {
+	background: #f4f6f8 !important;
+	background-color: #f4f6f8 !important;
+	border-color: #d5dae3 !important;
+	color: #0b1220 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-dow span {
+	color: #5b6577 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-day,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-day:hover,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-day:focus,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-day:active {
+	color: #0b1220 !important;
+	background: transparent !important;
+	background-color: transparent !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-day:hover:not(:disabled) {
+	background: rgba(15, 118, 110, 0.12) !important;
+	background-color: rgba(15, 118, 110, 0.12) !important;
+	color: #0b1220 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-day.is-selected,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-day.is-selected:hover {
+	background: var(--pf-accent) !important;
+	background-color: var(--pf-accent) !important;
+	color: #fff !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-day.is-disabled,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-day:disabled {
+	opacity: 1;
+	color: #6b7280 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cal-day.is-today:not(.is-selected):not(:disabled) {
+	box-shadow: inset 0 0 0 1.5px rgba(15, 118, 110, 0.55) !important;
+}
+
+/* Trip type segment tabs */
+.prime-fleet__segment {
+	display: grid;
+	grid-auto-flow: column;
+	grid-auto-columns: 1fr;
+	gap: 4px;
+	padding: 4px;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 8px;
+	background: rgba(255, 255, 255, 0.04);
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__segment-btn,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__segment-btn:hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__segment-btn:focus,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__segment-btn:active {
+	appearance: none;
+	min-height: 44px !important;
+	margin: 0 !important;
+	padding: 10px 14px !important;
+	border: 0 !important;
+	border-radius: 6px !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+	color: var(--pf-muted) !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.9rem !important;
+	font-weight: 600 !important;
+	text-transform: none !important;
+	box-shadow: none !important;
+	cursor: pointer;
+	transition: background 0.18s ease, color 0.18s ease !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet:not([data-theme="light"]) .prime-fleet__segment-btn:hover {
+	color: #fff !important;
+	background: rgba(255, 255, 255, 0.05) !important;
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet:not([data-theme="light"]) .prime-fleet__segment-btn.is-active,
+body.prime-fleet-has-booking #prime-fleet:not([data-theme="light"]) .prime-fleet__segment-btn.is-active:hover {
+	background: rgba(94, 234, 212, 0.16) !important;
+	background-color: rgba(94, 234, 212, 0.16) !important;
+	color: #fff !important;
+	box-shadow: inset 0 0 0 1px rgba(94, 234, 212, 0.35) !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__segment-btn,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__segment-btn:hover,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__segment-btn:focus,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__segment-btn:active {
+	color: #5a6578 !important;
+	background: transparent !important;
+	background-color: transparent !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__segment-btn:hover {
+	color: #0b1220 !important;
+	background: rgba(15, 118, 110, 0.08) !important;
+	background-color: rgba(15, 118, 110, 0.08) !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__segment-btn.is-active,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__segment-btn.is-active:hover {
+	background: rgba(15, 118, 110, 0.14) !important;
+	background-color: rgba(15, 118, 110, 0.14) !important;
+	color: #042f2e !important;
+	box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.35) !important;
+}
+
+.prime-fleet__field--trip-type {
+	margin: 0 0 18px !important;
+	max-width: 22rem;
+}
+
+.prime-fleet__panel--contact,
+.prime-fleet__panel--addons,
+.prime-fleet__panel--guests {
+	padding: 2px 0 18px;
+}
+
+.prime-fleet__panel--contact .prime-fleet__hint,
+.prime-fleet__panel--addons .prime-fleet__hint,
+.prime-fleet__panel--guests .prime-fleet__hint {
+	margin-bottom: 18px !important;
+}
+
+.prime-fleet__panel--contact .prime-fleet__grid {
+	gap: 16px 18px;
+}
+
+.prime-fleet__panel--contact .prime-fleet__actions,
+.prime-fleet__panel--addons .prime-fleet__actions,
+.prime-fleet__panel--guests .prime-fleet__actions {
+	margin-top: 8px;
+}
+
+.prime-fleet__panel--contact .prime-fleet__grid,
+.prime-fleet__panel--addons .prime-fleet__addons,
+.prime-fleet__panel--guests .prime-fleet__addons {
+	margin-top: 0;
+}
+
+.prime-fleet__addon {
+	border-color: rgba(255, 255, 255, 0.12) !important;
+	background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.prime-fleet__addon.is-active {
+	border-color: rgba(94, 234, 212, 0.4) !important;
+	background: rgba(94, 234, 212, 0.1) !important;
+}
+
+.prime-fleet__addon-name {
+	color: #fff !important;
+}
+
+.prime-fleet__addon-price,
+.prime-fleet__addon-desc {
+	color: var(--pf-muted) !important;
+}
+
+/* Qty ± — kill theme gold (#C19932) on every state */
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__qty-btn,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__qty-btn:hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__qty-btn:focus,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__qty-btn:active,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__qty-btn:focus-visible {
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+	box-shadow: none !important;
+	text-transform: none !important;
+	border: 0 !important;
+	outline: none !important;
+	color: inherit !important;
+	filter: none !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__qty-btn:hover:not(:disabled),
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__qty-btn:focus:not(:disabled),
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__qty-btn:active:not(:disabled) {
+	background: rgba(94, 234, 212, 0.16) !important;
+	background-color: rgba(94, 234, 212, 0.16) !important;
+	background-image: none !important;
+	color: var(--pf-accent) !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-btn,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-btn:hover,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-btn:focus,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-btn:active {
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+	color: #0b1220 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-btn:hover:not(:disabled),
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-btn:focus:not(:disabled),
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-btn:active:not(:disabled) {
+	background: rgba(15, 118, 110, 0.14) !important;
+	background-color: rgba(15, 118, 110, 0.14) !important;
+	background-image: none !important;
+	color: #0f766e !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-btn:disabled,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-btn:disabled:hover {
+	background: transparent !important;
+	background-color: transparent !important;
+	color: #8a93a3 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__addon {
+	background: #fff !important;
+	border-color: #d8dee8 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__addon.is-active {
+	background: rgba(15, 118, 110, 0.08) !important;
+	border-color: rgba(15, 118, 110, 0.35) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__addon-name {
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__addon-price,
+.prime-fleet[data-theme="light"] .prime-fleet__addon-desc {
+	color: #3f4a5a !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__qty {
+	background: #f4f6f8;
+	border-color: #d5dae3;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__panel--contact .prime-fleet__grid {
+	gap: 16px 18px;
+}
+
+/* Estimate rail — single cool meter, no dual spinners */
+.prime-fleet__rail-estimating {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 2px 0 4px;
+}
+
+.prime-fleet__rail-meter {
+	position: relative;
+	width: 100%;
+	height: 3px;
+	overflow: hidden;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.08);
+}
+
+.prime-fleet__rail-meter > span {
+	position: absolute;
+	inset: 0 auto 0 0;
+	width: 42%;
+	border-radius: inherit;
+	background: linear-gradient(90deg, transparent, var(--pf-accent), transparent);
+	animation: pf-rail-meter 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.prime-fleet__rail-estimating .prime-fleet__rail-status {
+	margin: 0 !important;
+}
+
+.prime-fleet__rail-estimating.is-refresh .prime-fleet__rail-status {
+	font-family: var(--sle-display) !important;
+	font-size: clamp(1.85rem, 3vw, 2.35rem) !important;
+	font-weight: 700 !important;
+	letter-spacing: -0.03em;
+	opacity: 0.72;
+}
+
+@keyframes pf-rail-meter {
+	0% {
+		transform: translateX(-120%);
+	}
+	100% {
+		transform: translateX(280%);
+	}
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__select-trigger,
+.prime-fleet[data-theme="light"] .prime-fleet__field input[type="text"],
+.prime-fleet[data-theme="light"] .prime-fleet__field input[type="email"],
+.prime-fleet[data-theme="light"] .prime-fleet__field input[type="tel"],
+.prime-fleet[data-theme="light"] .prime-fleet__field input[type="number"],
+.prime-fleet[data-theme="light"] .prime-fleet__field input[type="date"],
+.prime-fleet[data-theme="light"] .prime-fleet__field input[type="time"] {
+	background: #fff !important;
+	background-color: #fff !important;
+	border-color: #d5dae3 !important;
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__select-value {
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__select-value.is-placeholder {
+	color: #5b6577 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__select-chevron {
+	border-color: #5b6577;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__select-panel {
+	background: #fff !important;
+	border-color: rgba(15, 118, 110, 0.28) !important;
+	box-shadow: 0 14px 36px rgba(11, 18, 32, 0.14) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__select-search {
+	background: #f6f7f9 !important;
+	border-color: #d5dae3 !important;
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__segment {
+	background: #f1f3f6;
+	border-color: #d5dae3;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__segment-btn.is-active,
+.prime-fleet[data-theme="light"] .prime-fleet__segment-btn.is-active:hover {
+	background: rgba(15, 118, 110, 0.12) !important;
+	background-color: rgba(15, 118, 110, 0.12) !important;
+	color: #0b1220 !important;
+	box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.35) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail-meter {
+	background: rgba(11, 18, 32, 0.08);
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__select-option {
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__select-option:hover {
+	background: rgba(15, 118, 110, 0.08) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__select-option.is-selected {
+	background: rgba(15, 118, 110, 0.12) !important;
+	color: #0f766e !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.prime-fleet__select-menu {
+		animation: none !important;
+	}
+}
+
+/* Last-wins: theme gold must never paint qty ± hover (addons + guests). */
+html body.prime-fleet-has-booking #prime-fleet button.prime-fleet__qty-btn:hover,
+html body.prime-fleet-has-booking #prime-fleet button.prime-fleet__qty-btn:focus,
+html body.prime-fleet-has-booking #prime-fleet button.prime-fleet__qty-btn:active {
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+	box-shadow: none !important;
+	filter: none !important;
+}
+
+html body.prime-fleet-has-booking #prime-fleet button.prime-fleet__qty-btn:hover:not(:disabled),
+html body.prime-fleet-has-booking #prime-fleet button.prime-fleet__qty-btn:focus:not(:disabled),
+html body.prime-fleet-has-booking #prime-fleet button.prime-fleet__qty-btn:active:not(:disabled) {
+	background: rgba(94, 234, 212, 0.16) !important;
+	background-color: rgba(94, 234, 212, 0.16) !important;
+	background-image: none !important;
+	color: var(--pf-accent) !important;
+}
+
+html body.prime-fleet-has-booking #prime-fleet[data-theme="light"] button.prime-fleet__qty-btn:hover:not(:disabled),
+html body.prime-fleet-has-booking #prime-fleet[data-theme="light"] button.prime-fleet__qty-btn:focus:not(:disabled),
+html body.prime-fleet-has-booking #prime-fleet[data-theme="light"] button.prime-fleet__qty-btn:active:not(:disabled) {
+	background: rgba(15, 118, 110, 0.14) !important;
+	background-color: rgba(15, 118, 110, 0.14) !important;
+	background-image: none !important;
+	color: #0f766e !important;
+}

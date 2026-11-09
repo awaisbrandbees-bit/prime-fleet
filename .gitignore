@@ -1,0 +1,30 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+*.code-workspace
+
+# Word temp
+~$*
+
+# Local env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+auth.json
+credentials.json
+
+# Logs / caches
+*.log
+node_modules/
+vendor/
+.phpunit.result.cache
+
+# Local QA screenshots (keep repo lean)
+.qa-*.png
+_tmp_*
+*.zip
