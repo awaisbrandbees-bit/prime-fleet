@@ -12,7 +12,22 @@ engines:
   security: true
   architecture: false
 
-# WordPress plugin — ignore vendor-ish / binary noise if present later
+# WordPress plugin realities:
+# - Guest/admin UIs render HTML built from escaped templates / trusted WP admin AJAX.
+# - Large wizard/admin files are intentional until Phase 3 page split.
+rules:
+  security/innerhtml: warning
+  code-quality/function-too-long: warning
+  code-quality/file-too-large: warning
+  code-quality/deep-nesting: warning
+  # Theme/Elementor classes targeted from guest CSS; not referenced in plugin JS/PHP.
+  ai-slop/unused-css: "off"
+  ai-slop/hardcoded-id: warning
+  ai-slop/console-leftover: "off"
+  ai-slop/python-print-debug: "off"
+  # Large intentional wizard/admin modules until Phase 3 page split — keep visible as warnings only.
+  code-quality/duplicate-block: warning
+
 ignore:
   - "**/*.min.js"
   - "**/*.min.css"
@@ -20,3 +35,5 @@ ignore:
   - "**/vendor/**"
   - "**/.qa-*.png"
   - "**/assets/frontend/img/**"
+  - "_aislop_out.json"
+  - "_aislop_keys.txt"

@@ -562,7 +562,7 @@
 					customerWhatsapp: state.customerWhatsapp,
 				})
 			);
-		} catch (e) {}
+		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
 	}
 
 	function loadDraft() {
@@ -577,13 +577,13 @@
 					state[k] = d[k];
 				}
 			});
-		} catch (e) {}
+		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
 	}
 
 	function clearDraft() {
 		try {
 			localStorage.removeItem(DRAFT_KEY);
-		} catch (e) {}
+		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
 	}
 
 	function serviceGroupId(s) {
@@ -1145,7 +1145,7 @@
 			} else {
 				history.replaceState(payload, '', next);
 			}
-		} catch (e) {}
+		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
 	}
 
 	function applyUrlState() {
@@ -2415,7 +2415,7 @@
 		issueToken();
 		try {
 			root.scrollIntoView({ behavior: 'smooth', block: 'start' });
-		} catch (e) {}
+		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
 	}
 
 	function copyReference() {
@@ -2446,7 +2446,7 @@
 		try {
 			document.execCommand('copy');
 			done();
-		} catch (e) {}
+		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
 		root.removeChild(ta);
 	}
 

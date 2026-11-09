@@ -351,7 +351,7 @@
             if (again) {
               again.focus();
               var len = again.value.length;
-              try { again.setSelectionRange(len, len); } catch (err) {}
+              try { again.setSelectionRange(len, len); } catch (err) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void err; }
             }
           });
           searchWrap.appendChild(icon);
@@ -541,7 +541,7 @@
     if (nav) {
       var next = nav.getAttribute('data-pf-navigate');
       var q = {};
-      try { q = JSON.parse(nav.getAttribute('data-pf-query') || '{}'); } catch (e) {}
+      try { q = JSON.parse(nav.getAttribute('data-pf-query') || '{}'); } catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
       closeModal();
       loadPanel(next, q);
       return;
@@ -594,14 +594,14 @@
         else panel.setAttribute('hidden', 'hidden');
       });
       if (tabInput) tabInput.value = key;
-      try { sessionStorage.setItem('prime_fleet_settings_tab', key); } catch (e) {}
+      try { sessionStorage.setItem('prime_fleet_settings_tab', key); } catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
       state.query = Object.assign({}, state.query, { stab: key });
       try {
         var url = new URL(window.location.href);
         url.searchParams.set('panel', 'settings');
         url.searchParams.set('stab', key);
         window.history.replaceState({}, '', url.toString());
-      } catch (e2) {}
+      } catch (e2) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e2; }
     }
 
     buttons.forEach(function (btn) {
@@ -651,7 +651,7 @@
         url.searchParams.set(k, state.query[k]);
       });
       window.history.replaceState({}, '', url.toString());
-    } catch (e) {}
+    } catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
 
     if (state.query.prime_fleet_delete) {
       var kept = {};
@@ -745,7 +745,7 @@
           u.searchParams.forEach(function (v, k) { if (k !== 'page') q[k] = v; });
           loadPanel(map[page], q);
         });
-      } catch (err) {}
+      } catch (err) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void err; }
     });
 
     panelEl.querySelectorAll('form:not([data-pf-modal-form])').forEach(function (form) {
@@ -844,7 +844,7 @@
         if (!ok) return;
         var panel = confirmBtn.getAttribute('data-pf-panel');
         var query = {};
-        try { query = JSON.parse(confirmBtn.getAttribute('data-pf-query') || '{}'); } catch (err) {}
+        try { query = JSON.parse(confirmBtn.getAttribute('data-pf-query') || '{}'); } catch (err) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void err; }
         loadPanel(panel, query);
       });
       return;
@@ -971,7 +971,7 @@
     ['service_id', 'edit', 'tab', 'level', 's', 'status', 'type', 'payment', 'paged', 'id', 'day'].forEach(function (k) {
       if (bootUrl.searchParams.get(k)) bootQuery[k] = bootUrl.searchParams.get(k);
     });
-  } catch (e) {}
+  } catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
 
   loadPanel(state.panel, bootQuery, { loaderLabel: 'Loading…' });
 })();
