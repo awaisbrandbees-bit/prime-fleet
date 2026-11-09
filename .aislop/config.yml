@@ -1,0 +1,22 @@
+# Prime Fleet — aislop policy (AI anti-slop gate)
+# Docs: https://docs.scanaislop.com/
+# Scope: this repository only (never Sletci / SLE VIP).
+
+failBelow: 70
+
+engines:
+  formatting: true
+  linting: true
+  codeQuality: true
+  aiSlop: true
+  security: true
+  architecture: false
+
+# WordPress plugin — ignore vendor-ish / binary noise if present later
+ignore:
+  - "**/*.min.js"
+  - "**/*.min.css"
+  - "**/node_modules/**"
+  - "**/vendor/**"
+  - "**/.qa-*.png"
+  - "**/assets/frontend/img/**"

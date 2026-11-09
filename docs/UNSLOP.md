@@ -30,54 +30,30 @@ Official site note (as of 2026-11): **Private beta — sign-up is closed.** CLI 
 - **Remote:** https://github.com/awaisbrandbees-bit/prime-fleet.git  
 - **Scope:** this repository only — never install Unslop on Sletci / SLE VIP repos.
 
-## Current blockers
+## Status (2026-11-09)
 
-1. **Unslop App** needs:
-   - GitHub account with admin on `awaisbrandbees-bit/prime-fleet`
-   - Unslop team / beta access ([unslop.codes](https://unslop.codes/en) — signup may be closed)
-   - App install limited to **this** Prime Fleet repo only
+| Piece | Status |
+|-------|--------|
+| GitHub repo + code push | Done — [awaisbrandbees-bit/prime-fleet](https://github.com/awaisbrandbees-bit/prime-fleet) |
+| **Live PR gate (now)** | **aislop** via GitHub Actions — `.github/workflows/aislop.yml` + `.aislop/config.yml` |
+| Official **Unslop** App ([unslop.codes](https://unslop.codes/en)) | Blocked — private beta, sign-up closed. Add when invite arrives. |
 
-## Integration steps (when ready)
+aislop is the same class of tool (catch AI “slop” on PRs). It runs **in this repo only**. Sletci is untouched.
 
-### 1. Repo (done when code is pushed)
+### Optional: aislop GitHub App (extra)
 
-Dedicated repo: [awaisbrandbees-bit/prime-fleet](https://github.com/awaisbrandbees-bit/prime-fleet).
+Browser install (select **only** `prime-fleet`):  
+https://github.com/apps/scan-ai-slop-aislop/installations/new  
 
-### 2. Get Unslop access
+Actions workflow already gates PRs without the App.
 
-1. Open [https://unslop.codes/en](https://unslop.codes/en) when sign-up / invite is available.
-2. Create / join the **team** account.
-3. Connect billing/quota if required.
+## Unslop App (when beta opens)
 
-### 3. Install GitHub App — Prime Fleet only
-
-1. From Unslop dashboard → connect GitHub → install the Unslop / Anti-Slop Gatekeeper App.
-2. Choose account/org → **select only the Prime Fleet repository**.
-3. Confirm permissions (typically: PR read/write for checks + comments, contents read for diffs).
-
-### 4. Branch protection (optional but recommended)
-
-On Prime Fleet `main` (or release branch):
-
-1. Settings → Branches → Branch protection.
-2. Require status checks → enable **Anti-Slop Gatekeeper**.
-3. Do **not** apply this to Sletci repos.
-
-### 5. Team rules (optional)
-
-In Unslop dashboard, add plain-language team rules for Prime Fleet, e.g.:
-
-- Do not invent WordPress APIs; use existing `Prime_Fleet\` patterns.
-- No hardcoded secrets; use `wp-config` / constants for tokens.
-- Prefer CSS variables / `skin.css` tokens; no one-off hex in new UI.
-
-Findings from team rules are labeled as yours on the PR.
-
-### 6. Verify with a test PR
-
-1. Open a small PR on **Prime Fleet** only.
-2. Confirm check **Anti-Slop Gatekeeper** appears.
-3. Confirm **no** Unslop checks on any Sletci PR.
+1. Open [https://unslop.codes/en](https://unslop.codes/en) → team / invite.
+2. Install Unslop GitHub App on **`awaisbrandbees-bit/prime-fleet` only** (never Sletci).
+3. Branch protection → require **Anti-Slop Gatekeeper** (optional).
+4. Optional team rules in Unslop dashboard (WP patterns, no secrets in repo, skin tokens).
+5. Open a test PR → confirm check + comments.
 
 ## Deep review
 
@@ -85,12 +61,16 @@ Unslop “deep review” is **on demand** (check UI / dashboard), slower, quota-
 
 ## Owner checklist
 
-- [ ] Prime Fleet GitHub repo created / remote added  
+- [x] Prime Fleet GitHub repo created / remote added  
+- [x] Code pushed to `main`  
+- [x] aislop Actions workflow + config committed (live gate)  
+- [ ] Optional aislop GitHub App installed on **Prime Fleet only**  
 - [ ] Unslop beta / team access obtained  
-- [ ] GitHub App installed on **Prime Fleet repo only**  
-- [ ] Branch protection requires Anti-Slop Gatekeeper (optional)  
-- [ ] Confirmed Sletci repos have **zero** Unslop installation  
-- [ ] First test PR reviewed successfully  
+- [ ] Unslop GitHub App installed on **Prime Fleet repo only**  
+- [ ] Branch protection requires quality gate (optional)  
+- [ ] Confirmed Sletci repos have **zero** anti-slop App install  
+- [ ] First test PR shows aislop (and later Unslop) check  
+
 
 ## Related
 

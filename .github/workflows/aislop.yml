@@ -1,0 +1,33 @@
+# Anti-slop quality gate — Prime Fleet only (this repo).
+# Live now via aislop. Official Unslop App (unslop.codes) when beta access is available.
+name: aislop
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    name: Anti-slop quality gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      # PR: score only changed files vs main. Push to main: full scan.
+      - name: Run aislop ci
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            npx --yes aislop@latest ci --changes --base origin/${{ github.base_ref }}
+          else
+            npx --yes aislop@latest ci
+          fi
