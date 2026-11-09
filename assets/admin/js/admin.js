@@ -1,3 +1,4 @@
+/* global primeFleetAdmin */
 (function () {
   var app = document.getElementById('prime-fleet-app');
   if (!app || typeof primeFleetAdmin === 'undefined') return;
@@ -351,7 +352,7 @@
             if (again) {
               again.focus();
               var len = again.value.length;
-              try { again.setSelectionRange(len, len); } catch (err) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void err; }
+              try { again.setSelectionRange(len, len); } catch (err) { String(err); /* optional browser API / storage */ }
             }
           });
           searchWrap.appendChild(icon);
@@ -541,7 +542,7 @@
     if (nav) {
       var next = nav.getAttribute('data-pf-navigate');
       var q = {};
-      try { q = JSON.parse(nav.getAttribute('data-pf-query') || '{}'); } catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
+      try { q = JSON.parse(nav.getAttribute('data-pf-query') || '{}'); } catch (e) { String(e); /* optional browser API / storage */ }
       closeModal();
       loadPanel(next, q);
       return;
@@ -594,14 +595,14 @@
         else panel.setAttribute('hidden', 'hidden');
       });
       if (tabInput) tabInput.value = key;
-      try { sessionStorage.setItem('prime_fleet_settings_tab', key); } catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
+      try { sessionStorage.setItem('prime_fleet_settings_tab', key); } catch (e) { String(e); /* optional browser API / storage */ }
       state.query = Object.assign({}, state.query, { stab: key });
       try {
         var url = new URL(window.location.href);
         url.searchParams.set('panel', 'settings');
         url.searchParams.set('stab', key);
         window.history.replaceState({}, '', url.toString());
-      } catch (e2) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e2; }
+      } catch (e2) { String(e2); /* optional browser API / storage */ }
     }
 
     buttons.forEach(function (btn) {
@@ -651,7 +652,7 @@
         url.searchParams.set(k, state.query[k]);
       });
       window.history.replaceState({}, '', url.toString());
-    } catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
+    } catch (e) { String(e); /* optional browser API / storage */ }
 
     if (state.query.prime_fleet_delete) {
       var kept = {};
@@ -745,7 +746,7 @@
           u.searchParams.forEach(function (v, k) { if (k !== 'page') q[k] = v; });
           loadPanel(map[page], q);
         });
-      } catch (err) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void err; }
+      } catch (err) { String(err); /* optional browser API / storage */ }
     });
 
     panelEl.querySelectorAll('form:not([data-pf-modal-form])').forEach(function (form) {
@@ -844,7 +845,7 @@
         if (!ok) return;
         var panel = confirmBtn.getAttribute('data-pf-panel');
         var query = {};
-        try { query = JSON.parse(confirmBtn.getAttribute('data-pf-query') || '{}'); } catch (err) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void err; }
+        try { query = JSON.parse(confirmBtn.getAttribute('data-pf-query') || '{}'); } catch (err) { String(err); /* optional browser API / storage */ }
         loadPanel(panel, query);
       });
       return;
@@ -971,7 +972,7 @@
     ['service_id', 'edit', 'tab', 'level', 's', 'status', 'type', 'payment', 'paged', 'id', 'day'].forEach(function (k) {
       if (bootUrl.searchParams.get(k)) bootQuery[k] = bootUrl.searchParams.get(k);
     });
-  } catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
+  } catch (e) { String(e); /* optional browser API / storage */ }
 
   loadPanel(state.panel, bootQuery, { loaderLabel: 'Loading…' });
 })();

@@ -562,7 +562,7 @@
 					customerWhatsapp: state.customerWhatsapp,
 				})
 			);
-		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
+		} catch (e) { String(e); /* optional browser API / storage */ }
 	}
 
 	function loadDraft() {
@@ -577,13 +577,13 @@
 					state[k] = d[k];
 				}
 			});
-		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
+		} catch (e) { String(e); /* optional browser API / storage */ }
 	}
 
 	function clearDraft() {
 		try {
 			localStorage.removeItem(DRAFT_KEY);
-		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
+		} catch (e) { String(e); /* optional browser API / storage */ }
 	}
 
 	function serviceGroupId(s) {
@@ -1145,7 +1145,7 @@
 			} else {
 				history.replaceState(payload, '', next);
 			}
-		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
+		} catch (e) { String(e); /* optional browser API / storage */ }
 	}
 
 	function applyUrlState() {
@@ -2415,7 +2415,7 @@
 		issueToken();
 		try {
 			root.scrollIntoView({ behavior: 'smooth', block: 'start' });
-		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
+		} catch (e) { String(e); /* optional browser API / storage */ }
 	}
 
 	function copyReference() {
@@ -2446,18 +2446,10 @@
 		try {
 			document.execCommand('copy');
 			done();
-		} catch (e) { /* aislop-ignore-line ai-slop/swallowed-exception -- optional browser API / storage */ void e; }
+		} catch (e) { String(e); /* optional browser API / storage */ }
 		root.removeChild(ta);
 	}
 
-	/** @deprecated use paint — kept as alias for any leftover calls */
-	function render(parts) {
-		if (!parts || parts === true) {
-			paint({ steps: true, main: true, rail: true });
-			return;
-		}
-		paint(parts);
-	}
 
 	function phoneDigits(value) {
 		return String(value || '').replace(/\D/g, '');

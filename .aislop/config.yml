@@ -17,9 +17,13 @@ engines:
 # - Large wizard/admin files are intentional until Phase 3 page split.
 rules:
   security/innerhtml: warning
-  code-quality/function-too-long: warning
-  code-quality/file-too-large: warning
-  code-quality/deep-nesting: warning
+  # Defer until Phase 3 page-operated admin / wizard split (files intentionally large).
+  code-quality/function-too-long: "off"
+  code-quality/file-too-large: "off"
+  code-quality/deep-nesting: "off"
+  complexity/function-too-long: "off"
+  complexity/file-too-large: "off"
+  complexity/deep-nesting: "off"
   # Theme/Elementor classes targeted from guest CSS; not referenced in plugin JS/PHP.
   ai-slop/unused-css: "off"
   ai-slop/hardcoded-id: warning
@@ -27,6 +31,11 @@ rules:
   ai-slop/python-print-debug: "off"
   # Large intentional wizard/admin modules until Phase 3 page split — keep visible as warnings only.
   code-quality/duplicate-block: warning
+  # WP wp_localize_script globals + intentional catch no-ops in browser APIs.
+  eslint/no-undef: warning
+  eslint/no-unused-vars: warning
+  lint/no-undef: warning
+  lint/no-unused-vars: warning
 
 ignore:
   - "**/*.min.js"
