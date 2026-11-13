@@ -49,13 +49,11 @@ final class Shortcodes {
 		$fg    = 'light' === $theme ? '#0b1220' : '#f8fafc';
 		$mark  = 'light' === $theme ? '#ffffff' : '#042f2e';
 		echo '<style id="prime-fleet-early">'
-			. '.prime-fleet{box-sizing:border-box;background:' . $bg . '!important;color:' . $fg . '!important;min-height:50vh;width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding:36px max(16px,calc((100vw - 1140px)/2)) 72px;}'
-			. '.prime-fleet__brand-mark{display:inline-grid;place-items:center;width:1.65rem;height:1.65rem;border-radius:8px;background:#2dd4bf!important;color:' . $mark . '!important;font-size:.58rem;font-weight:700;letter-spacing:.06em;}'
-			. '.prime-fleet__boot--simple{display:flex;align-items:center;justify-content:center;min-height:50vh;}'
-			. '.prime-fleet__loader{position:relative;width:64px;height:64px;}'
-			. '.prime-fleet__loader:before,.prime-fleet__loader:after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid transparent;}'
-			. '.prime-fleet__loader:before{border-top-color:#2dd4bf;animation:prime-fleet-spin .9s linear infinite;}'
-			. '.prime-fleet__loader:after{inset:10px;border-bottom-color:rgba(45,212,191,.45);animation:prime-fleet-spin 1.2s linear infinite reverse;}'
+			. '.prime-fleet{box-sizing:border-box;background:' . $bg . '!important;color:' . $fg . '!important;min-height:50vh;width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding:28px max(16px,calc((100vw - 1080px)/2)) 56px;}'
+			. '.prime-fleet__brand-mark{display:inline-grid;place-items:center;width:1.65rem;height:1.65rem;border-radius:4px;background:#2dd4bf!important;color:' . $mark . '!important;font-size:.58rem;font-weight:600;}'
+			. '.prime-fleet__boot--simple{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:50vh;}'
+			. '.prime-fleet__spinner--boot{width:1.35rem;height:1.35rem;border:2px solid rgba(148,163,184,.35);border-top-color:#2dd4bf;border-radius:50%;animation:prime-fleet-spin .7s linear infinite;}'
+			. '.prime-fleet__boot-text{margin:0;font-size:.9rem;color:' . ( 'light' === $theme ? '#4b5565' : '#94a3b8' ) . ';}'
 			. '@keyframes prime-fleet-spin{to{transform:rotate(360deg)}}'
 			. '</style>' . "\n";
 	}
@@ -178,6 +176,8 @@ final class Shortcodes {
 		wp_enqueue_style( 'prime-fleet-skin' );
 		wp_enqueue_style( 'prime-fleet-motion' );
 		wp_enqueue_script( 'prime-fleet' );
+		$captcha = \Prime_Fleet\Security\Captcha::public_config();
+
 		wp_localize_script(
 			'prime-fleet',
 			'primeFleetBooking',
@@ -186,84 +186,8 @@ final class Shortcodes {
 				array(
 					'currency'  => 'USD',
 					'formTheme' => $this->form_theme(),
-					'i18n'      => array(
-						'loading'    => __( 'Loading booking options…', 'prime-fleet' ),
-						'error'      => __( 'Could not load booking configuration.', 'prime-fleet' ),
-						'continue'   => __( 'Continue', 'prime-fleet' ),
-						'back'       => __( 'Back', 'prime-fleet' ),
-						'quoteFail'  => __( 'Could not calculate fare.', 'prime-fleet' ),
-						'selectSvc'  => __( 'Filter by type, then pick one option to continue.', 'prime-fleet' ),
-						'submit'     => __( 'Submit request', 'prime-fleet' ),
-						'submitFail' => __( 'Could not submit booking.', 'prime-fleet' ),
-						'pending'    => __( 'Your transfer request is Pending Confirmation.', 'prime-fleet' ),
-						'fare'       => __( 'Estimated fare', 'prime-fleet' ),
-						'fareHint'   => __( 'Estimate only — final amount confirmed after review.', 'prime-fleet' ),
-						'quoteLabel' => __( 'Your quote', 'prime-fleet' ),
-						'quoteHint'  => __( 'Your estimate updates as you build the trip.', 'prime-fleet' ),
-						'fareEmpty'  => __( 'No service selected', 'prime-fleet' ),
-						'fareEmptyDetail' => __( 'Choose a service to begin your quote.', 'prime-fleet' ),
-						'fareBuildDetail' => __( 'Add pickup and drop-off to unlock an estimate.', 'prime-fleet' ),
-						'farePending' => __( 'Estimate pending', 'prime-fleet' ),
-						'farePendingDetail' => __( 'Finish schedule details and your estimate will appear here.', 'prime-fleet' ),
-						'fareCalcShort' => __( 'Estimating', 'prime-fleet' ),
-						'fareCalcDetail' => __( 'Checking rates for this route.', 'prime-fleet' ),
-						'fareUpdating' => __( 'Updating estimate…', 'prime-fleet' ),
-						'searchZones' => __( 'Search zones…', 'prime-fleet' ),
-						'noMatches'  => __( 'No matches', 'prime-fleet' ),
-						'oneWay'     => __( 'One way', 'prime-fleet' ),
-						'roundTrip'  => __( 'Round trip', 'prime-fleet' ),
-						'quoteFailDetail' => __( 'Try adjusting trip details, or continue for a custom quote.', 'prime-fleet' ),
-						'customQuoteDetail' => __( 'We’ll review this trip and send a written quotation.', 'prime-fleet' ),
-						'customQuoteNote' => __( 'No published rate for this route yet.', 'prime-fleet' ),
-						'terms'      => __( 'I agree to the booking terms and understand this request is Pending Confirmation.', 'prime-fleet' ),
-						'title'      => __( 'Book a drive', 'prime-fleet' ),
-						'subtitle'   => __( 'Pick a service, confirm details, and we’ll take it from there.', 'prime-fleet' ),
-						'kicker'     => __( 'Private fleet booking', 'prime-fleet' ),
-						'thanks'     => __( 'Request received', 'prime-fleet' ),
-						'pendingShort'=> __( 'Pending confirmation', 'prime-fleet' ),
-						'yourRef'    => __( 'Your reference', 'prime-fleet' ),
-						'bookAnother'=> __( 'Book another transfer', 'prime-fleet' ),
-						'copyRef'    => __( 'Copy reference', 'prime-fleet' ),
-						'copied'     => __( 'Reference copied.', 'prime-fleet' ),
-						'lookupHint' => __( 'Use your reference and booking email anytime with Check booking status.', 'prime-fleet' ),
-						'whatNeed'   => __( 'Choose a service', 'prime-fleet' ),
-						'coupon'     => __( 'Coupon code', 'prime-fleet' ),
-						'apply'      => __( 'Apply', 'prime-fleet' ),
-						'removeCoupon'=> __( 'Remove', 'prime-fleet' ),
-						'couponApplying'=> __( 'Applying coupon…', 'prime-fleet' ),
-						'couponApplied'=> __( 'Coupon applied.', 'prime-fleet' ),
-						'availFull'  => __( 'This time looks full. Try an alternative:', 'prime-fleet' ),
-						'availOk'    => __( 'Vehicle window available.', 'prime-fleet' ),
-						'fareCalc'   => __( 'Calculating estimate…', 'prime-fleet' ),
-						'customQuote'=> __( 'Custom quote', 'prime-fleet' ),
-						'fareBuild'  => __( 'Trip details needed', 'prime-fleet' ),
-						'pickService'=> __( 'Please choose a service first.', 'prime-fleet' ),
-						'completeStep'=> __( 'Complete this step before continuing.', 'prime-fleet' ),
-						'pickZones'  => __( 'Select pickup and destination zones first.', 'prime-fleet' ),
-						'sameZones'  => __( 'Pickup and destination must be different.', 'prime-fleet' ),
-						'submitting' => __( 'Submitting…', 'prime-fleet' ),
-						'pickSchedule'=> __( 'Choose a pickup date and time first.', 'prime-fleet' ),
-						'pickupPast'  => __( 'Pickup date cannot be in the past.', 'prime-fleet' ),
-						'pickupAdvance'=> __( 'Pickup must be at least %s hours from now.', 'prime-fleet' ),
-						'pickupSameDay'=> __( 'Same-day bookings are not available. Please choose a later date.', 'prime-fleet' ),
-						'earliestToday'=> __( 'Earliest available today: %s', 'prime-fleet' ),
-						'scheduleLead'=> __( 'Same-day pickups need at least %s hours notice.', 'prime-fleet' ),
-						'pickTime'    => __( 'Select time', 'prime-fleet' ),
-						'selectDate'  => __( 'Select date', 'prime-fleet' ),
-						'pickupDate'  => __( 'Pickup date', 'prime-fleet' ),
-						'noTimesToday'=> __( 'No times left today — please choose another date.', 'prime-fleet' ),
-						'pickVehicle' => __( 'Please choose a vehicle to continue.', 'prime-fleet' ),
-						'pickVehicleHint'=> __( 'Choose a vehicle that fits your party (Escalade or Sprinter).', 'prime-fleet' ),
-						'upToPax'     => __( 'Up to %s passengers', 'prime-fleet' ),
-						'paxHintSprinter'=> __( 'Up to 13 guests (Mercedes-Benz Sprinter). Larger parties use Custom Transportation Request.', 'prime-fleet' ),
-						'pickContact'=> __( 'Enter your name, email, and phone first.', 'prime-fleet' ),
-						'pickPhone'  => __( 'Enter a valid phone number (at least 7 digits).', 'prime-fleet' ),
-						'pickTerms'  => __( 'Please accept the booking terms to continue.', 'prime-fleet' ),
-						'routeFlat'  => __( 'Zone-to-zone rate (not per guest).', 'prime-fleet' ),
-						'needsLarger'=> __( 'Party size needs', 'prime-fleet' ),
-						'partyFilter'=> __( 'Some vehicles are too small for this party — options update on the Vehicle step.', 'prime-fleet' ),
-						'partyReview'=> __( 'Party size exceeds listed vehicles — staff will confirm the right fleet.', 'prime-fleet' ),
-					),
+					'captcha'   => $captcha,
+					'i18n'      => \Prime_Fleet\I18n\Script_Strings::booking(),
 				)
 			)
 		);
@@ -272,9 +196,11 @@ final class Shortcodes {
 		$bg    = 'light' === $theme ? '#ffffff' : '#0b1220';
 		$fg    = 'light' === $theme ? '#0b1220' : '#f8fafc';
 
-		return '<div class="prime-fleet" id="prime-fleet" data-pf-booking="1" data-theme="' . esc_attr( $theme ) . '" aria-live="polite" style="background:' . esc_attr( $bg ) . ';color:' . esc_attr( $fg ) . ';min-height:50vh">'
-			. '<div class="prime-fleet__boot prime-fleet__boot--simple" role="status" aria-label="' . esc_attr__( 'Loading', 'prime-fleet' ) . '">'
-			. '<span class="prime-fleet__loader" aria-hidden="true"><span class="prime-fleet__loader-core"></span></span>'
+		$dir = is_rtl() ? 'rtl' : 'ltr';
+		return '<div class="prime-fleet" id="prime-fleet" data-pf-booking="1" data-theme="' . esc_attr( $theme ) . '" dir="' . esc_attr( $dir ) . '" aria-live="polite" style="background:' . esc_attr( $bg ) . ';color:' . esc_attr( $fg ) . ';min-height:50vh">'
+			. '<div class="prime-fleet__boot prime-fleet__boot--simple" role="status" aria-live="polite">'
+			. '<span class="prime-fleet__spinner prime-fleet__spinner--boot" aria-hidden="true"></span>'
+			. '<p class="prime-fleet__boot-text">' . esc_html__( 'Loading booking options…', 'prime-fleet' ) . '</p>'
 			. '</div></div>';
 	}
 
@@ -296,18 +222,13 @@ final class Shortcodes {
 			array_merge(
 				$this->rest_boot(),
 				array(
-					'i18n' => array(
-						'title'   => __( 'Check booking status', 'prime-fleet' ),
-						'ref'     => __( 'Booking reference', 'prime-fleet' ),
-						'email'   => __( 'Email used at booking', 'prime-fleet' ),
-						'submit'  => __( 'Look up', 'prime-fleet' ),
-						'fail'    => __( 'We could not find a booking with those details.', 'prime-fleet' ),
-					),
+					'i18n' => \Prime_Fleet\I18n\Script_Strings::lookup(),
 				)
 			)
 		);
 
-		return '<div class="prime-fleet prime-fleet-lookup" id="prime-fleet-lookup" data-pf-lookup="1">'
+		$dir = is_rtl() ? 'rtl' : 'ltr';
+		return '<div class="prime-fleet prime-fleet-lookup" id="prime-fleet-lookup" data-pf-lookup="1" dir="' . esc_attr( $dir ) . '">'
 			. '<p class="prime-fleet__boot">' . esc_html__( 'Loading…', 'prime-fleet' ) . '</p>'
 			. '</div>';
 	}

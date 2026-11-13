@@ -8,6 +8,7 @@
 namespace Prime_Fleet\Services;
 
 use Prime_Fleet\Database\Schema;
+use Prime_Fleet\I18n\Catalog;
 use Prime_Fleet\Payments\Stripe_Gateway;
 use Prime_Fleet\Plugin;
 
@@ -15,13 +16,29 @@ defined( 'ABSPATH' ) || exit;
 
 final class Config_Compiler {
 
-	const TRANSIENT = 'prime_fleet_compiled_config_v4';
+	const TRANSIENT      = 'prime_fleet_compiled_config_v5';
+	const VERSION_OPTION = 'prime_fleet_config_cache_ver';
 
 	/**
-	 * Invalidate cache after admin saves.
+	 * Cache key includes version so invalidate drops every locale at once.
+	 *
+	 * @return string
+	 */
+	private static function cache_key() {
+		$ver = (int) get_option( self::VERSION_OPTION, 1 );
+		return self::TRANSIENT . '_v' . max( 1, $ver ) . '_' . md5( Catalog::locale() );
+	}
+
+	/**
+	 * Invalidate cache after admin saves (all locales).
 	 */
 	public static function invalidate() {
+		$old_key = self::cache_key();
+		$ver     = (int) get_option( self::VERSION_OPTION, 1 );
+		update_option( self::VERSION_OPTION, $ver + 1, false );
+		delete_transient( $old_key );
 		delete_transient( self::TRANSIENT );
+		delete_transient( 'prime_fleet_compiled_config_v4' );
 		delete_transient( 'prime_fleet_compiled_config_v3' );
 		delete_transient( 'prime_fleet_compiled_config_v2' );
 		delete_transient( 'prime_fleet_compiled_config_v1' );
@@ -31,10 +48,11 @@ final class Config_Compiler {
 	 * @return array
 	 */
 	public static function get() {
-		$cached = get_transient( self::TRANSIENT );
+		$key    = self::cache_key();
+		$cached = get_transient( $key );
 		if ( ! is_array( $cached ) ) {
 			$cached = self::compile();
-			set_transient( self::TRANSIENT, $cached, HOUR_IN_SECONDS );
+			set_transient( $key, $cached, HOUR_IN_SECONDS );
 		}
 
 		// Live pickup window (not cached — depends on wall clock).
@@ -137,9 +155,9 @@ final class Config_Compiler {
 
 			$service_payload[] = array(
 				'id'           => $sid,
-				'name'         => $service['name'],
+				'name'         => Catalog::text( 'service', $sid, 'name', (string) $service['name'] ),
 				'slug'         => $service['slug'],
-				'description'  => (string) $service['short_description'],
+				'description'  => Catalog::text( 'service', $sid, 'description', (string) $service['short_description'] ),
 				'booking_type' => $service['booking_type'],
 				'settings'     => array(
 					'allow_one_way'                => (int) $service['allow_one_way'],
@@ -187,9 +205,11 @@ final class Config_Compiler {
 			'services'     => $service_payload,
 			'zones'        => array_map(
 				static function ( $z ) {
+					$zid  = (int) $z['id'];
+					$base = $z['customer_label'] ? $z['customer_label'] : $z['name'];
 					return array(
-						'id'    => (int) $z['id'],
-						'name'  => $z['customer_label'] ? $z['customer_label'] : $z['name'],
+						'id'    => $zid,
+						'name'  => Catalog::text( 'zone', $zid, 'name', (string) $base ),
 						'order' => (int) $z['display_order'],
 					);
 				},
@@ -198,9 +218,11 @@ final class Config_Compiler {
 			'addons'       => array_map( array( __CLASS__, 'public_addon' ), (array) $addons ),
 			'vehicles'     => array_map(
 				static function ( $v ) {
+					$vid  = (int) $v['id'];
+					$base = $v['customer_display_name'] ? $v['customer_display_name'] : $v['name'];
 					return array(
-						'id'                 => (int) $v['id'],
-						'name'               => $v['customer_display_name'] ? $v['customer_display_name'] : $v['name'],
+						'id'                 => $vid,
+						'name'               => Catalog::text( 'vehicle', $vid, 'name', (string) $base ),
 						'passenger_capacity' => (int) $v['passenger_capacity'],
 						'checked_bags'       => null === $v['checked_bag_capacity'] ? null : (int) $v['checked_bag_capacity'],
 						'carry_on_bags'      => null === $v['carry_on_bag_capacity'] ? null : (int) $v['carry_on_bag_capacity'],
@@ -211,10 +233,11 @@ final class Config_Compiler {
 			),
 			'packages'     => array_map( array( __CLASS__, 'public_package' ), (array) $packages ),
 			'copy'         => array(
-				'pending_message'      => isset( $settings['pending_message'] ) ? $settings['pending_message'] : __( 'Your transfer request is Pending Confirmation.', 'prime-fleet' ),
-				'submit_label'         => isset( $settings['submit_label'] ) ? $settings['submit_label'] : __( 'Submit request', 'prime-fleet' ),
-				'custom_quote_message' => isset( $settings['custom_quote_message'] ) ? $settings['custom_quote_message'] : __( 'This request requires a custom quotation. Prime Fleet will review the details and contact you shortly.', 'prime-fleet' ),
+				'pending_message'      => Catalog::text( 'copy', 0, 'pending_message', isset( $settings['pending_message'] ) ? (string) $settings['pending_message'] : __( 'Your transfer request is Pending Confirmation.', 'prime-fleet' ) ),
+				'submit_label'         => Catalog::text( 'copy', 0, 'submit_label', isset( $settings['submit_label'] ) ? (string) $settings['submit_label'] : __( 'Submit request', 'prime-fleet' ) ),
+				'custom_quote_message' => Catalog::text( 'copy', 0, 'custom_quote_message', isset( $settings['custom_quote_message'] ) ? (string) $settings['custom_quote_message'] : __( 'This request requires a custom quotation. Prime Fleet will review the details and contact you shortly.', 'prime-fleet' ) ),
 			),
+			'locale'       => Catalog::locale(),
 		);
 	}
 
@@ -251,10 +274,11 @@ final class Config_Compiler {
 	 */
 	private static function public_addon( array $a ) {
 		$ids = json_decode( (string) ( $a['applicable_services_json'] ?? '' ), true );
+		$aid = (int) $a['id'];
 		return array(
-			'id'             => (int) $a['id'],
-			'name'           => $a['name'],
-			'description'    => (string) $a['customer_description'],
+			'id'             => $aid,
+			'name'           => Catalog::text( 'addon', $aid, 'name', (string) $a['name'] ),
+			'description'    => Catalog::text( 'addon', $aid, 'description', (string) $a['customer_description'] ),
 			'pricing_type'   => $a['pricing_type'],
 			'price'          => (float) $a['price'],
 			'unit_label'     => (string) $a['unit_label'],
@@ -272,10 +296,11 @@ final class Config_Compiler {
 	 */
 	private static function public_package( array $p ) {
 		$ids = json_decode( (string) ( $p['applicable_services_json'] ?? '' ), true );
+		$pid = (int) $p['id'];
 		return array(
-			'id'            => (int) $p['id'],
-			'name'          => $p['name'],
-			'description'   => (string) $p['customer_description'],
+			'id'            => $pid,
+			'name'          => Catalog::text( 'package', $pid, 'name', (string) $p['name'] ),
+			'description'   => Catalog::text( 'package', $pid, 'description', (string) $p['customer_description'] ),
 			'min_duration'  => (string) $p['minimum_duration'],
 			'max_duration'  => (string) $p['maximum_duration'],
 			'fixed_price'   => (float) $p['fixed_price'],

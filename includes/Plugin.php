@@ -53,7 +53,12 @@ final class Plugin {
 	 * Boot hooks.
 	 */
 	public function boot() {
-		load_plugin_textdomain( 'prime-fleet', false, dirname( PRIME_FLEET_BASENAME ) . '/languages' );
+		/*
+		 * WordPress.org / GlotPress: load on init (not plugins_loaded) so language
+		 * packs and /languages/*.mo apply after locale is ready. Domain Path in
+		 * the plugin header remains /languages for translate.wordpress.org.
+		 */
+		add_action( 'init', array( $this, 'load_textdomain' ), 0 );
 
 		$this->init_payments();
 
@@ -72,9 +77,20 @@ final class Plugin {
 			( new Ajax() )->hooks();
 			( new Notices_Guard() )->hooks();
 			\Prime_Fleet\Admin\Pages\Bookings::hooks();
+			\Prime_Fleet\Admin\Pages\Reports::hooks();
+			\Prime_Fleet\Security\Self_Test::hooks();
 		}
 
 		add_action( 'init', array( $this, 'maybe_upgrade' ) );
+		add_action( 'update_option_prime_fleet_catalog_i18n', array( '\\Prime_Fleet\\Services\\Config_Compiler', 'invalidate' ) );
+		add_action( 'add_option_prime_fleet_catalog_i18n', array( '\\Prime_Fleet\\Services\\Config_Compiler', 'invalidate' ) );
+	}
+
+	/**
+	 * Load plugin text domain (local .mo + WP.org language packs).
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain( 'prime-fleet', false, dirname( PRIME_FLEET_BASENAME ) . '/languages' );
 	}
 
 	/**

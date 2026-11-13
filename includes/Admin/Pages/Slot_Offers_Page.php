@@ -36,7 +36,7 @@ final class Slot_Offers_Page {
 		);
 
 		ob_start();
-		echo '<div class="prime-fleet-card">';
+		echo '<div class="prime-fleet-card prime-fleet-card--list">';
 		echo Table_List::toolbar(
 			'slot_offers',
 			$list['args'],

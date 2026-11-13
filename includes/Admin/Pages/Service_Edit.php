@@ -42,26 +42,37 @@ final class Service_Edit {
 
 		if ( ! $service ) {
 			self::render_create_form();
-			View::shell( __( 'Add Service', 'prime-fleet' ), ob_get_clean(), array( View::button_link( __( 'Back', 'prime-fleet' ), admin_url( 'admin.php?page=prime-fleet-services' ), 'ghost' ) ) );
+			View::shell( __( 'Add Service', 'prime-fleet' ), ob_get_clean(), array( View::panel_button( __( 'Back', 'prime-fleet' ), 'services', 'ghost' ) ) );
 			return;
 		}
 
-		$base = admin_url( 'admin.php?page=prime-fleet-service-edit&service_id=' . (int) $service['id'] );
-		$tabs = array(
-			'general'  => __( 'General', 'prime-fleet' ),
-			'trip'     => __( 'Trip settings', 'prime-fleet' ),
-			'fields'   => __( 'Booking form', 'prime-fleet' ),
-			'addons'   => __( 'Add-ons', 'prime-fleet' ),
-			'vehicle'  => __( 'Vehicle behavior', 'prime-fleet' ),
+		$pages = array(
+			'general' => __( 'General', 'prime-fleet' ),
+			'trip'    => __( 'Trip settings', 'prime-fleet' ),
+			'fields'  => __( 'Booking form', 'prime-fleet' ),
+			'addons'  => __( 'Add-ons', 'prime-fleet' ),
+			'vehicle' => __( 'Vehicle behavior', 'prime-fleet' ),
 		);
-
-		echo '<div class="prime-fleet-tabs">';
-		foreach ( $tabs as $key => $label ) {
-			$class = $tab === $key ? 'is-active' : '';
-			echo '<a class="' . esc_attr( $class ) . '" href="' . esc_url( $base . '&tab=' . $key ) . '">' . esc_html( $label ) . '</a>';
+		if ( ! isset( $pages[ $tab ] ) ) {
+			$tab = 'general';
 		}
-		echo '</div>';
 
+		echo '<div class="prime-fleet-subpages">';
+		echo '<nav class="prime-fleet-subpages__nav prime-fleet-settings-nav" aria-label="' . esc_attr__( 'Service pages', 'prime-fleet' ) . '">';
+		echo '<p class="prime-fleet-settings-nav__label">' . esc_html__( 'Service', 'prime-fleet' ) . '</p>';
+		echo '<ul class="prime-fleet-settings-nav__list">';
+		foreach ( $pages as $key => $label ) {
+			printf(
+				'<li><button type="button" class="prime-fleet-settings-nav__link%s" data-pf-panel="service_edit" data-pf-query="%s" aria-current="%s">%s</button></li>',
+				$key === $tab ? ' is-active' : '',
+				esc_attr( wp_json_encode( array( 'service_id' => (int) $service['id'], 'tab' => $key ) ) ),
+				$key === $tab ? 'page' : 'false',
+				esc_html( $label )
+			);
+		}
+		echo '</ul></nav>';
+
+		echo '<div class="prime-fleet-settings-main">';
 		echo '<form method="post" action="">';
 		wp_nonce_field( 'prime_fleet_save_service_' . (int) $service['id'] );
 		echo '<input type="hidden" name="prime_fleet_action" value="save_service" />';
@@ -81,18 +92,24 @@ final class Service_Edit {
 		}
 
 		echo '<div class="prime-fleet-sticky-save"><button type="submit" class="prime-fleet-btn">' . esc_html__( 'Save changes', 'prime-fleet' ) . '</button>';
-		echo '<a class="prime-fleet-btn prime-fleet-btn--ghost" href="' . esc_url( admin_url( 'admin.php?page=prime-fleet-services' ) ) . '">' . esc_html__( 'Back to list', 'prime-fleet' ) . '</a></div>';
-		echo '</form>';
+		echo View::panel_button( __( 'Back to list', 'prime-fleet' ), 'services', 'ghost' );
+		echo '</div></form>';
 
 		if ( 'fields' === $tab ) {
 			self::field_edit_template( $service );
 		}
+		echo '</div></div>';
 
 		View::shell(
-			$service['name'],
+			sprintf(
+				/* translators: 1: service name, 2: section label */
+				__( '%1$s · %2$s', 'prime-fleet' ),
+				$service['name'],
+				$pages[ $tab ]
+			),
 			ob_get_clean(),
 			array(
-				View::button_link( __( 'All services', 'prime-fleet' ), admin_url( 'admin.php?page=prime-fleet-services' ), 'ghost' ),
+				View::panel_button( __( 'All services', 'prime-fleet' ), 'services', 'ghost' ),
 			)
 		);
 	}
@@ -113,7 +130,10 @@ final class Service_Edit {
 	 * @param array $service Service row.
 	 */
 	private static function tab_general( $service ) {
-		echo '<div class="prime-fleet-card"><div class="prime-fleet-form-grid">';
+		echo '<div class="prime-fleet-card prime-fleet-section">';
+		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'General', 'prime-fleet' ) . '</h3>';
+		echo '<p>' . esc_html__( 'Name, slug, and visibility for this service.', 'prime-fleet' ) . '</p></header>';
+		echo '<div class="prime-fleet-form-grid">';
 		self::text( 'name', __( 'Service name', 'prime-fleet' ), $service['name'] );
 		self::text( 'internal_name', __( 'Internal name', 'prime-fleet' ), $service['internal_name'] );
 		self::text( 'slug', __( 'Slug', 'prime-fleet' ), $service['slug'] );
@@ -129,7 +149,10 @@ final class Service_Edit {
 	 * @param array $service Service row.
 	 */
 	private static function tab_trip( $service ) {
-		echo '<div class="prime-fleet-card"><div class="prime-fleet-form-grid">';
+		echo '<div class="prime-fleet-card prime-fleet-section">';
+		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Trip settings', 'prime-fleet' ) . '</h3>';
+		echo '<p>' . esc_html__( 'Booking type and what guests must complete on the trip step.', 'prime-fleet' ) . '</p></header>';
+		echo '<div class="prime-fleet-form-grid">';
 		echo '<div class="prime-fleet-field"><label>' . esc_html__( 'Booking type', 'prime-fleet' ) . '</label><select name="booking_type">';
 		foreach ( array( 'route', 'hourly', 'package', 'quote' ) as $type ) {
 			printf( '<option value="%1$s" %2$s>%1$s</option>', esc_attr( $type ), selected( $service['booking_type'], $type, false ) );
@@ -151,7 +174,10 @@ final class Service_Edit {
 	 * @param array $service Service row.
 	 */
 	private static function tab_vehicle( $service ) {
-		echo '<div class="prime-fleet-card"><div class="prime-fleet-checks">';
+		echo '<div class="prime-fleet-card prime-fleet-section">';
+		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Vehicle behavior', 'prime-fleet' ) . '</h3>';
+		echo '<p>' . esc_html__( 'How vehicles are matched and offered on this service.', 'prime-fleet' ) . '</p></header>';
+		echo '<div class="prime-fleet-checks">';
 		self::checkbox( 'require_vehicle_matching', __( 'Enable vehicle matching', 'prime-fleet' ), $service['require_vehicle_matching'] );
 		echo '</div><div class="prime-fleet-form-grid" style="margin-top:14px">';
 		echo '<div class="prime-fleet-field"><label>' . esc_html__( 'Customer vehicle choice', 'prime-fleet' ) . '</label><select name="customer_vehicle_choice">';
@@ -183,9 +209,9 @@ final class Service_Edit {
 			$attached_ids[ (int) $row['field_id'] ] = true;
 		}
 
-		echo '<div class="prime-fleet-card">';
-		echo '<h3>' . esc_html__( 'Attached fields', 'prime-fleet' ) . '</h3>';
-		echo '<p class="prime-fleet-help">' . esc_html__( 'Quick controls stay in the list. Use Edit for labels, help text, validation, and show/require rules.', 'prime-fleet' ) . '</p>';
+		echo '<div class="prime-fleet-card prime-fleet-section">';
+		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Attached fields', 'prime-fleet' ) . '</h3>';
+		echo '<p>' . esc_html__( 'Quick controls stay in the list. Use Edit for labels, help text, validation, and show/require rules.', 'prime-fleet' ) . '</p></header>';
 
 		if ( empty( $attached ) ) {
 			echo View::empty_state(
@@ -245,8 +271,9 @@ final class Service_Edit {
 		}
 		echo '</div>';
 
-		echo '<div class="prime-fleet-card" style="margin-top:1rem"><h3>' . esc_html__( 'Attach from library', 'prime-fleet' ) . '</h3>';
-		echo '<p class="prime-fleet-help">' . esc_html__( 'Choose a field and step. Fine-tune labels and conditions with Edit after attaching.', 'prime-fleet' ) . '</p>';
+		echo '<div class="prime-fleet-card prime-fleet-section" style="margin-top:1rem">';
+		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Attach from library', 'prime-fleet' ) . '</h3>';
+		echo '<p>' . esc_html__( 'Choose a field and step. Fine-tune labels and conditions with Edit after attaching.', 'prime-fleet' ) . '</p></header>';
 		echo '<div class="prime-fleet-form-grid prime-fleet-form-grid--2">';
 		echo '<div class="prime-fleet-field"><label for="attach_field_id">' . esc_html__( 'Field', 'prime-fleet' ) . '</label><select id="attach_field_id" name="attach_field_id" data-pf-search="1"><option value="">—</option>';
 		$available = 0;
@@ -282,9 +309,9 @@ final class Service_Edit {
 		$addons = $wpdb->get_results( 'SELECT * FROM ' . Schema::table( 'addons' ) . ' ORDER BY display_order ASC, name ASC', ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$sid    = (int) $service['id'];
 
-		echo '<div class="prime-fleet-card">';
-		echo '<h3>' . esc_html__( 'Add-ons for this service', 'prime-fleet' ) . '</h3>';
-		echo '<p class="prime-fleet-help">' . esc_html__( 'Enable Child Seat, Grocery Stop, and other extras for this service. Leave unchecked to hide from guests for this service. Empty applicability on an add-on means available to all services until restricted here.', 'prime-fleet' ) . '</p>';
+		echo '<div class="prime-fleet-card prime-fleet-section">';
+		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Add-ons for this service', 'prime-fleet' ) . '</h3>';
+		echo '<p>' . esc_html__( 'Enable extras for this service. Unchecked items stay hidden from guests here.', 'prime-fleet' ) . '</p></header>';
 
 		if ( empty( $addons ) ) {
 			echo View::empty_state( __( 'No add-ons', 'prime-fleet' ), __( 'Create add-ons first, then attach them here.', 'prime-fleet' ) );

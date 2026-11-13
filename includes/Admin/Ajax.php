@@ -10,6 +10,7 @@ namespace Prime_Fleet\Admin;
 use Prime_Fleet\Admin\Pages\Dashboard;
 use Prime_Fleet\Admin\Pages\Bookings;
 use Prime_Fleet\Admin\Pages\Dispatch;
+use Prime_Fleet\Admin\Pages\Run_Sheet;
 use Prime_Fleet\Admin\Pages\Services;
 use Prime_Fleet\Admin\Pages\Service_Edit;
 use Prime_Fleet\Admin\Pages\Zones;
@@ -27,6 +28,7 @@ use Prime_Fleet\Admin\Pages\Logs;
 use Prime_Fleet\Admin\Pages\Messages;
 use Prime_Fleet\Admin\Pages\Slot_Offers_Page;
 use Prime_Fleet\Admin\Pages\Placeholder;
+use Prime_Fleet\Admin\Pages\Reports;
 use Prime_Fleet\Install\Capabilities;
 
 defined( 'ABSPATH' ) || exit;
@@ -38,6 +40,20 @@ final class Ajax {
 	 */
 	public function hooks() {
 		add_action( 'wp_ajax_prime_fleet_panel', array( $this, 'panel' ) );
+		add_action( 'wp_ajax_prime_fleet_notifications', array( $this, 'notifications' ) );
+	}
+
+	/**
+	 * Header notification feed (pending / payment attention).
+	 */
+	public function notifications() {
+		if ( ! check_ajax_referer( 'prime_fleet_admin', 'nonce', false ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid session. Refresh and try again.', 'prime-fleet' ) ), 403 );
+		}
+		if ( ! Capabilities::current_user_can( Capabilities::DISPATCH ) ) {
+			wp_send_json_error( array( 'message' => __( 'Forbidden.', 'prime-fleet' ) ), 403 );
+		}
+		wp_send_json_success( Notifications::summary() );
 	}
 
 	/**
@@ -107,6 +123,9 @@ final class Ajax {
 			case 'dispatch':
 				Dispatch::render();
 				break;
+			case 'run_sheet':
+				Run_Sheet::render();
+				break;
 			case 'services':
 				Services::render();
 				break;
@@ -150,7 +169,7 @@ final class Ajax {
 				Messages::render();
 				break;
 			case 'reports':
-				Placeholder::reports();
+				Reports::render();
 				break;
 			case 'settings':
 				Settings::render();

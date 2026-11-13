@@ -1,20 +1,21 @@
 /**
- * Prime Fleet guest skin — full visual rebrand (not a Sletci color swap).
- * Loaded after booking.css. Geometric, numbered progress, stacked services.
+ * Prime Fleet guest skin — traditional booking-desk language (Phase 3 A1).
+ * PF brand tokens only. Not a VikBooking clone. Loaded after booking.css.
  */
 
 .prime-fleet {
-	--pf-ink-bg: #070b14;
-	--pf-panel: #0e1524;
-	--pf-line: rgba(255, 255, 255, 0.1);
-	--pf-accent: #5eead4;
-	--pf-accent-deep: #2dd4bf;
-	--pf-accent-dim: rgba(94, 234, 212, 0.14);
+	--pf-ink-bg: #0a121c;
+	--pf-panel: #121b2a;
+	--pf-line: rgba(248, 250, 252, 0.12);
+	--pf-accent: #2dd4bf;
+	--pf-accent-deep: #14b8a6;
+	--pf-accent-dim: rgba(45, 212, 191, 0.12);
 	--pf-ink: #f1f5f9;
-	--pf-muted: #8b95a8;
-	--pf-radius: 4px;
-	--sle-chip: 4px;
-	--sle-radius: 4px;
+	--pf-muted: #94a3b8;
+	--pf-radius: 6px;
+	--pf-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+	--sle-chip: 6px;
+	--sle-radius: 6px;
 	--sle-gold: var(--pf-accent-deep);
 	--sle-navy: var(--pf-ink-bg);
 	--sle-surface: var(--pf-ink-bg);
@@ -22,22 +23,21 @@
 	--sle-display: "Sora", "Plus Jakarta Sans", sans-serif;
 	--sle-heading: "Sora", "Plus Jakarta Sans", sans-serif;
 	font-family: var(--sle-font) !important;
-	background:
-		radial-gradient(90% 50% at 0% 0%, rgba(45, 212, 191, 0.09), transparent 55%),
-		radial-gradient(70% 40% at 100% 10%, rgba(56, 189, 248, 0.06), transparent 50%),
-		var(--pf-ink-bg) !important;
+	background: var(--pf-ink-bg) !important;
+	/* Step swaps change main height — stop browser scroll-anchoring jumps. */
+	overflow-anchor: none;
 }
 
 .prime-fleet__shell {
-	max-width: 1120px;
+	max-width: 1080px;
 	margin: 0 auto;
 }
 
 /* —— Header —— */
 .prime-fleet__header {
-	margin-bottom: 22px;
-	padding-bottom: 0;
-	border-bottom: 0;
+	margin-bottom: 12px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--pf-line);
 }
 
 /*
@@ -56,13 +56,25 @@ body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:active,
 body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat,
 body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:hover,
 body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:focus,
-body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:active,
-body.prime-fleet-has-booking #prime-fleet .prime-fleet__service,
-body.prime-fleet-has-booking #prime-fleet .prime-fleet__service:hover,
-body.prime-fleet-has-booking #prime-fleet .prime-fleet__service:focus {
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:active {
 	background-image: none !important;
-	box-shadow: none !important;
 	text-transform: none !important;
+}
+
+/* Kill theme gold glow on chrome — keep soft elevation on service cards */
+body.prime-fleet-has-booking #prime-fleet button:not(.prime-fleet__service),
+body.prime-fleet-has-booking #prime-fleet button:not(.prime-fleet__service):hover,
+body.prime-fleet-has-booking #prime-fleet button:not(.prime-fleet__service):focus,
+body.prime-fleet-has-booking #prime-fleet button:not(.prime-fleet__service):active,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:focus,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:active,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:focus,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:active {
+	box-shadow: none !important;
 }
 
 body.prime-fleet-has-booking #prime-fleet .prime-fleet__step:not(.is-active),
@@ -79,21 +91,47 @@ body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat:active {
 
 body.prime-fleet-has-booking #prime-fleet .prime-fleet__step.is-active,
 body.prime-fleet-has-booking #prime-fleet .prime-fleet__step.is-active:hover {
-	background: rgba(94, 234, 212, 0.12) !important;
-	background-color: rgba(94, 234, 212, 0.12) !important;
+	background: transparent !important;
+	background-color: transparent !important;
 }
 
 body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step.is-active,
 body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step.is-active:hover {
-	background: rgba(15, 118, 110, 0.14) !important;
-	background-color: rgba(15, 118, 110, 0.14) !important;
-	color: #042f2e !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	color: #0b1220 !important;
 }
 
-body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-num,
-body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-label {
-	color: #042f2e !important;
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-num {
+	color: var(--pf-accent) !important;
 	opacity: 1 !important;
+}
+
+/* Timeline active node: white numeral on teal fill (must beat rule above). */
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-active .prime-fleet__step-num,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__steps--timeline .prime-fleet__step.is-active .prime-fleet__step-num {
+	color: #fff !important;
+	opacity: 1 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-label {
+	color: #0b1220 !important;
+	opacity: 1 !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat.is-active,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__cat.is-active:hover {
+	background: transparent !important;
+	background-color: transparent !important;
+	color: #fff !important;
+	box-shadow: none !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cat.is-active,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__cat.is-active:hover {
+	background: transparent !important;
+	background-color: transparent !important;
+	color: #0b1220 !important;
 }
 
 body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step:not(.is-active) .prime-fleet__step-num,
@@ -101,48 +139,58 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	color: #5a6578 !important;
 }
 
+/* Theme often paints badge glyphs black — keep PF mark teal + white */
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__brand-mark,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__boot-mark,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__submit-mark {
+	background: var(--pf-accent) !important;
+	background-color: var(--pf-accent) !important;
+	color: #fff !important;
+}
+
 .prime-fleet__brand-row {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.65rem;
-	margin-bottom: 18px;
+	gap: 10px;
+	margin-bottom: 12px;
 }
 
 .prime-fleet__brand-mark {
-	width: 2rem !important;
-	height: 2rem !important;
+	width: 1.75rem !important;
+	height: 1.75rem !important;
 	border-radius: 4px !important;
 	background: var(--pf-accent) !important;
-	color: #042f2e !important;
-	font-size: 0.7rem !important;
-	font-weight: 800 !important;
+	color: #fff !important;
+	font-size: 0.65rem !important;
+	font-weight: 700 !important;
 }
 
 .prime-fleet__brand-name {
-	font-family: var(--sle-heading);
-	font-size: 0.8rem;
-	font-weight: 700;
-	letter-spacing: 0.14em;
-	text-transform: uppercase;
+	font-family: var(--sle-font);
+	font-size: 0.9375rem;
+	font-weight: 600;
+	letter-spacing: 0;
+	text-transform: none;
 	color: var(--pf-ink) !important;
 }
 
+.prime-fleet p.prime-fleet__kicker,
 .prime-fleet__kicker {
-	margin: 0 0 8px;
-	font-size: 0.75rem;
-	font-weight: 600;
-	letter-spacing: 0.16em;
-	text-transform: uppercase;
-	color: var(--pf-accent) !important;
+	margin: 0 0 6px;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	letter-spacing: 0;
+	text-transform: none;
+	color: var(--pf-muted) !important;
 }
 
 .prime-fleet__title {
-	margin: 0 0 10px !important;
-	font-family: var(--sle-display) !important;
-	font-size: clamp(2.15rem, 5vw, 3.35rem) !important;
-	font-weight: 700 !important;
-	letter-spacing: -0.035em !important;
-	line-height: 1.05 !important;
+	margin: 0 0 8px !important;
+	font-family: var(--sle-heading) !important;
+	font-size: clamp(1.5rem, 3.2vw, 1.85rem) !important;
+	font-weight: 600 !important;
+	letter-spacing: -0.02em !important;
+	line-height: 1.2 !important;
 	color: #fff !important;
 }
 
@@ -156,17 +204,23 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 
 .prime-fleet__subtitle {
 	margin: 0;
-	max-width: 36rem;
-	font-size: 1.05rem;
+	max-width: 40rem;
+	font-size: 0.9375rem;
+	line-height: 1.45;
 	color: var(--pf-muted) !important;
 }
 
-/* —— Progress (active underline only — no track / double borders) —— */
+/* —— Progress: compact breadcrumb strip —— */
 .prime-fleet__progress {
-	margin: 0 0 28px;
+	margin: 0 0 10px;
 	padding: 0;
 	border: 0 !important;
 	box-shadow: none !important;
+	scroll-margin-top: 48px;
+}
+
+body.admin-bar .prime-fleet__progress {
+	scroll-margin-top: 80px;
 }
 
 .prime-fleet__progress-bar {
@@ -182,18 +236,25 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	list-style: none !important;
 	overflow-x: auto;
 	-webkit-overflow-scrolling: touch;
-	scrollbar-width: thin;
+	scrollbar-width: none; /* Firefox — swipe still works */
 	border: 0 !important;
 	border-bottom: 0 !important;
 	box-shadow: none !important;
+	scroll-behavior: auto;
+}
+
+.prime-fleet__steps::-webkit-scrollbar {
+	display: none; /* Chrome / Safari / Edge */
+	height: 0;
+	width: 0;
 }
 
 .prime-fleet__step-item {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	flex: 1 0 auto;
-	min-width: 4.75rem;
+	flex: 0 0 auto;
+	min-width: 0;
 }
 
 .prime-fleet__step,
@@ -206,15 +267,15 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 .prime-fleet__step.is-active:hover {
 	appearance: none;
 	cursor: pointer;
-	width: 100%;
-	display: flex !important;
-	flex-direction: column !important;
-	align-items: flex-start !important;
-	justify-content: flex-end !important;
+	width: auto;
+	display: inline-flex !important;
+	flex-direction: row !important;
+	align-items: center !important;
+	justify-content: flex-start !important;
 	gap: 6px !important;
-	min-height: 56px !important;
+	min-height: 40px !important;
 	margin: 0 !important;
-	padding: 12px 14px 14px !important;
+	padding: 8px 12px !important;
 	border: 0 !important;
 	border-radius: 0 !important;
 	border-bottom: 2px solid transparent !important;
@@ -227,26 +288,29 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	filter: none !important;
 	text-transform: none !important;
 	font-family: var(--sle-font) !important;
+	white-space: nowrap;
+	transition: color 0.22s ease, border-color 0.22s ease, opacity 0.22s ease !important;
 }
 
 .prime-fleet__step-num {
-	font-size: 0.68rem;
-	font-weight: 700;
-	letter-spacing: 0.08em;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0;
+	font-variant-numeric: tabular-nums;
 	color: inherit !important;
-	opacity: 0.7;
+	opacity: 0.85;
 }
 
 .prime-fleet__step-label {
-	font-size: 0.82rem;
-	font-weight: 600;
+	font-size: 0.8125rem;
+	font-weight: 500;
 	color: inherit !important;
 }
 
 .prime-fleet__step.is-done,
 .prime-fleet__step.is-done:hover {
 	color: #cbd5e1 !important;
-	border-bottom-color: rgba(94, 234, 212, 0.28) !important;
+	border-bottom-color: rgba(45, 212, 191, 0.35) !important;
 	background: transparent !important;
 	background-color: transparent !important;
 }
@@ -255,8 +319,8 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 .prime-fleet__step.is-active:hover {
 	color: #fff !important;
 	border-bottom-color: var(--pf-accent) !important;
-	background: rgba(94, 234, 212, 0.1) !important;
-	background-color: rgba(94, 234, 212, 0.1) !important;
+	background: transparent !important;
+	background-color: transparent !important;
 }
 
 .prime-fleet__step.is-active .prime-fleet__step-num {
@@ -265,48 +329,468 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 }
 
 .prime-fleet__step.is-locked {
-	opacity: 0.4;
+	opacity: 0.45;
 }
 
 .prime-fleet__step.is-clickable:hover {
 	color: #fff !important;
 }
 
-/* —— Layout —— */
+/* —— Timeline + next/back (quiet desk chrome) —— */
+.prime-fleet__tl {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+	margin: 0 0 8px;
+	padding: 0 0 8px;
+	border-bottom: 1px solid rgba(248, 250, 252, 0.08);
+}
+
+.prime-fleet__tl-body {
+	position: relative;
+	flex: 1 1 auto;
+	min-width: 0;
+	padding: 0 4px;
+}
+
+/* Hairline track through node centers only */
+.prime-fleet__tl-track {
+	position: absolute;
+	top: 1.0625rem; /* center of 2.125rem node */
+	left: calc(100% / 6);
+	right: calc(100% / 6);
+	height: 1px;
+	border-radius: 0;
+	background: rgba(248, 250, 252, 0.12);
+	z-index: 0;
+	pointer-events: none;
+}
+
+.prime-fleet__tl-fill {
+	display: block;
+	height: 100%;
+	width: 0;
+	border-radius: inherit;
+	background: var(--pf-accent);
+	opacity: 0.85;
+	transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__tl-arrow,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__tl-arrow:hover,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__tl-arrow:focus,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__tl-arrow:active,
+.prime-fleet__tl-arrow {
+	appearance: none;
+	flex: 0 0 auto;
+	display: inline-flex !important;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	margin: 0;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 4px !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+	color: var(--pf-muted) !important;
+	font-size: 1.375rem;
+	line-height: 1;
+	cursor: pointer;
+	box-shadow: none !important;
+	transform: none !important;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__tl-arrow:hover:not(:disabled),
+.prime-fleet__tl-arrow:hover:not(:disabled) {
+	color: #fff !important;
+	background: rgba(248, 250, 252, 0.06) !important;
+	border: 0 !important;
+}
+
+.prime-fleet__tl-arrow:disabled,
+.prime-fleet__tl-arrow[aria-disabled="true"] {
+	opacity: 0.28;
+	cursor: not-allowed;
+}
+
+.prime-fleet__tl-arrow:focus-visible {
+	outline: 2px solid var(--pf-accent);
+	outline-offset: 2px;
+}
+
+.prime-fleet__steps--stages,
+.prime-fleet__steps--timeline {
+	width: 100%;
+	display: grid !important;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	justify-content: stretch !important;
+	align-items: start;
+	gap: 0 !important;
+	border-bottom: 0 !important;
+	overflow: visible !important;
+	overflow-x: visible !important;
+	position: relative;
+	z-index: 1;
+	padding: 0 !important;
+	margin: 0 !important;
+	list-style: none !important;
+}
+
+.prime-fleet__steps--timeline::before,
+.prime-fleet__steps--timeline::after {
+	content: none !important;
+	display: none !important;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step-rule {
+	display: none !important;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step-item {
+	flex: unset;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	min-width: 0;
+	position: relative;
+	z-index: 1;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step,
+.prime-fleet__steps--timeline .prime-fleet__step:hover,
+.prime-fleet__steps--timeline .prime-fleet__step:focus,
+.prime-fleet__steps--timeline .prime-fleet__step:active,
+.prime-fleet__steps--timeline .prime-fleet__step.is-clickable:hover,
+.prime-fleet__steps--timeline .prime-fleet__step.is-active:hover,
+.prime-fleet__steps--timeline .prime-fleet__step.is-done:hover,
+.prime-fleet__steps--timeline .prime-fleet__step.is-locked:hover {
+	flex: 0 0 auto;
+	flex-direction: column !important;
+	justify-content: flex-start !important;
+	align-items: center !important;
+	gap: 5px !important;
+	width: auto;
+	max-width: 100%;
+	padding: 0 4px !important;
+	min-height: 0 !important;
+	border: 0 !important;
+	border-bottom: 0 !important;
+	scroll-margin: 0;
+	transform: none !important;
+	translate: none !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step-num {
+	position: relative;
+	z-index: 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.125rem;
+	height: 2.125rem;
+	border-radius: 999px;
+	border: 1.5px solid rgba(248, 250, 252, 0.18);
+	background: var(--pf-ink-bg);
+	font-size: 0.8125rem;
+	font-weight: 600;
+	line-height: 1;
+	opacity: 1;
+	color: var(--pf-muted) !important;
+	box-shadow: none;
+	transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step-label {
+	position: relative;
+	z-index: 2;
+	font-size: 0.875rem;
+	font-weight: 500;
+	line-height: 1.2;
+	text-align: center;
+	margin-top: 0;
+	padding: 0 2px;
+	background: var(--pf-ink-bg);
+	color: var(--pf-muted) !important;
+	transition: color 0.25s ease;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step.is-done .prime-fleet__step-num {
+	border-color: rgba(45, 212, 191, 0.55);
+	background: var(--pf-ink-bg);
+	color: var(--pf-accent) !important;
+	box-shadow: none;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step.is-active .prime-fleet__step-num {
+	border-color: var(--pf-accent);
+	background: var(--pf-accent);
+	color: #fff !important;
+	box-shadow: none;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step.is-active .prime-fleet__step-label {
+	color: #f8fafc !important;
+	font-weight: 500;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step.is-done .prime-fleet__step-label {
+	color: #94a3b8 !important;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step.is-clickable:hover .prime-fleet__step-label {
+	color: #e2e8f0 !important;
+}
+
+.prime-fleet__steps--timeline .prime-fleet__step.is-locked {
+	opacity: 0.42;
+}
+
+/* —— Trip summary: quiet fact line —— */
+.prime-fleet__summary-slot:empty {
+	display: none;
+}
+
+.prime-fleet__summary {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px 18px;
+	margin: 0 0 14px;
+	padding: 14px 16px;
+	min-height: 52px;
+	border: 0;
+	border-radius: 10px;
+	background: rgba(248, 250, 252, 0.045);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.prime-fleet__summary-items {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0;
+	min-width: 0;
+	flex: 1 1 220px;
+}
+
+.prime-fleet__summary-item {
+	display: inline-flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: baseline;
+	gap: 0;
+	min-width: 0;
+	max-width: 100%;
+	padding: 0;
+}
+
+.prime-fleet__summary-item + .prime-fleet__summary-item::before {
+	content: "·";
+	display: inline-block;
+	margin: 0 12px;
+	color: var(--pf-muted);
+	opacity: 0.45;
+	font-weight: 400;
+	font-size: 0.9375rem;
+}
+
+.prime-fleet__summary-value {
+	font-size: 0.9375rem;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+	color: #e2e8f0;
+	line-height: 1.4;
+	overflow-wrap: anywhere;
+}
+
+.prime-fleet__summary-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+	flex: 0 0 auto;
+}
+
+body.prime-fleet-has-booking #prime-fleet button.prime-fleet__summary-change,
+body.prime-fleet-has-booking #prime-fleet button.prime-fleet__summary-change:hover,
+body.prime-fleet-has-booking #prime-fleet button.prime-fleet__summary-change:focus,
+body.prime-fleet-has-booking #prime-fleet button.prime-fleet__summary-change:active,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__summary-change.prime-fleet__btn,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__summary-change.prime-fleet__btn--ghost,
+body.prime-fleet-has-booking #prime-fleet .prime-fleet__summary-change,
+.prime-fleet button.prime-fleet__summary-change,
+.prime-fleet__summary-change {
+	appearance: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	min-height: 0 !important;
+	height: auto !important;
+	width: auto !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+	color: var(--pf-accent) !important;
+	font-family: var(--sle-font) !important;
+	font-size: 0.9375rem !important;
+	font-weight: 500 !important;
+	line-height: 1.4 !important;
+	cursor: pointer;
+	text-decoration: none !important;
+	box-shadow: none !important;
+	transform: none !important;
+	filter: none !important;
+	transition: opacity 0.2s ease;
+}
+
+body.prime-fleet-has-booking #prime-fleet button.prime-fleet__summary-change:hover,
+.prime-fleet button.prime-fleet__summary-change:hover,
+.prime-fleet__summary-change:hover {
+	opacity: 0.75;
+	color: var(--pf-accent) !important;
+	border: 0 !important;
+	background: transparent !important;
+	text-decoration: underline !important;
+	text-underline-offset: 3px;
+}
+
+.prime-fleet__summary-change:focus-visible {
+	outline: 2px solid var(--pf-accent);
+	outline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+	.prime-fleet__summary {
+		padding: 10px 12px;
+		align-items: flex-start;
+	}
+
+	.prime-fleet__summary-items {
+		gap: 6px 0;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.prime-fleet__summary-item + .prime-fleet__summary-item::before {
+		display: none;
+	}
+}
+
+/* Composed stage panels */
+.prime-fleet__stage {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.prime-fleet__stage > .prime-fleet__panel {
+	margin: 0;
+	padding: 0 0 22px;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+.prime-fleet__stage > .prime-fleet__panel + .prime-fleet__panel {
+	padding-top: 22px;
+	border-top: 1px solid var(--pf-line);
+}
+
+.prime-fleet__stage > .prime-fleet__actions {
+	margin-top: 8px;
+	padding-top: 16px;
+	border-top: 1px solid var(--pf-line);
+}
+
+/* —— Layout: desk + sticky fare rail —— */
 .prime-fleet__layout {
 	display: grid;
-	gap: 28px;
+	gap: 20px;
 	align-items: start;
+}
+
+.prime-fleet__rail-slot {
+	min-width: 0;
+	align-self: start;
 }
 
 @media (min-width: 960px) {
 	.prime-fleet__layout {
-		grid-template-columns: minmax(0, 1fr) 280px;
-		gap: 40px;
+		grid-template-columns: minmax(0, 1fr) 300px;
+		gap: 24px;
+		align-items: stretch;
 	}
+
+	/* Slot must stretch to main column height or sticky has nowhere to travel */
+	.prime-fleet__rail-slot {
+		align-self: stretch;
+		height: 100%;
+	}
+
+	.prime-fleet__main {
+		align-self: start;
+	}
+
+	.prime-fleet__rail {
+		position: sticky !important;
+		top: 1.25rem;
+		max-height: calc(100vh - 2.5rem);
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: thin;
+	}
+
+	body.admin-bar .prime-fleet__rail {
+		top: calc(32px + 1rem);
+		max-height: calc(100vh - 32px - 2rem);
+	}
+}
+
+.prime-fleet__main {
+	padding: 20px !important;
+	border: 1px solid var(--pf-line) !important;
+	border-radius: var(--pf-radius) !important;
+	background: var(--pf-panel) !important;
+	box-shadow: var(--pf-shadow);
+	overflow-anchor: none;
 }
 
 .prime-fleet__panel h2 {
 	margin: 0 0 6px;
-	font-size: 1.55rem !important;
-	font-weight: 700 !important;
-	letter-spacing: -0.02em;
+	font-size: 1.25rem !important;
+	font-weight: 600 !important;
+	letter-spacing: -0.015em;
 	color: #fff !important;
 }
 
 .prime-fleet__hint {
-	margin: 0 0 20px !important;
+	margin: 0 0 16px !important;
+	font-size: 0.875rem !important;
 	color: var(--pf-muted) !important;
 }
 
-/* —— Category tabs (underline only — no track line) —— */
+/* —— Category filters: underline links (not pills) —— */
 .prime-fleet__cats {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0;
-	margin: 0 0 22px;
+	gap: 4px 16px;
+	margin: 0 0 16px;
+	padding: 0 0 10px;
 	border: 0 !important;
-	border-bottom: 0 !important;
+	border-bottom: 1px solid var(--pf-line) !important;
+	border-radius: 0 !important;
+	overflow: visible;
 	box-shadow: none !important;
 }
 
@@ -318,9 +802,9 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	cursor: pointer;
 	display: inline-flex !important;
 	align-items: center;
-	gap: 0.4rem;
+	gap: 0.35rem;
 	margin: 0 !important;
-	padding: 12px 14px !important;
+	padding: 4px 0 8px !important;
 	border: 0 !important;
 	border-bottom: 2px solid transparent !important;
 	border-radius: 0 !important;
@@ -328,19 +812,21 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	background-color: transparent !important;
 	color: var(--pf-muted) !important;
 	font-family: var(--sle-font) !important;
-	font-size: 0.88rem !important;
-	font-weight: 600 !important;
+	font-size: 0.8125rem !important;
+	font-weight: 500 !important;
 	box-shadow: none !important;
 	text-transform: none !important;
 }
 
 .prime-fleet__cat:hover {
 	color: #fff !important;
+	background: transparent !important;
 }
 
 .prime-fleet__cat.is-active {
 	color: #fff !important;
 	background: transparent !important;
+	background-color: transparent !important;
 	border-bottom-color: var(--pf-accent) !important;
 }
 
@@ -354,9 +840,9 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	border-radius: 0 !important;
 	background: transparent !important;
 	background-color: transparent !important;
-	color: var(--pf-muted) !important;
-	font-size: 0.78rem !important;
-	font-weight: 600 !important;
+	color: inherit !important;
+	font-size: 0.75rem !important;
+	font-weight: 500 !important;
 	opacity: 0.75;
 	place-items: unset !important;
 }
@@ -368,14 +854,14 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	opacity: 1;
 }
 
-/* —— Service / vehicle cards: 2-up (6+6) from tablet up —— */
+/* —— Service cards: 2-up (1 col under ~720px) —— */
 .prime-fleet__services,
 .prime-fleet__services.is-compact,
 .prime-fleet__services--stack {
 	display: grid !important;
 	grid-template-columns: 1fr !important;
 	gap: 10px !important;
-	margin: 0 0 22px !important;
+	margin: 0 0 20px !important;
 	padding: 0 !important;
 	list-style: none !important;
 	flex-direction: unset !important;
@@ -386,6 +872,7 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	.prime-fleet__services.is-compact,
 	.prime-fleet__services--stack {
 		grid-template-columns: 1fr 1fr !important;
+		gap: 12px !important;
 	}
 }
 
@@ -404,42 +891,44 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	gap: 12px;
 	width: 100%;
 	height: 100%;
-	min-height: 72px !important;
-	padding: 14px 14px !important;
+	min-height: 64px !important;
+	padding: 12px 14px !important;
 	text-align: left;
 	border: 1px solid var(--pf-line) !important;
-	border-left: 3px solid transparent !important;
 	border-radius: var(--pf-radius) !important;
-	background: var(--pf-panel) !important;
+	background: rgba(255, 255, 255, 0.02) !important;
 	color: var(--pf-ink) !important;
-	box-shadow: none !important;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) !important;
+	transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 .prime-fleet__service-index {
-	font-size: 0.72rem;
-	font-weight: 700;
-	letter-spacing: 0.06em;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0;
+	font-variant-numeric: tabular-nums;
 	color: var(--pf-muted) !important;
 	align-self: start;
 	padding-top: 2px;
+	min-width: 1.5rem;
 }
 
 .prime-fleet__service-body {
 	display: flex;
 	flex-direction: column;
-	gap: 3px;
+	gap: 2px;
 	min-width: 0;
 }
 
 .prime-fleet__service-name {
-	font-size: 0.98rem !important;
-	font-weight: 700 !important;
+	font-size: 0.9375rem !important;
+	font-weight: 600 !important;
 	color: #fff !important;
 	line-height: 1.3 !important;
 }
 
 .prime-fleet__service-desc {
-	font-size: 0.82rem !important;
+	font-size: 0.8125rem !important;
 	color: var(--pf-muted) !important;
 	line-height: 1.35 !important;
 	display: -webkit-box;
@@ -452,24 +941,24 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	width: 16px;
 	height: 16px;
 	flex: 0 0 auto;
-	border-radius: 50%;
-	border: 1.5px solid rgba(255, 255, 255, 0.25);
-	transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+	border-radius: 3px;
+	border: 1.5px solid rgba(255, 255, 255, 0.28);
+	transition: background 0.18s ease, border-color 0.18s ease;
 }
 
 .prime-fleet__service:hover,
 .prime-fleet__service:focus {
-	border-color: rgba(94, 234, 212, 0.35) !important;
-	background: #121a2c !important;
-	background-color: #121a2c !important;
+	border-color: rgba(45, 212, 191, 0.4) !important;
+	background: rgba(45, 212, 191, 0.06) !important;
+	background-color: rgba(45, 212, 191, 0.06) !important;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
 	transform: none;
 }
 
 .prime-fleet__service.is-selected {
-	border-color: rgba(94, 234, 212, 0.45) !important;
-	border-left-color: var(--pf-accent) !important;
+	border-color: rgba(45, 212, 191, 0.55) !important;
 	background: var(--pf-accent-dim) !important;
-	box-shadow: none !important;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14), 0 6px 16px rgba(0, 0, 0, 0.16) !important;
 }
 
 .prime-fleet__service.is-selected .prime-fleet__service-index {
@@ -479,51 +968,111 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 .prime-fleet__service.is-selected .prime-fleet__service-check {
 	border-color: var(--pf-accent);
 	background: var(--pf-accent);
-	box-shadow: inset 0 0 0 4px var(--pf-panel);
-	transform: scale(1.08);
+	box-shadow: inset 0 0 0 3px var(--pf-panel);
+	transform: none;
 }
 
-/* —— Rail (quote card) —— */
+/* —— Rail (quote summary) —— */
 .prime-fleet__rail {
-	position: sticky;
-	top: 1rem;
-	padding: 22px 20px 20px !important;
-	border: 1px solid rgba(94, 234, 212, 0.22) !important;
-	border-radius: 6px !important;
-	background:
-		linear-gradient(165deg, rgba(94, 234, 212, 0.08) 0%, transparent 42%),
-		rgba(14, 21, 36, 0.92) !important;
-	box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28) !important;
-	overflow: hidden;
+	position: relative;
+	top: auto;
+	padding: 18px !important;
+	border: 1px solid var(--pf-line) !important;
+	border-radius: var(--pf-radius) !important;
+	background: var(--pf-panel) !important;
+	box-shadow: var(--pf-shadow) !important;
 }
 
 .prime-fleet__rail::before {
-	content: "";
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 2px;
-	background: linear-gradient(90deg, var(--pf-accent), rgba(94, 234, 212, 0.15));
-	pointer-events: none;
+	display: none !important;
 }
 
 .prime-fleet__rail-head {
 	margin: 0 0 14px;
+	padding-bottom: 0;
+	border-bottom: 0;
 }
 
+.prime-fleet p.prime-fleet__rail-label,
 .prime-fleet__rail-label {
 	margin: 0 !important;
 	font-family: var(--sle-font) !important;
-	font-size: 0.68rem !important;
-	font-weight: 700 !important;
-	letter-spacing: 0.16em !important;
-	text-transform: uppercase !important;
-	color: var(--pf-accent) !important;
+	font-size: 0.9375rem !important;
+	font-weight: 600 !important;
+	letter-spacing: 0 !important;
+	text-transform: none !important;
+	color: var(--pf-ink) !important;
 }
 
 .prime-fleet__rail-body {
-	min-height: 4.5rem;
+	min-height: 0;
+}
+
+.prime-fleet__rail-empty {
+	padding: 4px 0 2px;
+}
+
+.prime-fleet__rail-empty-title {
+	margin: 0 0 6px !important;
+	font-size: 0.9375rem !important;
+	font-weight: 600 !important;
+	color: var(--pf-ink) !important;
+	line-height: 1.3 !important;
+}
+
+.prime-fleet__rail-rows {
+	margin: 0;
+	padding: 0;
+}
+
+.prime-fleet__rail-row {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 10px 0;
+	border-bottom: 1px solid var(--pf-line);
+}
+
+.prime-fleet__rail-row:first-child {
+	padding-top: 0;
+}
+
+.prime-fleet__rail-row:last-child {
+	border-bottom: 0;
+	padding-bottom: 0;
+}
+
+.prime-fleet__rail-row dt {
+	margin: 0;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: var(--pf-muted) !important;
+}
+
+.prime-fleet__rail-row dd {
+	margin: 0;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: var(--pf-ink) !important;
+	text-align: right;
+	max-width: 62%;
+}
+
+.prime-fleet__rail-row.is-total dt,
+.prime-fleet__rail-row.is-total dd {
+	font-size: 0.9375rem;
+	font-weight: 600;
+}
+
+.prime-fleet__rail-row.is-total dd {
+	font-variant-numeric: tabular-nums;
+	color: #fff !important;
+}
+
+/* legacy table class if any cached markup */
+.prime-fleet__rail-table {
+	display: none !important;
 }
 
 .prime-fleet__rail-amount.is-empty {
@@ -537,18 +1086,18 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 }
 
 .prime-fleet__rail-status {
-	margin: 0 0 6px !important;
+	margin: 0 0 8px !important;
 	font-family: var(--sle-heading) !important;
 	font-size: 1.05rem !important;
-	font-weight: 650 !important;
+	font-weight: 500 !important;
 	letter-spacing: -0.01em;
 	line-height: 1.3 !important;
 	color: #fff !important;
 }
 
 .prime-fleet__rail-detail {
-	margin: 0 !important;
-	font-size: 0.86rem !important;
+	margin: 12px 0 0 !important;
+	font-size: 0.8125rem !important;
 	line-height: 1.45 !important;
 	color: var(--pf-muted) !important;
 }
@@ -558,18 +1107,19 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	margin: 0 0 8px !important;
 	font-family: var(--sle-display) !important;
 	font-size: clamp(1.85rem, 3vw, 2.35rem) !important;
-	font-weight: 700 !important;
-	letter-spacing: -0.03em;
+	font-weight: 500 !important;
+	letter-spacing: -0.02em;
+	font-variant-numeric: tabular-nums;
 	line-height: 1.1 !important;
 	color: #fff !important;
 }
 
 .prime-fleet__rail-note {
-	margin: 16px 0 0 !important;
-	padding-top: 14px !important;
-	border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+	margin: 14px 0 0 !important;
+	padding-top: 12px !important;
+	border-top: 1px solid var(--pf-line) !important;
 	color: var(--pf-muted) !important;
-	font-size: 0.78rem !important;
+	font-size: 0.75rem !important;
 	line-height: 1.45 !important;
 }
 
@@ -591,11 +1141,9 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__rail {
-	background:
-		linear-gradient(165deg, rgba(15, 118, 110, 0.06) 0%, transparent 42%),
-		#fff !important;
-	border-color: rgba(15, 118, 110, 0.2) !important;
-	box-shadow: 0 10px 28px rgba(11, 18, 32, 0.08) !important;
+	background: #fff !important;
+	border-color: var(--pf-line) !important;
+	box-shadow: var(--pf-shadow) !important;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__rail-amount.is-empty {
@@ -611,16 +1159,17 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 .prime-fleet__actions {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 10px;
+	gap: 12px;
 	margin-top: 8px;
 }
 
 .prime-fleet__btn {
-	min-height: 48px;
-	padding: 0 22px !important;
-	border-radius: 4px !important;
-	font-weight: 700 !important;
-	letter-spacing: 0.02em;
+	min-height: 44px;
+	padding: 0 18px !important;
+	border-radius: var(--pf-radius) !important;
+	font-weight: 600 !important;
+	letter-spacing: 0;
+	font-size: 0.9375rem !important;
 }
 
 .prime-fleet__btn--primary,
@@ -647,25 +1196,26 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	opacity: 0.4;
 }
 
-/* Light theme skin — high contrast, teal selection, no theme gold */
+/* Light theme — paper desk, PF teal, soft elevation */
 .prime-fleet[data-theme="light"] {
-	--pf-ink-bg: #f4f6f8;
+	--pf-ink-bg: #eef1f4;
 	--pf-panel: #ffffff;
-	--pf-line: rgba(11, 18, 32, 0.14);
+	--pf-line: rgba(11, 18, 32, 0.12);
 	--pf-accent: #0f766e;
 	--pf-accent-deep: #0d9488;
-	--pf-accent-dim: rgba(15, 118, 110, 0.12);
+	--pf-accent-dim: rgba(15, 118, 110, 0.1);
 	--pf-ink: #0b1220;
-	--pf-muted: #3f4a5a;
+	--pf-muted: #4b5565;
+	--pf-shadow: 0 1px 3px rgba(11, 18, 32, 0.08);
 	color: #0b1220 !important;
-	background: #f4f6f8 !important;
+	background: #eef1f4 !important;
+	color-scheme: light;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__title,
 .prime-fleet[data-theme="light"] .prime-fleet__panel h2,
 .prime-fleet[data-theme="light"] .prime-fleet__service-name,
 .prime-fleet[data-theme="light"] .prime-fleet__brand-name,
-.prime-fleet[data-theme="light"] .prime-fleet__kicker,
 .prime-fleet[data-theme="light"] .prime-fleet__step-label,
 .prime-fleet[data-theme="light"] .prime-fleet__step-num {
 	color: #0b1220 !important;
@@ -674,8 +1224,19 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 .prime-fleet[data-theme="light"] .prime-fleet__subtitle,
 .prime-fleet[data-theme="light"] .prime-fleet__hint,
 .prime-fleet[data-theme="light"] .prime-fleet__service-desc,
-.prime-fleet[data-theme="light"] .prime-fleet__field label {
+.prime-fleet[data-theme="light"] .prime-fleet__field label,
+.prime-fleet[data-theme="light"] .prime-fleet__kicker {
 	color: #3f4a5a !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__header {
+	border-bottom-color: var(--pf-line);
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__main {
+	background: #fff !important;
+	border-color: var(--pf-line) !important;
+	box-shadow: var(--pf-shadow);
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__steps {
@@ -698,28 +1259,170 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 .prime-fleet[data-theme="light"] .prime-fleet__step.is-done,
 .prime-fleet[data-theme="light"] .prime-fleet__step.is-done:hover {
 	color: #0b1220 !important;
-	border-bottom-color: rgba(15, 118, 110, 0.28) !important;
+	border-bottom-color: rgba(15, 118, 110, 0.35) !important;
 	background: transparent !important;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__step.is-active,
 .prime-fleet[data-theme="light"] .prime-fleet__step.is-active:hover {
-	color: #042f2e !important;
-	background: rgba(15, 118, 110, 0.14) !important;
-	background-color: rgba(15, 118, 110, 0.14) !important;
+	color: #0b1220 !important;
+	background: transparent !important;
+	background-color: transparent !important;
 	border-bottom-color: var(--pf-accent) !important;
 }
 
-.prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-num,
+.prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-num {
+	color: var(--pf-accent) !important;
+	opacity: 1 !important;
+}
+
 .prime-fleet[data-theme="light"] .prime-fleet__step.is-active .prime-fleet__step-label {
-	color: #042f2e !important;
+	color: #0b1220 !important;
 	opacity: 1 !important;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__step.is-clickable:hover {
 	color: #0b1220 !important;
-	background: rgba(15, 118, 110, 0.06) !important;
-	background-color: rgba(15, 118, 110, 0.06) !important;
+	background: transparent !important;
+	background-color: transparent !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__steps--stages,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline {
+	border-bottom: 0 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__tl-track {
+	background: #d5dbe6;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step:hover,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step:focus,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step:active,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-done,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-done:hover,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-active,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-active:hover {
+	border: 0 !important;
+	border-bottom: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__tl {
+	border-bottom-color: rgba(11, 18, 32, 0.08);
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__tl-track {
+	background: rgba(11, 18, 32, 0.1);
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step-num {
+	background: #eef1f4;
+	border-color: rgba(11, 18, 32, 0.14);
+	color: #5a6578 !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step-label {
+	background: #eef1f4;
+	color: #5a6578 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-done .prime-fleet__step-num {
+	border-color: rgba(15, 118, 110, 0.45);
+	background: #eef1f4;
+	color: var(--pf-accent) !important;
+	box-shadow: none !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-active .prime-fleet__step-num,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-active .prime-fleet__step-num {
+	border-color: var(--pf-accent) !important;
+	background: var(--pf-accent) !important;
+	background-color: var(--pf-accent) !important;
+	color: #fff !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-active .prime-fleet__step-label,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-done .prime-fleet__step-label,
+.prime-fleet[data-theme="light"] .prime-fleet__steps--timeline .prime-fleet__step.is-clickable:hover .prime-fleet__step-label {
+	color: #0b1220 !important;
+	background: #eef1f4;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__tl-arrow,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__tl-arrow:hover,
+.prime-fleet[data-theme="light"] .prime-fleet__tl-arrow {
+	background: transparent !important;
+	background-color: transparent !important;
+	border: 0 !important;
+	color: #5a6578 !important;
+	box-shadow: none !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__tl-arrow:hover:not(:disabled),
+.prime-fleet[data-theme="light"] .prime-fleet__tl-arrow:hover:not(:disabled) {
+	border: 0 !important;
+	color: #0b1220 !important;
+	background: rgba(11, 18, 32, 0.04) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__summary {
+	background: #fff;
+	border: 0;
+	box-shadow: 0 1px 2px rgba(11, 18, 32, 0.05), 0 10px 24px rgba(11, 18, 32, 0.06);
+	border-radius: 10px;
+	padding: 14px 16px;
+	min-height: 52px;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__summary-item + .prime-fleet__summary-item::before {
+	color: #94a3b8;
+	opacity: 0.7;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__summary-value {
+	color: #0b1220;
+	font-weight: 500;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] button.prime-fleet__summary-change,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] button.prime-fleet__summary-change:hover,
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__summary-change,
+.prime-fleet[data-theme="light"] button.prime-fleet__summary-change,
+.prime-fleet[data-theme="light"] .prime-fleet__summary-change {
+	color: var(--pf-accent) !important;
+	border: 0 !important;
+	background: transparent !important;
+	background-color: transparent !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+	min-height: 0 !important;
+	text-decoration: none !important;
+}
+
+body.prime-fleet-has-booking #prime-fleet[data-theme="light"] button.prime-fleet__summary-change:hover,
+.prime-fleet[data-theme="light"] button.prime-fleet__summary-change:hover,
+.prime-fleet[data-theme="light"] .prime-fleet__summary-change:hover {
+	opacity: 0.75;
+	color: var(--pf-accent) !important;
+	border: 0 !important;
+	background: transparent !important;
+	text-decoration: underline !important;
+	text-underline-offset: 3px;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__stage > .prime-fleet__panel + .prime-fleet__panel,
+.prime-fleet[data-theme="light"] .prime-fleet__stage > .prime-fleet__actions {
+	border-top-color: var(--pf-line);
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__cats {
+	background: transparent !important;
+	border-bottom-color: var(--pf-line) !important;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__cat,
@@ -737,6 +1440,7 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 
 .prime-fleet[data-theme="light"] .prime-fleet__cat:hover {
 	color: #0b1220 !important;
+	background: transparent !important;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__cat.is-active {
@@ -751,17 +1455,38 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	display: inline !important;
 	background: transparent !important;
 	background-color: transparent !important;
-	color: #0f766e !important;
+	color: inherit !important;
 	border-radius: 0 !important;
 	min-width: 0 !important;
 	height: auto !important;
 	padding: 0 !important;
 }
 
+.prime-fleet[data-theme="light"] .prime-fleet__cat.is-active .prime-fleet__cat-count {
+	color: var(--pf-accent) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail-empty-title {
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail-row dt {
+	color: var(--pf-muted) !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail-row dd {
+	color: #0b1220 !important;
+}
+
+.prime-fleet[data-theme="light"] .prime-fleet__rail-row.is-total dd {
+	color: #0b1220 !important;
+}
+
 .prime-fleet[data-theme="light"] .prime-fleet__service {
 	background: #fff !important;
-	border-color: #d8dee8 !important;
+	border-color: #d5dbe6 !important;
 	color: #0b1220 !important;
+	box-shadow: 0 1px 2px rgba(11, 18, 32, 0.04) !important;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__service:hover,
@@ -769,12 +1494,13 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__step
 	background: #f3faf9 !important;
 	background-color: #f3faf9 !important;
 	border-color: rgba(15, 118, 110, 0.45) !important;
+	box-shadow: 0 2px 8px rgba(11, 18, 32, 0.08) !important;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__service.is-selected {
 	background: rgba(15, 118, 110, 0.1) !important;
 	border-color: rgba(15, 118, 110, 0.45) !important;
-	border-left-color: var(--pf-accent) !important;
+	box-shadow: 0 1px 2px rgba(11, 18, 32, 0.05), 0 6px 16px rgba(11, 18, 32, 0.08) !important;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__service.is-selected .prime-fleet__service-check {
@@ -845,16 +1571,17 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__btn-
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__rail {
-	background:
-		linear-gradient(165deg, rgba(15, 118, 110, 0.07) 0%, transparent 42%),
-		#fff !important;
-	border: 1px solid rgba(15, 118, 110, 0.22) !important;
-	box-shadow: 0 10px 28px rgba(11, 18, 32, 0.08) !important;
+	background: #fff !important;
+	border: 1px solid var(--pf-line) !important;
+	box-shadow: var(--pf-shadow) !important;
 	color: #0b1220 !important;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__rail-label {
-	color: var(--pf-accent) !important;
+	color: var(--pf-muted) !important;
+	text-transform: none !important;
+	letter-spacing: 0.01em !important;
+	font-weight: 500 !important;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__rail-status,
@@ -1650,8 +2377,15 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-
 	inset: 0 auto 0 0;
 	width: 42%;
 	border-radius: inherit;
-	background: linear-gradient(90deg, transparent, var(--pf-accent), transparent);
-	animation: pf-rail-meter 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		var(--pf-accent) 35%,
+		var(--pf-accent) 65%,
+		transparent
+	);
+	opacity: 0.95;
+	animation: pf-rail-meter 1.25s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .prime-fleet__rail-estimating .prime-fleet__rail-status {
@@ -1661,8 +2395,9 @@ body.prime-fleet-has-booking #prime-fleet[data-theme="light"] .prime-fleet__qty-
 .prime-fleet__rail-estimating.is-refresh .prime-fleet__rail-status {
 	font-family: var(--sle-display) !important;
 	font-size: clamp(1.85rem, 3vw, 2.35rem) !important;
-	font-weight: 700 !important;
-	letter-spacing: -0.03em;
+	font-weight: 500 !important;
+	letter-spacing: -0.02em;
+	font-variant-numeric: tabular-nums;
 	opacity: 0.72;
 }
 

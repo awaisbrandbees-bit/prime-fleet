@@ -1,57 +1,55 @@
 /**
- * Prime Fleet motion — soft water-droplet ripple + panel swaps.
+ * Prime Fleet motion — quiet feedback, one short entrance.
  */
 
-.prime-fleet__header {
-	animation: pf-in-down 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.prime-fleet__progress {
-	animation: pf-in-down 0.48s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
-}
-
-.prime-fleet__rail-slot {
-	animation: pf-in-right 0.48s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+.prime-fleet__shell {
+	animation: pf-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .prime-fleet__main {
-	transition: opacity 0.26s ease, transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+	transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .prime-fleet__main.is-exit {
 	opacity: 0;
-	transform: translateX(-12px);
+	transform: translateX(-8px);
 	pointer-events: none;
 }
 
 .prime-fleet__main.is-enter {
-	animation: pf-panel-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation: pf-panel-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .prime-fleet__services--stack .prime-fleet__service-item {
-	opacity: 0;
-	animation: pf-row-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-	animation-delay: calc(var(--pf-i, 0) * 55ms + 30ms);
+	opacity: 1;
+	animation: none;
 }
 
 .prime-fleet__btn,
 .prime-fleet__cat,
-.prime-fleet__service {
-	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
-		transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, filter 0.2s ease;
+.prime-fleet__service,
+.prime-fleet__summary-change {
+	transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease,
+		text-decoration-color 0.18s ease;
+}
+
+.prime-fleet__steps--stages .prime-fleet__step {
+	transition: color 0.22s ease, border-color 0.22s ease, opacity 0.22s ease;
 }
 
 .prime-fleet__btn--primary:hover:not(:disabled):not(.is-disabled) {
-	filter: brightness(1.08);
-	transform: translateY(-1px);
-	box-shadow: 0 8px 20px rgba(45, 212, 191, 0.28);
+	background: var(--pf-accent-deep) !important;
+	background-color: var(--pf-accent-deep) !important;
+	filter: none;
+	transform: none;
+	box-shadow: none;
 }
 
 .prime-fleet__btn--primary:active:not(:disabled):not(.is-disabled) {
-	transform: translateY(0) scale(0.99);
+	transform: scale(0.99);
 }
 
-/* Water droplet: tiny hit, soft expanding ring — short & light */
+/* Quiet press ripple — no glow bloom */
 .prime-fleet__ripple-layer {
 	position: fixed;
 	inset: 0;
@@ -66,61 +64,44 @@
 	height: 6px;
 	margin: -3px 0 0 -3px;
 	border-radius: 50%;
-	background: rgba(94, 234, 212, 0.55);
-	box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.35);
+	background: rgba(94, 234, 212, 0.35);
+	box-shadow: none;
 	transform: scale(1);
-	opacity: 0.85;
-	animation: pf-droplet 0.45s cubic-bezier(0.2, 0.7, 0.25, 1) forwards;
-	will-change: transform, opacity, box-shadow;
+	opacity: 0.7;
+	animation: pf-droplet 0.36s cubic-bezier(0.2, 0.7, 0.25, 1) forwards;
+	will-change: transform, opacity;
 }
 
 .prime-fleet[data-theme="light"] .prime-fleet__ripple {
-	background: rgba(15, 118, 110, 0.5);
-	box-shadow: 0 0 0 0 rgba(15, 118, 110, 0.3);
+	background: rgba(15, 118, 110, 0.35);
 }
 
 @keyframes pf-droplet {
 	0% {
 		transform: scale(0.6);
-		opacity: 0.9;
-		box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.4);
-	}
-	35% {
-		opacity: 0.55;
+		opacity: 0.75;
 	}
 	100% {
-		transform: scale(1.15);
+		transform: scale(1.2);
 		opacity: 0;
-		box-shadow: 0 0 0 16px rgba(94, 234, 212, 0);
 	}
 }
 
-@keyframes pf-in-down {
+@keyframes pf-in {
 	from {
 		opacity: 0;
-		transform: translateY(-14px);
+		transform: translateY(8px);
 	}
 	to {
 		opacity: 1;
 		transform: translateY(0);
-	}
-}
-
-@keyframes pf-in-right {
-	from {
-		opacity: 0;
-		transform: translateX(16px);
-	}
-	to {
-		opacity: 1;
-		transform: translateX(0);
 	}
 }
 
 @keyframes pf-panel-in {
 	from {
 		opacity: 0;
-		transform: translateX(16px);
+		transform: translateX(8px);
 	}
 	to {
 		opacity: 1;
@@ -128,31 +109,27 @@
 	}
 }
 
-@keyframes pf-row-in {
-	from {
-		opacity: 0;
-		transform: translateY(12px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
 @media (prefers-reduced-motion: reduce) {
-	.prime-fleet__header,
-	.prime-fleet__progress,
-	.prime-fleet__rail-slot,
+	.prime-fleet__shell,
 	.prime-fleet__main.is-enter,
-	.prime-fleet__services--stack .prime-fleet__service-item,
-	.prime-fleet__ripple {
+	.prime-fleet__ripple,
+	.prime-fleet__boot-desk,
+	.prime-fleet__boot-mark-ring,
+	.prime-fleet__boot-meter > span,
+	.prime-fleet__boot-line,
+	.prime-fleet__boot-tile,
+	.prime-fleet__boot-stages > span,
+	.prime-fleet__submit-card,
+	.prime-fleet__submit-meter > span {
 		animation: none !important;
 	}
 
 	.prime-fleet__main,
 	.prime-fleet__btn,
 	.prime-fleet__cat,
-	.prime-fleet__service {
+	.prime-fleet__service,
+	.prime-fleet__step,
+	.prime-fleet__summary-change {
 		transition: none !important;
 		transform: none !important;
 	}
@@ -160,10 +137,6 @@
 	.prime-fleet__main.is-exit {
 		opacity: 1;
 		transform: none;
-	}
-
-	.prime-fleet__services--stack .prime-fleet__service-item {
-		opacity: 1;
 	}
 
 	.prime-fleet__ripple-layer {

@@ -18,9 +18,33 @@
 			.replace(/"/g, '&quot;');
 	}
 
+	function statusLabel(code) {
+		var map = {
+			pending_confirmation: i18n.statusPending || 'Pending',
+			confirmed: i18n.statusConfirmed || 'Confirmed',
+			cancelled: i18n.statusCancelled || 'Cancelled',
+			completed: i18n.statusCompleted || 'Completed',
+			no_show: i18n.statusNoShow || 'No-show'
+		};
+		return map[String(code || '')] || code || '';
+	}
+
+	function paymentLabel(code) {
+		var map = {
+			unpaid: i18n.payUnpaid || 'Unpaid',
+			link_sent: i18n.payLinkSent || 'Link sent',
+			pending_verification: i18n.payPending || 'Pending verification',
+			paid: i18n.payPaid || 'Paid',
+			refunded: i18n.payRefunded || 'Refunded'
+		};
+		return map[String(code || '')] || code || '';
+	}
+
 	function render(formErr, result) {
 		var body =
-			'<header class="prime-fleet__header"><p class="prime-fleet__brand"><span class="prime-fleet__brand-mark">PF</span> Prime Fleet</p>' +
+			'<header class="prime-fleet__header"><p class="prime-fleet__brand"><span class="prime-fleet__brand-mark">PF</span> ' +
+			escapeHtml(i18n.brand || 'Prime Fleet') +
+			'</p>' +
 			'<h1 class="prime-fleet__title">' +
 			escapeHtml(i18n.title || 'Check booking status') +
 			'</h1></header><div class="prime-fleet__main">';
@@ -28,22 +52,32 @@
 		if (result) {
 			body +=
 				'<ul class="prime-fleet__review">' +
-				'<li><strong>Reference</strong>' +
+				'<li><strong>' +
+				escapeHtml(i18n.reference || 'Reference') +
+				'</strong>' +
 				escapeHtml(result.reference || '') +
 				'</li>' +
-				'<li><strong>Status</strong>' +
-				escapeHtml(result.status || '') +
+				'<li><strong>' +
+				escapeHtml(i18n.status || 'Status') +
+				'</strong>' +
+				escapeHtml(statusLabel(result.status)) +
 				'</li>' +
-				'<li><strong>Pickup</strong>' +
+				'<li><strong>' +
+				escapeHtml(i18n.pickup || 'Pickup') +
+				'</strong>' +
 				escapeHtml(result.pickup_datetime || '—') +
 				'</li>' +
-				'<li><strong>Payment</strong>' +
-				escapeHtml(result.payment_status || '') +
+				'<li><strong>' +
+				escapeHtml(i18n.payment || 'Payment') +
+				'</strong>' +
+				escapeHtml(paymentLabel(result.payment_status)) +
 				'</li>' +
-				'<li><strong>Fare</strong>' +
+				'<li><strong>' +
+				escapeHtml(i18n.fare || 'Fare') +
+				'</strong>' +
 				escapeHtml(
 					result.manual_quote
-						? 'Custom quote'
+						? i18n.customQuote || 'Custom quote'
 						: (result.currency || 'USD') +
 								' ' +
 								(result.fare_total != null ? Number(result.fare_total).toFixed(2) : '—')

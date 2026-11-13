@@ -51,6 +51,24 @@ final class Table_List {
 		if ( '' !== (string) ( $args['payment'] ?? '' ) ) {
 			$out['payment'] = $args['payment'];
 		}
+		if ( '' !== (string) ( $args['tab'] ?? '' ) ) {
+			$out['tab'] = sanitize_key( (string) $args['tab'] );
+		}
+		if ( '' !== (string) ( $args['mtab'] ?? '' ) ) {
+			$out['mtab'] = sanitize_key( (string) $args['mtab'] );
+		}
+		if ( '' !== (string) ( $args['date_from'] ?? '' ) ) {
+			$out['date_from'] = (string) $args['date_from'];
+		}
+		if ( '' !== (string) ( $args['date_to'] ?? '' ) ) {
+			$out['date_to'] = (string) $args['date_to'];
+		}
+		foreach ( array( 'service_id', 'vehicle_id' ) as $id_key ) {
+			$id = absint( $args[ $id_key ] ?? 0 );
+			if ( $id > 0 ) {
+				$out[ $id_key ] = $id;
+			}
+		}
 		$paged = (int) ( $args['paged'] ?? 1 );
 		if ( $paged > 1 ) {
 			$out['paged'] = $paged;
@@ -160,20 +178,19 @@ final class Table_List {
 		$placeholder = $opts['placeholder'] ?? __( 'Search…', 'prime-fleet' );
 		$show_status = ! empty( $opts['status'] );
 		$types       = isset( $opts['types'] ) && is_array( $opts['types'] ) ? $opts['types'] : array();
+		$uid         = 'pf-tools-s-' . sanitize_key( $panel );
 
 		ob_start();
-		echo '<form class="prime-fleet-table-tools" data-pf-table-filter="1" data-pf-panel="' . esc_attr( $panel ) . '">';
-		echo '<div class="prime-fleet-table-tools__search">';
-		echo '<span class="prime-fleet-table-tools__icon" aria-hidden="true"></span>';
-		echo '<input type="search" name="s" value="' . esc_attr( (string) ( $args['s'] ?? '' ) ) . '" placeholder="' . esc_attr( $placeholder ) . '" autocomplete="off" />';
-		echo '</div>';
+		echo '<form class="prime-fleet-table-tools tablenav top" data-pf-table-filter="1" data-pf-panel="' . esc_attr( $panel ) . '">';
 
+		echo '<div class="alignleft actions bulkactions prime-fleet-table-tools__actions">';
 		if ( $show_status ) {
 			$statuses = isset( $opts['statuses'] ) && is_array( $opts['statuses'] ) ? $opts['statuses'] : array(
 				'active'   => __( 'Active', 'prime-fleet' ),
 				'inactive' => __( 'Inactive', 'prime-fleet' ),
 			);
-			echo '<select name="status" class="prime-fleet-table-tools__select" aria-label="' . esc_attr__( 'Status', 'prime-fleet' ) . '">';
+			echo '<label class="screen-reader-text" for="pf-tools-status-' . esc_attr( $panel ) . '">' . esc_html__( 'Filter by status', 'prime-fleet' ) . '</label>';
+			echo '<select name="status" id="pf-tools-status-' . esc_attr( $panel ) . '" class="prime-fleet-table-tools__select" data-pf-native="1" data-pf-no-search="1">';
 			echo '<option value="">' . esc_html__( 'All statuses', 'prime-fleet' ) . '</option>';
 			foreach ( $statuses as $value => $label ) {
 				printf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $value ), selected( $args['status'] ?? '', $value, false ), esc_html( $label ) );
@@ -182,7 +199,8 @@ final class Table_List {
 		}
 
 		if ( $types ) {
-			echo '<select name="type" class="prime-fleet-table-tools__select" aria-label="' . esc_attr__( 'Type', 'prime-fleet' ) . '">';
+			echo '<label class="screen-reader-text" for="pf-tools-type-' . esc_attr( $panel ) . '">' . esc_html__( 'Filter by type', 'prime-fleet' ) . '</label>';
+			echo '<select name="type" id="pf-tools-type-' . esc_attr( $panel ) . '" class="prime-fleet-table-tools__select" data-pf-native="1" data-pf-no-search="1">';
 			echo '<option value="">' . esc_html__( 'All types', 'prime-fleet' ) . '</option>';
 			foreach ( $types as $value => $label ) {
 				printf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $value ), selected( $args['type'] ?? '', $value, false ), esc_html( $label ) );
@@ -192,7 +210,8 @@ final class Table_List {
 
 		if ( ! empty( $opts['payment'] ) ) {
 			$payments = isset( $opts['payments'] ) && is_array( $opts['payments'] ) ? $opts['payments'] : array();
-			echo '<select name="payment" class="prime-fleet-table-tools__select" aria-label="' . esc_attr__( 'Payment', 'prime-fleet' ) . '">';
+			echo '<label class="screen-reader-text" for="pf-tools-payment-' . esc_attr( $panel ) . '">' . esc_html__( 'Filter by payment', 'prime-fleet' ) . '</label>';
+			echo '<select name="payment" id="pf-tools-payment-' . esc_attr( $panel ) . '" class="prime-fleet-table-tools__select" data-pf-native="1" data-pf-no-search="1">';
 			echo '<option value="">' . esc_html__( 'All payments', 'prime-fleet' ) . '</option>';
 			foreach ( $payments as $value => $label ) {
 				printf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $value ), selected( $args['payment'] ?? '', $value, false ), esc_html( $label ) );
@@ -200,8 +219,20 @@ final class Table_List {
 			echo '</select>';
 		}
 
-		echo '<button type="submit" class="prime-fleet-btn">' . esc_html__( 'Filter', 'prime-fleet' ) . '</button>';
-		echo '<button type="button" class="prime-fleet-btn prime-fleet-btn--ghost" data-pf-table-reset="1">' . esc_html__( 'Reset', 'prime-fleet' ) . '</button>';
+		echo '<input type="submit" class="button action" value="' . esc_attr__( 'Filter', 'prime-fleet' ) . '" />';
+		echo '<button type="button" class="button" data-pf-table-reset="1">' . esc_html__( 'Reset', 'prime-fleet' ) . '</button>';
+		echo '</div>';
+
+		echo '<p class="search-box prime-fleet-table-tools__search">';
+		echo '<label class="screen-reader-text" for="' . esc_attr( $uid ) . '">' . esc_html( $placeholder ) . '</label>';
+		echo '<input type="search" id="' . esc_attr( $uid ) . '" name="s" value="' . esc_attr( (string) ( $args['s'] ?? '' ) ) . '" placeholder="' . esc_attr( $placeholder ) . '" autocomplete="off" />';
+		echo '<input type="submit" id="search-submit-' . esc_attr( $panel ) . '" class="button" value="' . esc_attr__( 'Search', 'prime-fleet' ) . '" />';
+		if ( ! empty( $opts['trailing'] ) && is_string( $opts['trailing'] ) ) {
+			echo '<span class="prime-fleet-table-tools__trailing">' . $opts['trailing'] . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+		echo '</p>';
+
+		echo '<br class="clear" />';
 		echo '</form>';
 		return ob_get_clean();
 	}

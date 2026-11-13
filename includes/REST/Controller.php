@@ -205,7 +205,7 @@ final class Controller {
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public function get_config( $request ) {
-		$limit = Rate_Limiter::allow( 'config', 120, 60 );
+		$limit = Rate_Limiter::allow_configured( 'config' );
 		if ( is_wp_error( $limit ) ) {
 			return $this->error_response( $limit );
 		}
@@ -228,7 +228,7 @@ final class Controller {
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public function post_quote( $request ) {
-		$limit = Rate_Limiter::allow( 'quote', 60, 60 );
+		$limit = Rate_Limiter::allow_configured( 'quote' );
 		if ( is_wp_error( $limit ) ) {
 			return $this->error_response( $limit );
 		}
@@ -306,7 +306,7 @@ final class Controller {
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public function post_coupon_validate( $request ) {
-		$limit = Rate_Limiter::allow( 'coupon', 40, 60 );
+		$limit = Rate_Limiter::allow_configured( 'coupon' );
 		if ( is_wp_error( $limit ) ) {
 			return $this->error_response( $limit );
 		}
@@ -314,11 +314,23 @@ final class Controller {
 		if ( ! is_array( $params ) ) {
 			$params = $request->get_params();
 		}
+
+		/* Never trust client fare_total — re-quote from trip fields. */
+		$fare  = 0.0;
+		$input = self::sanitize_quote_input( is_array( $params ) ? $params : array() );
+		unset( $input['total'], $input['price'], $input['amount'], $input['fare'], $input['fare_total'] );
+		if ( ! empty( $input['service_id'] ) ) {
+			$quote = Engine::quote( $input );
+			if ( ! is_wp_error( $quote ) && empty( $quote['manual_quote'] ) && isset( $quote['total'] ) ) {
+				$fare = (float) $quote['total'];
+			}
+		}
+
 		$result = Coupons::validate(
 			isset( $params['code'] ) ? (string) $params['code'] : '',
 			array(
-				'service_id' => absint( $params['service_id'] ?? 0 ),
-				'fare_total' => isset( $params['fare_total'] ) ? (float) $params['fare_total'] : 0,
+				'service_id' => absint( $params['service_id'] ?? $input['service_id'] ?? 0 ),
+				'fare_total' => $fare,
 				'email'      => isset( $params['email'] ) ? (string) $params['email'] : '',
 			)
 		);
@@ -335,7 +347,7 @@ final class Controller {
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public function post_lookup( $request ) {
-		$limit = Rate_Limiter::allow( 'lookup', 30, 60 );
+		$limit = Rate_Limiter::allow_configured( 'lookup' );
 		if ( is_wp_error( $limit ) ) {
 			return $this->error_response( $limit );
 		}

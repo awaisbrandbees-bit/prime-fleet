@@ -1,6 +1,6 @@
 <?php
 /**
- * Global settings admin (tabbed).
+ * Global settings admin — section pages via ?stab= (server-rendered).
  *
  * @package Prime_Fleet
  */
@@ -31,6 +31,7 @@ final class Settings {
 			'guest'    => __( 'Guest copy', 'prime-fleet' ),
 			'pricing'  => __( 'Pricing', 'prime-fleet' ),
 			'whatsapp' => __( 'WhatsApp', 'prime-fleet' ),
+			'security' => __( 'Security', 'prime-fleet' ),
 			'website'  => __( 'Website', 'prime-fleet' ),
 		);
 	}
@@ -59,42 +60,68 @@ final class Settings {
 			echo $notice; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 		?>
-		<form method="post" class="prime-fleet-settings" data-pf-ajax-form="1" data-pf-settings-tabs="1">
+		<form method="post" class="prime-fleet-settings" data-pf-ajax-form="1">
 			<?php wp_nonce_field( self::NONCE ); ?>
 			<input type="hidden" name="prime_fleet_action" value="save_settings" />
 			<input type="hidden" name="settings_tab" id="prime-fleet-settings-tab" value="<?php echo esc_attr( $active ); ?>" />
 
-			<nav class="prime-fleet-settings-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Settings sections', 'prime-fleet' ); ?>">
-				<?php foreach ( $tabs as $key => $label ) : ?>
-					<button
-						type="button"
-						class="prime-fleet-settings-tabs__btn<?php echo $key === $active ? ' is-active' : ''; ?>"
-						role="tab"
-						id="pf-settings-tab-<?php echo esc_attr( $key ); ?>"
-						aria-selected="<?php echo $key === $active ? 'true' : 'false'; ?>"
-						aria-controls="pf-settings-panel-<?php echo esc_attr( $key ); ?>"
-						data-pf-settings-tab="<?php echo esc_attr( $key ); ?>"
-					><?php echo esc_html( $label ); ?></button>
-				<?php endforeach; ?>
-			</nav>
+			<div class="prime-fleet-settings-layout">
+				<nav class="prime-fleet-settings-nav" aria-label="<?php esc_attr_e( 'Settings pages', 'prime-fleet' ); ?>">
+					<p class="prime-fleet-settings-nav__label"><?php esc_html_e( 'Settings', 'prime-fleet' ); ?></p>
+					<ul class="prime-fleet-settings-nav__list">
+						<?php foreach ( $tabs as $key => $label ) : ?>
+							<li>
+								<button
+									type="button"
+									class="prime-fleet-settings-nav__link<?php echo $key === $active ? ' is-active' : ''; ?>"
+									id="pf-settings-tab-<?php echo esc_attr( $key ); ?>"
+									aria-current="<?php echo $key === $active ? 'page' : 'false'; ?>"
+									data-pf-panel="settings"
+									data-pf-query="<?php echo esc_attr( wp_json_encode( array( 'stab' => $key ) ) ); ?>"
+								><?php echo esc_html( $label ); ?></button>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+				</nav>
 
-			<div class="prime-fleet-settings-panels">
-				<?php
-				self::panel_general( $settings, $active );
-				self::panel_booking( $settings, $active );
-				self::panel_guest( $settings, $active );
-				self::panel_pricing( $settings, $svc_list, $active );
-				self::panel_whatsapp( $settings, $active );
-				self::panel_website( $settings, $active );
-				?>
-			</div>
+				<div class="prime-fleet-settings-main">
+					<div class="prime-fleet-settings-panels">
+						<?php
+						if ( 'general' === $active ) {
+							self::panel_general( $settings );
+						} elseif ( 'booking' === $active ) {
+							self::panel_booking( $settings );
+						} elseif ( 'guest' === $active ) {
+							self::panel_guest( $settings );
+						} elseif ( 'pricing' === $active ) {
+							self::panel_pricing( $settings, $svc_list );
+						} elseif ( 'whatsapp' === $active ) {
+							self::panel_whatsapp( $settings );
+						} elseif ( 'security' === $active ) {
+							self::panel_security( $settings );
+						} else {
+							self::panel_website( $settings );
+						}
+						?>
+					</div>
 
-			<div class="prime-fleet-sticky-save">
-				<button type="submit" class="prime-fleet-btn"><?php esc_html_e( 'Save settings', 'prime-fleet' ); ?></button>
+					<div class="prime-fleet-sticky-save">
+						<button type="submit" class="prime-fleet-btn"><?php esc_html_e( 'Save settings', 'prime-fleet' ); ?></button>
+					</div>
+				</div>
 			</div>
 		</form>
 		<?php
-		View::shell( __( 'Settings', 'prime-fleet' ), ob_get_clean() );
+		$titles = self::tabs();
+		$page_title = isset( $titles[ $active ] ) ? $titles[ $active ] : __( 'Settings', 'prime-fleet' );
+		View::shell(
+			sprintf(
+				/* translators: %s: settings section label */
+				__( 'Settings · %s', 'prime-fleet' ),
+				$page_title
+			),
+			ob_get_clean()
+		);
 	}
 
 	/**
@@ -135,6 +162,15 @@ final class Settings {
 				'airport_vip_seasonal_discount_pct' => 10,
 				'seasonal_discount_pct'             => 10,
 				'seasonal_discount_service_ids'     => array(),
+				'captcha_enabled'                   => 0,
+				'captcha_provider'                  => 'none',
+				'captcha_site_key'                  => '',
+				'captcha_secret'                    => '',
+				'rl_bookings_per_min'               => 20,
+				'rl_bookings_email_per_hour'        => 24,
+				'rl_coupon_per_min'                 => 40,
+				'rl_quote_per_min'                   => 60,
+				'rl_lookup_per_min'                  => 30,
 			)
 		);
 		if ( ! isset( $settings['whatsapp_channel_enabled'] ) ) {
@@ -187,12 +223,10 @@ final class Settings {
 	}
 
 	/**
-	 * @param array  $settings Settings.
-	 * @param string $active Active tab.
+	 * @param array $settings Settings.
 	 */
-	private static function panel_general( array $settings, $active ) {
-		$hidden = 'general' === $active ? '' : ' hidden';
-		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-general" role="tabpanel" aria-labelledby="pf-settings-tab-general" data-pf-settings-panel="general"' . $hidden . '>';
+	private static function panel_general( array $settings ) {
+		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-general" data-pf-settings-panel="general">';
 		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'General', 'prime-fleet' ) . '</h3>';
 		echo '<p>' . esc_html__( 'Currency, timezone, references, and public contact details.', 'prime-fleet' ) . '</p></header>';
 		echo '<div class="prime-fleet-form-grid prime-fleet-form-grid--2">';
@@ -238,12 +272,10 @@ final class Settings {
 	}
 
 	/**
-	 * @param array  $settings Settings.
-	 * @param string $active Active tab.
+	 * @param array $settings Settings.
 	 */
-	private static function panel_booking( array $settings, $active ) {
-		$hidden = 'booking' === $active ? '' : ' hidden';
-		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-booking" role="tabpanel" aria-labelledby="pf-settings-tab-booking" data-pf-settings-panel="booking"' . $hidden . '>';
+	private static function panel_booking( array $settings ) {
+		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-booking" data-pf-settings-panel="booking">';
 		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Booking rules', 'prime-fleet' ) . '</h3>';
 		echo '<p>' . esc_html__( 'Advance booking window, same-day rules, waiting time, and reminder offsets.', 'prime-fleet' ) . '</p></header>';
 		echo '<div class="prime-fleet-form-grid prime-fleet-form-grid--2">';
@@ -282,12 +314,10 @@ final class Settings {
 	}
 
 	/**
-	 * @param array  $settings Settings.
-	 * @param string $active Active tab.
+	 * @param array $settings Settings.
 	 */
-	private static function panel_guest( array $settings, $active ) {
-		$hidden = 'guest' === $active ? '' : ' hidden';
-		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-guest" role="tabpanel" aria-labelledby="pf-settings-tab-guest" data-pf-settings-panel="guest"' . $hidden . '>';
+	private static function panel_guest( array $settings ) {
+		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-guest" data-pf-settings-panel="guest">';
 		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Guest copy', 'prime-fleet' ) . '</h3>';
 		echo '<p>' . esc_html__( 'Messages shown after submit and on custom-quote paths.', 'prime-fleet' ) . '</p></header>';
 		echo '<div class="prime-fleet-form-stack">';
@@ -297,13 +327,11 @@ final class Settings {
 	}
 
 	/**
-	 * @param array  $settings Settings.
-	 * @param array  $svc_list Services.
-	 * @param string $active Active tab.
+	 * @param array $settings Settings.
+	 * @param array $svc_list Services.
 	 */
-	private static function panel_pricing( array $settings, $svc_list, $active ) {
-		$hidden = 'pricing' === $active ? '' : ' hidden';
-		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-pricing" role="tabpanel" aria-labelledby="pf-settings-tab-pricing" data-pf-settings-panel="pricing"' . $hidden . '>';
+	private static function panel_pricing( array $settings, $svc_list ) {
+		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-pricing" data-pf-settings-panel="pricing">';
 		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Seasonal discount', 'prime-fleet' ) . '</h3>';
 		echo '<p>' . esc_html__( 'Optional percent off published fares for selected services. Does not change stored route prices. Set % to 0 to turn off.', 'prime-fleet' ) . '</p></header>';
 		echo '<div class="prime-fleet-form-grid prime-fleet-form-grid--2">';
@@ -347,12 +375,65 @@ final class Settings {
 	}
 
 	/**
-	 * @param array  $settings Settings.
-	 * @param string $active Active tab.
+	 * @param array $settings Settings.
 	 */
-	private static function panel_whatsapp( array $settings, $active ) {
-		$hidden = 'whatsapp' === $active ? '' : ' hidden';
-		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-whatsapp" role="tabpanel" aria-labelledby="pf-settings-tab-whatsapp" data-pf-settings-panel="whatsapp"' . $hidden . '>';
+	private static function panel_security( array $settings ) {
+		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-security" data-pf-settings-panel="security">';
+		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Guest anti-bot', 'prime-fleet' ) . '</h3>';
+		echo '<p>' . esc_html__( 'Optional CAPTCHA on booking submit. Keeps existing honeypot + rate limits; use Cloudflare Turnstile or Google reCAPTCHA v2.', 'prime-fleet' ) . '</p></header>';
+		echo '<div class="prime-fleet-form-grid prime-fleet-form-grid--2">';
+		echo '<div class="prime-fleet-field prime-fleet-field--check">';
+		echo '<label class="prime-fleet-check"><input type="checkbox" name="captcha_enabled" value="1" ' . checked( ! empty( $settings['captcha_enabled'] ), true, false ) . ' />';
+		echo '<span>' . esc_html__( 'Require CAPTCHA on booking submit', 'prime-fleet' ) . '</span></label></div>';
+		self::select(
+			'captcha_provider',
+			__( 'Provider', 'prime-fleet' ),
+			(string) ( $settings['captcha_provider'] ?? 'none' ),
+			array(
+				'none'         => __( 'None', 'prime-fleet' ),
+				'turnstile'    => __( 'Cloudflare Turnstile', 'prime-fleet' ),
+				'recaptcha_v2' => __( 'Google reCAPTCHA v2 (checkbox)', 'prime-fleet' ),
+			)
+		);
+		self::text( 'captcha_site_key', __( 'Site key (public)', 'prime-fleet' ), (string) ( $settings['captcha_site_key'] ?? '' ) );
+		$secret_placeholder = ! empty( $settings['captcha_secret'] ) || ( defined( 'PRIME_FLEET_CAPTCHA_SECRET' ) && PRIME_FLEET_CAPTCHA_SECRET )
+			? __( '•••••••• (leave blank to keep)', 'prime-fleet' )
+			: '';
+		echo '<div class="prime-fleet-field"><label for="captcha_secret">' . esc_html__( 'Secret key (prefer wp-config PRIME_FLEET_CAPTCHA_SECRET)', 'prime-fleet' ) . '</label>';
+		printf(
+			'<input id="captcha_secret" type="password" name="captcha_secret" value="" autocomplete="new-password" placeholder="%s" />',
+			esc_attr( $secret_placeholder )
+		);
+		echo '</div></div>';
+		echo '<p class="prime-fleet-help">' . esc_html__( 'When enabled, submit fails closed without a valid token. Incomplete CAPTCHA settings also block bookings (fail closed). Prefer PRIME_FLEET_CAPTCHA_SECRET in wp-config.', 'prime-fleet' ) . '</p>';
+		echo '</section>';
+
+		echo '<section class="prime-fleet-card prime-fleet-section" style="margin-top:14px;">';
+		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Public REST rate limits', 'prime-fleet' ) . '</h3>';
+		echo '<p>' . esc_html__( 'Per-IP buckets (REMOTE_ADDR). Lower values under spam pressure; raise carefully for shared NAT offices.', 'prime-fleet' ) . '</p></header>';
+		echo '<div class="prime-fleet-form-grid prime-fleet-form-grid--2">';
+		self::text( 'rl_bookings_per_min', __( 'Bookings / minute / IP', 'prime-fleet' ), (string) ( $settings['rl_bookings_per_min'] ?? 20 ) );
+		self::text( 'rl_bookings_email_per_hour', __( 'Bookings / hour / email', 'prime-fleet' ), (string) ( $settings['rl_bookings_email_per_hour'] ?? 24 ) );
+		self::text( 'rl_coupon_per_min', __( 'Coupon validate / minute / IP', 'prime-fleet' ), (string) ( $settings['rl_coupon_per_min'] ?? 40 ) );
+		self::text( 'rl_quote_per_min', __( 'Quote / minute / IP', 'prime-fleet' ), (string) ( $settings['rl_quote_per_min'] ?? 60 ) );
+		self::text( 'rl_lookup_per_min', __( 'Lookup / minute / IP', 'prime-fleet' ), (string) ( $settings['rl_lookup_per_min'] ?? 30 ) );
+		echo '</div></section>';
+
+		echo '<section class="prime-fleet-card prime-fleet-section" style="margin-top:14px;">';
+		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Payment notify cooldown', 'prime-fleet' ) . '</h3>';
+		echo '<p>' . esc_html__( 'Minimum seconds between guest payment-link emails/WhatsApp for the same booking. 0 disables.', 'prime-fleet' ) . '</p></header>';
+		echo '<div class="prime-fleet-form-grid prime-fleet-form-grid--2">';
+		self::text( 'payment_notify_cooldown_sec', __( 'Re-send cooldown (seconds)', 'prime-fleet' ), (string) ( $settings['payment_notify_cooldown_sec'] ?? 120 ) );
+		echo '</div>';
+		echo '<p class="prime-fleet-help">' . esc_html__( 'Abuse events (rate-limit 429, honeypot) appear under Logs. Production: OpenWA off; prefer Stripe/CAPTCHA secrets in wp-config.', 'prime-fleet' ) . '</p>';
+		echo '</section>';
+	}
+
+	/**
+	 * @param array $settings Settings.
+	 */
+	private static function panel_whatsapp( array $settings ) {
+		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-whatsapp" data-pf-settings-panel="whatsapp">';
 		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'WhatsApp channel', 'prime-fleet' ) . '</h3>';
 		echo '<p>' . esc_html__( 'Production path is Meta Cloud API (client Business WhatsApp). Stub / OpenWA are for development only.', 'prime-fleet' ) . '</p></header>';
 		echo '<div class="prime-fleet-form-grid prime-fleet-form-grid--2">';
@@ -402,19 +483,17 @@ final class Settings {
 			(string) ( $settings['whatsapp_openwa_api_key'] ?? '' )
 		);
 		echo '</div>';
-		echo '<p class="prime-fleet-help">' . esc_html__( 'Run OpenWA locally (Docker → http://localhost:2785), create a session, scan QR with a test phone, then paste session ID + API key here.', 'prime-fleet' ) . '</p>';
+		echo '<p class="prime-fleet-help">' . esc_html__( 'Run OpenWA locally (Docker → http://127.0.0.1:2785). Base URL must be localhost / 127.0.0.1 only (SSRF guard). Driver works only with WP_DEBUG or PRIME_FLEET_ALLOW_OPENWA in wp-config — otherwise settings fall back to Stub.', 'prime-fleet' ) . '</p>';
 		echo '</section>';
 	}
 
 	/**
 	 * Website / sticky CTA (M5 Phase C).
 	 *
-	 * @param array  $settings Settings.
-	 * @param string $active Active tab.
+	 * @param array $settings Settings.
 	 */
-	private static function panel_website( array $settings, $active ) {
-		$hidden = 'website' === $active ? '' : ' hidden';
-		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-website" role="tabpanel" aria-labelledby="pf-settings-tab-website" data-pf-settings-panel="website"' . $hidden . '>';
+	private static function panel_website( array $settings ) {
+		echo '<section class="prime-fleet-card prime-fleet-section prime-fleet-settings-panel" id="pf-settings-panel-website" data-pf-settings-panel="website">';
 
 		echo '<header class="prime-fleet-section__head"><h3>' . esc_html__( 'Booking form theme', 'prime-fleet' ) . '</h3>';
 		echo '<p>' . esc_html__( 'Guest-facing wizard appearance. Dark is the current navy look; light uses a white section.', 'prime-fleet' ) . '</p></header>';
@@ -462,6 +541,8 @@ final class Settings {
 	}
 
 	/**
+	 * Save only the active settings section (page), merge into stored option.
+	 *
 	 * @return string
 	 */
 	private static function handle_save() {
@@ -470,54 +551,10 @@ final class Settings {
 		}
 		check_admin_referer( self::NONCE );
 
-		$min_advance      = isset( $_POST['min_advance_hours'] ) ? sanitize_text_field( wp_unslash( $_POST['min_advance_hours'] ) ) : '';
-		$allowed_currency = array( 'USD', 'EUR', 'GBP', 'CAD', 'AUD', 'XCD' );
-		$currency         = strtoupper( sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'USD' ) ) );
-		if ( ! in_array( $currency, $allowed_currency, true ) ) {
-			$currency = 'USD';
-		}
-
-		$slot = absint( $_POST['slot_increment'] ?? 30 );
-		if ( ! in_array( $slot, array( 15, 30, 60 ), true ) ) {
-			$slot = 30;
-		}
-
-		$status = sanitize_key( wp_unslash( $_POST['default_status'] ?? 'pending_confirmation' ) );
-		if ( ! in_array( $status, array( 'pending_confirmation', 'confirmed', 'manual_review' ), true ) ) {
-			$status = 'pending_confirmation';
-		}
-
-		$tz = sanitize_text_field( wp_unslash( $_POST['timezone'] ?? 'UTC' ) );
-		if ( ! in_array( $tz, timezone_identifiers_list(), true ) ) {
-			$tz = 'UTC';
-		}
-
-		$season_pct = isset( $_POST['seasonal_discount_pct'] )
-			? (float) sanitize_text_field( wp_unslash( $_POST['seasonal_discount_pct'] ) )
-			: ( isset( $_POST['airport_vip_seasonal_discount_pct'] )
-				? (float) sanitize_text_field( wp_unslash( $_POST['airport_vip_seasonal_discount_pct'] ) )
-				: 0 );
-		if ( $season_pct < 0 ) {
-			$season_pct = 0;
-		}
-		if ( $season_pct > 50 ) {
-			$season_pct = 50;
-		}
-
-		$season_svc_ids = array();
-		if ( ! empty( $_POST['seasonal_discount_service_ids'] ) && is_array( $_POST['seasonal_discount_service_ids'] ) ) {
-			foreach ( wp_unslash( $_POST['seasonal_discount_service_ids'] ) as $raw_id ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				$sid = absint( $raw_id );
-				if ( $sid ) {
-					$season_svc_ids[] = $sid;
-				}
-			}
-			$season_svc_ids = array_values( array_unique( $season_svc_ids ) );
-		}
-
-		$form_theme = sanitize_key( wp_unslash( $_POST['form_theme'] ?? 'dark' ) );
-		if ( ! in_array( $form_theme, array( 'dark', 'light' ), true ) ) {
-			$form_theme = 'dark';
+		$tabs = self::tabs();
+		$tab  = isset( $_POST['settings_tab'] ) ? sanitize_key( wp_unslash( $_POST['settings_tab'] ) ) : 'general';
+		if ( ! isset( $tabs[ $tab ] ) ) {
+			$tab = 'general';
 		}
 
 		$prev = get_option( self::OPTION, array() );
@@ -525,47 +562,146 @@ final class Settings {
 			$prev = array();
 		}
 
-		$data = array_merge(
-			$prev,
-			array(
-				'currency'                          => $currency,
-				'timezone'                          => $tz,
-				'reference_prefix'                  => sanitize_text_field( wp_unslash( $_POST['reference_prefix'] ?? 'PF-' ) ),
-				'default_status'                    => $status,
-				'slot_increment'                    => $slot,
-				'pending_message'                   => sanitize_textarea_field( wp_unslash( $_POST['pending_message'] ?? '' ) ),
-				'submit_label'                      => sanitize_text_field( wp_unslash( $_POST['submit_label'] ?? '' ) ),
-				'custom_quote_message'              => sanitize_textarea_field( wp_unslash( $_POST['custom_quote_message'] ?? '' ) ),
-				'phone'                             => sanitize_text_field( wp_unslash( $_POST['phone'] ?? '' ) ),
-				'whatsapp'                          => sanitize_text_field( wp_unslash( $_POST['whatsapp'] ?? '' ) ),
-				'reminder_24h'                      => absint( $_POST['reminder_24h'] ?? 1440 ),
-				'reminder_2h'                       => absint( $_POST['reminder_2h'] ?? 120 ),
-				'min_advance_hours'                 => '' === $min_advance ? '' : $min_advance,
-				'same_day_allowed'                  => ! empty( $_POST['same_day_allowed'] ) ? 1 : 0,
-				'waiting_complimentary_minutes'     => max( 0, absint( $_POST['waiting_complimentary_minutes'] ?? 30 ) ),
+		$patch = array();
+		if ( 'general' === $tab ) {
+			$allowed_currency = array( 'USD', 'EUR', 'GBP', 'CAD', 'AUD', 'XCD' );
+			$currency         = strtoupper( sanitize_text_field( wp_unslash( $_POST['currency'] ?? 'USD' ) ) );
+			if ( ! in_array( $currency, $allowed_currency, true ) ) {
+				$currency = 'USD';
+			}
+			$slot = absint( $_POST['slot_increment'] ?? 30 );
+			if ( ! in_array( $slot, array( 15, 30, 60 ), true ) ) {
+				$slot = 30;
+			}
+			$status = sanitize_key( wp_unslash( $_POST['default_status'] ?? 'pending_confirmation' ) );
+			if ( ! in_array( $status, array( 'pending_confirmation', 'confirmed', 'manual_review' ), true ) ) {
+				$status = 'pending_confirmation';
+			}
+			$tz = sanitize_text_field( wp_unslash( $_POST['timezone'] ?? 'UTC' ) );
+			if ( ! in_array( $tz, timezone_identifiers_list(), true ) ) {
+				$tz = 'UTC';
+			}
+			$patch = array(
+				'currency'         => $currency,
+				'timezone'         => $tz,
+				'reference_prefix' => sanitize_text_field( wp_unslash( $_POST['reference_prefix'] ?? 'PF-' ) ),
+				'default_status'   => $status,
+				'slot_increment'   => $slot,
+				'submit_label'     => sanitize_text_field( wp_unslash( $_POST['submit_label'] ?? '' ) ),
+				'phone'            => sanitize_text_field( wp_unslash( $_POST['phone'] ?? '' ) ),
+				'whatsapp'         => sanitize_text_field( wp_unslash( $_POST['whatsapp'] ?? '' ) ),
+			);
+		} elseif ( 'booking' === $tab ) {
+			$min_advance = isset( $_POST['min_advance_hours'] ) ? sanitize_text_field( wp_unslash( $_POST['min_advance_hours'] ) ) : '';
+			$patch       = array(
+				'min_advance_hours'             => '' === $min_advance ? '' : $min_advance,
+				'same_day_allowed'              => ! empty( $_POST['same_day_allowed'] ) ? 1 : 0,
+				'waiting_complimentary_minutes' => max( 0, absint( $_POST['waiting_complimentary_minutes'] ?? 30 ) ),
+				'reminder_24h'                  => absint( $_POST['reminder_24h'] ?? 1440 ),
+				'reminder_2h'                   => absint( $_POST['reminder_2h'] ?? 120 ),
+			);
+		} elseif ( 'guest' === $tab ) {
+			$patch = array(
+				'pending_message'      => sanitize_textarea_field( wp_unslash( $_POST['pending_message'] ?? '' ) ),
+				'custom_quote_message' => sanitize_textarea_field( wp_unslash( $_POST['custom_quote_message'] ?? '' ) ),
+			);
+		} elseif ( 'pricing' === $tab ) {
+			$season_pct = isset( $_POST['seasonal_discount_pct'] )
+				? (float) sanitize_text_field( wp_unslash( $_POST['seasonal_discount_pct'] ) )
+				: 0;
+			if ( $season_pct < 0 ) {
+				$season_pct = 0;
+			}
+			if ( $season_pct > 50 ) {
+				$season_pct = 50;
+			}
+			$season_svc_ids = array();
+			if ( ! empty( $_POST['seasonal_discount_service_ids'] ) && is_array( $_POST['seasonal_discount_service_ids'] ) ) {
+				foreach ( wp_unslash( $_POST['seasonal_discount_service_ids'] ) as $raw_id ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+					$sid = absint( $raw_id );
+					if ( $sid ) {
+						$season_svc_ids[] = $sid;
+					}
+				}
+				$season_svc_ids = array_values( array_unique( $season_svc_ids ) );
+			}
+			$patch = array(
 				'seasonal_discount_pct'             => $season_pct,
 				'seasonal_discount_service_ids'     => $season_svc_ids,
 				'airport_vip_seasonal_discount_pct' => $season_pct,
-				'whatsapp_channel_enabled'          => ! empty( $_POST['whatsapp_channel_enabled'] ) ? 1 : 0,
-				'whatsapp_driver'                   => in_array( sanitize_key( wp_unslash( $_POST['whatsapp_driver'] ?? 'stub' ) ), array( 'stub', 'openwa', 'meta' ), true )
-					? sanitize_key( wp_unslash( $_POST['whatsapp_driver'] ?? 'stub' ) )
-					: 'stub',
-				'whatsapp_meta_phone_number_id'     => sanitize_text_field( wp_unslash( $_POST['whatsapp_meta_phone_number_id'] ?? '' ) ),
-				'whatsapp_meta_api_version'         => sanitize_text_field( wp_unslash( $_POST['whatsapp_meta_api_version'] ?? 'v21.0' ) ),
-				'whatsapp_openwa_base_url'          => esc_url_raw( wp_unslash( $_POST['whatsapp_openwa_base_url'] ?? 'http://127.0.0.1:2785' ) ),
-				'whatsapp_openwa_session_id'        => sanitize_text_field( wp_unslash( $_POST['whatsapp_openwa_session_id'] ?? '' ) ),
-				'whatsapp_openwa_api_key'           => sanitize_text_field( wp_unslash( $_POST['whatsapp_openwa_api_key'] ?? '' ) ),
-				'sticky_cta_enabled'                => ! empty( $_POST['sticky_cta_enabled'] ) ? 1 : 0,
-				'sticky_book_url'                   => esc_url_raw( wp_unslash( $_POST['sticky_book_url'] ?? '' ) ),
-				'sticky_whatsapp_e164'              => sanitize_text_field( wp_unslash( $_POST['sticky_whatsapp_e164'] ?? '' ) ),
-				'sticky_book_label'                 => sanitize_text_field( wp_unslash( $_POST['sticky_book_label'] ?? '' ) ),
-				'sticky_wa_label'                   => sanitize_text_field( wp_unslash( $_POST['sticky_wa_label'] ?? '' ) ),
-				'form_theme'                        => $form_theme,
-			)
-		);
+			);
+		} elseif ( 'whatsapp' === $tab ) {
+			$driver = sanitize_key( wp_unslash( $_POST['whatsapp_driver'] ?? 'stub' ) );
+			if ( ! in_array( $driver, array( 'stub', 'openwa', 'meta' ), true ) ) {
+				$driver = 'stub';
+			}
+			$openwa_base = \Prime_Fleet\Messaging\WhatsApp\OpenWA_Channel::sanitize_base_url(
+				wp_unslash( $_POST['whatsapp_openwa_base_url'] ?? 'http://127.0.0.1:2785' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			);
+			/* OpenWA is dev-only — force Stub when selected without WP_DEBUG / allow constant. */
+			if ( 'openwa' === $driver && ! \Prime_Fleet\Messaging\WhatsApp\OpenWA_Channel::is_dev_allowed() ) {
+				$driver = 'stub';
+			}
+			$patch = array(
+				'whatsapp_channel_enabled'      => ! empty( $_POST['whatsapp_channel_enabled'] ) ? 1 : 0,
+				'whatsapp_driver'               => $driver,
+				'whatsapp_meta_phone_number_id' => sanitize_text_field( wp_unslash( $_POST['whatsapp_meta_phone_number_id'] ?? '' ) ),
+				'whatsapp_meta_api_version'     => sanitize_text_field( wp_unslash( $_POST['whatsapp_meta_api_version'] ?? 'v21.0' ) ),
+				'whatsapp_openwa_base_url'      => $openwa_base,
+				'whatsapp_openwa_session_id'    => sanitize_text_field( wp_unslash( $_POST['whatsapp_openwa_session_id'] ?? '' ) ),
+				'whatsapp_openwa_api_key'       => sanitize_text_field( wp_unslash( $_POST['whatsapp_openwa_api_key'] ?? '' ) ),
+			);
+		} elseif ( 'security' === $tab ) {
+			$provider = sanitize_key( wp_unslash( $_POST['captcha_provider'] ?? 'none' ) );
+			if ( ! in_array( $provider, array( 'none', 'turnstile', 'recaptcha_v2' ), true ) ) {
+				$provider = 'none';
+			}
+			$clamp = static function ( $v, $min, $max, $fallback ) {
+				$n = absint( $v );
+				if ( $n < $min || $n > $max ) {
+					return $fallback;
+				}
+				return $n;
+			};
+			$new_secret = sanitize_text_field( wp_unslash( $_POST['captcha_secret'] ?? '' ) );
+			/* Blank password field keeps the previously saved secret. */
+			if ( '' === $new_secret && ! empty( $prev['captcha_secret'] ) ) {
+				$new_secret = (string) $prev['captcha_secret'];
+			}
+			$patch = array(
+				'captcha_enabled'            => ! empty( $_POST['captcha_enabled'] ) ? 1 : 0,
+				'captcha_provider'           => $provider,
+				'captcha_site_key'           => sanitize_text_field( wp_unslash( $_POST['captcha_site_key'] ?? '' ) ),
+				'captcha_secret'             => $new_secret,
+				'rl_bookings_per_min'        => $clamp( $_POST['rl_bookings_per_min'] ?? 20, 1, 500, 20 ),
+				'rl_bookings_email_per_hour' => $clamp( $_POST['rl_bookings_email_per_hour'] ?? 24, 1, 200, 24 ),
+				'rl_coupon_per_min'           => $clamp( $_POST['rl_coupon_per_min'] ?? 40, 1, 500, 40 ),
+				'rl_quote_per_min'            => $clamp( $_POST['rl_quote_per_min'] ?? 60, 1, 500, 60 ),
+				'rl_lookup_per_min'           => $clamp( $_POST['rl_lookup_per_min'] ?? 30, 1, 500, 30 ),
+				'payment_notify_cooldown_sec'=> $clamp( $_POST['payment_notify_cooldown_sec'] ?? 120, 0, HOUR_IN_SECONDS, 120 ),
+			);
+		} else {
+			$form_theme = sanitize_key( wp_unslash( $_POST['form_theme'] ?? 'dark' ) );
+			if ( ! in_array( $form_theme, array( 'dark', 'light' ), true ) ) {
+				$form_theme = 'dark';
+			}
+			$patch = array(
+				'form_theme'           => $form_theme,
+				'sticky_cta_enabled'   => ! empty( $_POST['sticky_cta_enabled'] ) ? 1 : 0,
+				'sticky_book_url'      => esc_url_raw( wp_unslash( $_POST['sticky_book_url'] ?? '' ) ),
+				'sticky_whatsapp_e164' => sanitize_text_field( wp_unslash( $_POST['sticky_whatsapp_e164'] ?? '' ) ),
+				'sticky_book_label'    => sanitize_text_field( wp_unslash( $_POST['sticky_book_label'] ?? '' ) ),
+				'sticky_wa_label'      => sanitize_text_field( wp_unslash( $_POST['sticky_wa_label'] ?? '' ) ),
+			);
+		}
 
+		$data = array_merge( $prev, $patch );
 		update_option( self::OPTION, $data );
 		Config_Compiler::invalidate();
+
+		/* Keep SPA on the same settings page after save. */
+		$_GET['stab'] = $tab; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
 		return View::notice( __( 'Settings saved.', 'prime-fleet' ) );
 	}
 

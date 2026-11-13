@@ -148,6 +148,15 @@ final class Payment_Service {
 			return new \WP_Error( 'prime_fleet_pay_booking', __( 'Booking not found.', 'prime-fleet' ), array( 'status' => 404 ) );
 		}
 
+		/* Cooldown before any payment mutate — avoids orphan links on notify failure. */
+		$notify = ! array_key_exists( 'notify', $args ) || ! empty( $args['notify'] );
+		if ( $notify ) {
+			$cooldown = self::payment_notify_cooldown( $booking_id );
+			if ( is_wp_error( $cooldown ) ) {
+				return $cooldown;
+			}
+		}
+
 		$issueable = self::issueable_methods();
 		if ( ! $issueable ) {
 			return new \WP_Error( 'prime_fleet_pay_method', __( 'No payment methods enabled. Enable Bank/instructions or Custom link under Payments.', 'prime-fleet' ), array( 'status' => 400 ) );
@@ -266,9 +275,9 @@ final class Payment_Service {
 		);
 
 		$guest_url = self::guest_url( $payment['token'] );
-		$notify    = ! array_key_exists( 'notify', $args ) || ! empty( $args['notify'] );
 		if ( $notify ) {
 			Queue::on_payment_link( $booking_id, $guest_url );
+			self::mark_payment_notify_sent( $booking_id );
 		}
 
 		$wpdb->insert(
@@ -496,6 +505,15 @@ final class Payment_Service {
 	public static function regenerate( $booking_id, array $args = array() ) {
 		global $wpdb;
 
+		$booking_id = absint( $booking_id );
+		$notify     = ! array_key_exists( 'notify', $args ) || ! empty( $args['notify'] );
+		if ( $notify ) {
+			$cooldown = self::payment_notify_cooldown( $booking_id );
+			if ( is_wp_error( $cooldown ) ) {
+				return $cooldown;
+			}
+		}
+
 		$latest = self::latest_for_booking( $booking_id );
 		if ( $latest && in_array( (string) $latest['status'], array( 'unpaid', 'link_sent' ), true ) ) {
 			$wpdb->update(
@@ -530,6 +548,56 @@ final class Payment_Service {
 
 		$args['force_new'] = true;
 		return self::issue( $booking_id, $method_key, $args );
+	}
+
+	/**
+	 * Seconds between payment-link guest notifies for one booking (default 120).
+	 *
+	 * @return int
+	 */
+	public static function payment_notify_cooldown_seconds() {
+		$settings = get_option( 'prime_fleet_settings', array() );
+		if ( is_array( $settings ) && isset( $settings['payment_notify_cooldown_sec'] ) && '' !== $settings['payment_notify_cooldown_sec'] ) {
+			return max( 0, min( HOUR_IN_SECONDS, absint( $settings['payment_notify_cooldown_sec'] ) ) );
+		}
+		return 120;
+	}
+
+	/**
+	 * @param int $booking_id Booking ID.
+	 * @return true|\WP_Error
+	 */
+	private static function payment_notify_cooldown( $booking_id ) {
+		$sec = self::payment_notify_cooldown_seconds();
+		if ( $sec <= 0 ) {
+			return true;
+		}
+		$key  = 'prime_fleet_pay_notify_' . absint( $booking_id );
+		$last = get_transient( $key );
+		if ( $last ) {
+			$wait = max( 1, $sec - ( time() - (int) $last ) );
+			return new \WP_Error(
+				'prime_fleet_pay_notify_cooldown',
+				sprintf(
+					/* translators: %d: seconds to wait */
+					__( 'Payment notify cooldown — wait %d seconds before re-sending.', 'prime-fleet' ),
+					$wait
+				),
+				array( 'status' => 429, 'retry_after' => $wait )
+			);
+		}
+		return true;
+	}
+
+	/**
+	 * @param int $booking_id Booking ID.
+	 */
+	private static function mark_payment_notify_sent( $booking_id ) {
+		$sec = self::payment_notify_cooldown_seconds();
+		if ( $sec <= 0 ) {
+			return;
+		}
+		set_transient( 'prime_fleet_pay_notify_' . absint( $booking_id ), time(), $sec );
 	}
 
 	/**

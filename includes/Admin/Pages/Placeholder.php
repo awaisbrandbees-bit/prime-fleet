@@ -47,14 +47,6 @@ final class Placeholder {
 		);
 	}
 
-	public static function reports() {
-		self::page(
-			__( 'Reports', 'prime-fleet' ),
-			__( 'Reports coming soon.', 'prime-fleet' ),
-			'reports'
-		);
-	}
-
 	/**
 	 * @param string $title Title.
 	 * @param string $text Text.

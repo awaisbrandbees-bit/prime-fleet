@@ -1,0 +1,13 @@
+---
+description: NEVER re-break Prime Fleet admin scroll / right bleed / bottom spacing
+globs: assets/admin/css/admin.css,includes/Admin/Assets.php
+alwaysApply: false
+---
+
+# Admin scroll / overflow lock
+
+Before changing shell overflow, width, clear, gutters, or grids in `admin.css` / `Assets.php`, follow the full invariant in the monorepo rule:
+
+`Sletci/.cursor/rules/prime-fleet-admin-width.mdc`
+
+**Short form:** only `html` clips-X + scrolls-Y; `body`/app `overflow: visible`; bottom `::after` ~120px on OUR wrap; right pad 16px; never `clear:both` on table-tools; never restyle `#adminmenu*`; `#wpcontent` may be `sticky` under admin-bar (content column only); sync Assets.php.

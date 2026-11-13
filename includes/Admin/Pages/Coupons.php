@@ -72,7 +72,7 @@ final class Coupons {
 			echo $notice; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
-		echo '<div class="prime-fleet-card">';
+		echo '<div class="prime-fleet-card prime-fleet-card--list">';
 		echo Table_List::toolbar(
 			'coupons',
 			$args,

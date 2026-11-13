@@ -88,17 +88,18 @@ final class Dispatch {
 			echo $notice; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
-		echo '<form class="prime-fleet-dispatch-bar" data-pf-table-filter="1" data-pf-panel="dispatch">';
-		echo '<div class="prime-fleet-dispatch-bar__day">';
+		echo '<form class="prime-fleet-dispatch-bar tablenav top" data-pf-table-filter="1" data-pf-panel="dispatch">';
+		echo '<div class="prime-fleet-dispatch-bar__day alignleft actions">';
 		echo '<label class="prime-fleet-dispatch-bar__label" for="pf-dispatch-day">' . esc_html__( 'Board date', 'prime-fleet' ) . '</label>';
 		echo '<div class="prime-fleet-dispatch-bar__controls">';
-		echo '<button type="button" class="prime-fleet-btn prime-fleet-btn--ghost prime-fleet-dispatch-bar__nav" data-pf-panel="dispatch" data-pf-query="' . esc_attr( wp_json_encode( array( 'day' => $prev_day ) ) ) . '" aria-label="' . esc_attr__( 'Previous day', 'prime-fleet' ) . '">‹</button>';
+		echo '<button type="button" class="button prime-fleet-dispatch-bar__nav" data-pf-panel="dispatch" data-pf-query="' . esc_attr( wp_json_encode( array( 'day' => $prev_day ) ) ) . '" aria-label="' . esc_attr__( 'Previous day', 'prime-fleet' ) . '">' . View::chevron( 'prev' ) . '</button>';
 		echo '<input type="date" id="pf-dispatch-day" class="prime-fleet-dispatch-bar__input" name="day" value="' . esc_attr( $day ) . '" />';
-		echo '<button type="button" class="prime-fleet-btn prime-fleet-btn--ghost prime-fleet-dispatch-bar__nav" data-pf-panel="dispatch" data-pf-query="' . esc_attr( wp_json_encode( array( 'day' => $next_day ) ) ) . '" aria-label="' . esc_attr__( 'Next day', 'prime-fleet' ) . '">›</button>';
-		echo '<button type="submit" class="prime-fleet-btn">' . esc_html__( 'Load day', 'prime-fleet' ) . '</button>';
+		echo '<button type="button" class="button prime-fleet-dispatch-bar__nav" data-pf-panel="dispatch" data-pf-query="' . esc_attr( wp_json_encode( array( 'day' => $next_day ) ) ) . '" aria-label="' . esc_attr__( 'Next day', 'prime-fleet' ) . '">' . View::chevron( 'next' ) . '</button>';
+		echo '<button type="submit" class="button button-primary">' . esc_html__( 'Load day', 'prime-fleet' ) . '</button>';
 		if ( $day !== $today ) {
-			echo '<button type="button" class="prime-fleet-btn prime-fleet-btn--ghost" data-pf-panel="dispatch" data-pf-query="' . esc_attr( wp_json_encode( array( 'day' => $today ) ) ) . '">' . esc_html__( 'Today', 'prime-fleet' ) . '</button>';
+			echo '<button type="button" class="button" data-pf-panel="dispatch" data-pf-query="' . esc_attr( wp_json_encode( array( 'day' => $today ) ) ) . '">' . esc_html__( 'Today', 'prime-fleet' ) . '</button>';
 		}
+		echo '<button type="button" class="button" data-pf-panel="run_sheet" data-pf-query="' . esc_attr( wp_json_encode( array( 'day' => $day ) ) ) . '">' . esc_html__( 'Run sheet', 'prime-fleet' ) . '</button>';
 		echo '</div></div>';
 		echo '<div class="prime-fleet-dispatch-bar__meta">';
 		echo '<strong>' . esc_html( $day_label ) . '</strong>';
@@ -323,6 +324,7 @@ final class Dispatch {
 			'confirmed'            => __( 'Confirmed', 'prime-fleet' ),
 			'cancelled'            => __( 'Cancelled', 'prime-fleet' ),
 			'completed'            => __( 'Completed', 'prime-fleet' ),
+			'no_show'              => __( 'No-show', 'prime-fleet' ),
 		);
 		return isset( $map[ $status ] ) ? $map[ $status ] : $status;
 	}

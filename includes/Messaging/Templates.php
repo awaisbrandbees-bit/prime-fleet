@@ -247,14 +247,33 @@ final class Templates {
 	}
 
 	/**
-	 * @param string $html HTML.
-	 * @param array  $vars Vars.
+	 * Merge tags into HTML/subject. Guest-controlled values are escaped by default
+	 * so a name like `<a href=…>` cannot inject markup into email/WhatsApp.
+	 *
+	 * Allowlist:
+	 * - HTML fragments built in Merge_Vars (already escaped internally): coupon_rows, coupon_note
+	 * - URLs used in href / link text: payment_link, offer_accept_url
+	 *
+	 * @param string              $html HTML or plain subject.
+	 * @param array<string,mixed> $vars Vars.
 	 * @return string
 	 */
 	public static function merge( $html, array $vars ) {
+		$html_keys = array( 'coupon_rows', 'coupon_note' );
+		$url_keys  = array( 'payment_link', 'offer_accept_url' );
+
 		$out = (string) $html;
 		foreach ( $vars as $k => $v ) {
-			$out = str_replace( '{{' . $k . '}}', (string) $v, $out );
+			$key = (string) $k;
+			$raw = (string) $v;
+			if ( in_array( $key, $html_keys, true ) ) {
+				$safe = wp_kses_post( $raw );
+			} elseif ( in_array( $key, $url_keys, true ) ) {
+				$safe = esc_url( $raw );
+			} else {
+				$safe = esc_html( $raw );
+			}
+			$out = str_replace( '{{' . $key . '}}', $safe, $out );
 		}
 		return $out;
 	}

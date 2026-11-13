@@ -1,0 +1,31 @@
+---
+description: UI anti-slop via heydamir/unslop — Prime Fleet only
+globs:
+  - assets/**/*.css
+  - assets/**/*.js
+  - includes/Admin/**/*.php
+  - includes/Frontend/**/*.php
+alwaysApply: false
+---
+
+# Unslop UI (Prime Fleet)
+
+When the user asks to **unslop**, polish, clean up, or redesign a screen so it stops looking AI-generated, follow the skill at `.cursor/skills/unslop/SKILL.md` (heydamir/unslop, CC BY 4.0 — credit Damir Sokolovsky).
+
+## Scope
+
+- **In scope:** this Prime Fleet plugin UI only.
+- **Out of scope:** Sletci / SLE VIP repos (`sle-vip-booking*`). Do not run unslop there.
+
+## Process (summary)
+
+1. Look at the screen (screenshot / browser) before editing.
+2. Audit against `references/signs.md`.
+3. Propose **direction** (Product / Character / World / Moments / Signature) and wait for confirmation unless the user said to just do it.
+4. Fix in nine passes: spacing → color → icons → copy → type → layout → details → visuals → motion.
+5. Prefer existing Prime Fleet / brand tokens; do not invent purple-glow template looks.
+6. Keep product features and section order; change craft, not scope.
+
+## Related
+
+- Code PR gate (aislop): `docs/UNSLOP.md` — separate from this UI skill.

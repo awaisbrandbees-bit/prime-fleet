@@ -67,13 +67,22 @@ final class Payments {
 		wp_nonce_field( self::NONCE );
 		echo '<input type="hidden" name="prime_fleet_action" value="save_payments" />';
 
+		echo '<div class="prime-fleet-card prime-fleet-section">';
+		echo '<header class="prime-fleet-section__head">';
+		echo '<h3>' . esc_html__( 'Configured methods', 'prime-fleet' ) . '</h3>';
+		echo '<p>' . esc_html__( 'Enable gateways and copy shown at checkout.', 'prime-fleet' ) . '</p>';
+		echo '</header>';
+		echo '</div>';
+
 		foreach ( $ready as $method ) {
 			self::render_ready_card( $method );
 		}
 
-		echo '<div class="prime-fleet-card" style="margin-top:1rem">';
+		echo '<div class="prime-fleet-card prime-fleet-section" style="margin-top:1rem">';
+		echo '<header class="prime-fleet-section__head">';
 		echo '<h3>' . esc_html__( 'More payment methods', 'prime-fleet' ) . '</h3>';
-		echo '<p class="prime-fleet-help">' . esc_html__( 'Additional gateways register into the same multi-method layer. Enable when the integration is live — until then you’ll see Coming soon.', 'prime-fleet' ) . '</p>';
+		echo '<p>' . esc_html__( 'Additional gateways appear here when registered.', 'prime-fleet' ) . '</p>';
+		echo '</header>';
 
 		if ( empty( $catalog ) ) {
 			echo View::empty_state( __( 'No additional gateways', 'prime-fleet' ), __( 'Register more methods via the payment registry.', 'prime-fleet' ) );

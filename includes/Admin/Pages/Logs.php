@@ -32,7 +32,7 @@ final class Logs {
 		$args = $list['args'];
 
 		ob_start();
-		echo '<div class="prime-fleet-card">';
+		echo '<div class="prime-fleet-card prime-fleet-card--list">';
 		echo Table_List::toolbar(
 			'logs',
 			$args,

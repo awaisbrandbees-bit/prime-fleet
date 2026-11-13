@@ -9,6 +9,7 @@ namespace Prime_Fleet\Admin\Pages;
 
 use Prime_Fleet\Admin\Table_List;
 use Prime_Fleet\Admin\View;
+use Prime_Fleet\Bookings\Amendments;
 use Prime_Fleet\Bookings\Slot_Offers;
 use Prime_Fleet\Database\Schema;
 use Prime_Fleet\Install\Capabilities;
@@ -38,11 +39,15 @@ final class Bookings {
 		if ( ! Capabilities::current_user_can( Capabilities::DISPATCH ) ) {
 			wp_die( esc_html__( 'Forbidden.', 'prime-fleet' ) );
 		}
+		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! wp_verify_nonce( $nonce, 'prime_fleet_bookings_csv' ) ) {
+			wp_die( esc_html__( 'Invalid security token. Re-open Bookings and export again.', 'prime-fleet' ) );
+		}
 		self::export_csv();
 	}
 
 	/**
-	 * Render list or detail.
+	 * Render list, calendar, or detail.
 	 */
 	public static function render() {
 		if ( ! Capabilities::current_user_can( Capabilities::DISPATCH ) ) {
@@ -55,7 +60,31 @@ final class Bookings {
 			return;
 		}
 
-		self::render_list();
+		$view = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : 'calendar'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( 'list' === $view ) {
+			self::render_list();
+			return;
+		}
+
+		self::render_calendar();
+	}
+
+	/**
+	 * List | Calendar switch for the Bookings shell.
+	 *
+	 * @param string               $active list|calendar.
+	 * @param array<string,string> $cal_query Extra calendar query (ym, day).
+	 * @return string
+	 */
+	private static function view_switcher( $active, array $cal_query = array() ) {
+		$list_q = array( 'view' => 'list' );
+		$cal_q  = array_merge( array( 'view' => 'calendar' ), $cal_query );
+		ob_start();
+		echo '<div class="prime-fleet-view-switch" role="group" aria-label="' . esc_attr__( 'Bookings view', 'prime-fleet' ) . '">';
+		echo '<button type="button" class="prime-fleet-view-switch__btn' . ( 'list' === $active ? ' is-active' : '' ) . '" data-pf-panel="bookings" data-pf-query="' . esc_attr( wp_json_encode( $list_q ) ) . '"' . ( 'list' === $active ? ' aria-current="page"' : '' ) . '>' . esc_html__( 'List', 'prime-fleet' ) . '</button>';
+		echo '<button type="button" class="prime-fleet-view-switch__btn' . ( 'calendar' === $active ? ' is-active' : '' ) . '" data-pf-panel="bookings" data-pf-query="' . esc_attr( wp_json_encode( $cal_q ) ) . '"' . ( 'calendar' === $active ? ' aria-current="page"' : '' ) . '>' . esc_html__( 'Calendar', 'prime-fleet' ) . '</button>';
+		echo '</div>';
+		return ob_get_clean();
 	}
 
 	/**
@@ -81,9 +110,11 @@ final class Bookings {
 			)
 		);
 
+		$filename = 'prime-fleet-bookings-' . gmdate( 'Ymd-His' ) . '.csv';
 		nocache_headers();
 		header( 'Content-Type: text/csv; charset=utf-8' );
-		header( 'Content-Disposition: attachment; filename=prime-fleets-' . gmdate( 'Ymd-His' ) . '.csv' );
+		header( 'Content-Transfer-Encoding: binary' );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"; filename*=UTF-8\'\'' . rawurlencode( $filename ) );
 		$out = fopen( 'php://output', 'w' );
 		fputcsv(
 			$out,
@@ -142,8 +173,16 @@ final class Bookings {
 		$rows = $list['rows'];
 		$args = $list['args'];
 
+		$csv_q = Table_List::query_params( $args );
+		$csv_q['prime_fleet_csv'] = '1';
+		$csv_url = wp_nonce_url(
+			admin_url( 'admin.php?page=prime-fleet&panel=bookings&' . http_build_query( $csv_q ) ),
+			'prime_fleet_bookings_csv'
+		);
+		$export  = '<a class="prime-fleet-table-tools__link" href="' . esc_url( $csv_url ) . '" download="prime-fleet-bookings.csv">' . esc_html__( 'Export CSV', 'prime-fleet' ) . '</a>';
+
 		ob_start();
-		echo '<div class="prime-fleet-card">';
+		echo '<div class="prime-fleet-card prime-fleet-card--list">';
 		echo Table_List::toolbar(
 			'bookings',
 			$args,
@@ -151,10 +190,11 @@ final class Bookings {
 				'placeholder' => __( 'Search reference, name, email…', 'prime-fleet' ),
 				'status'      => true,
 				'statuses'    => array(
-					'pending_confirmation' => __( 'Pending Confirmation', 'prime-fleet' ),
+					'pending_confirmation' => __( 'Pending', 'prime-fleet' ),
 					'confirmed'            => __( 'Confirmed', 'prime-fleet' ),
 					'cancelled'            => __( 'Cancelled', 'prime-fleet' ),
 					'completed'            => __( 'Completed', 'prime-fleet' ),
+					'no_show'              => __( 'No-show', 'prime-fleet' ),
 				),
 				'payment'     => true,
 				'payments'    => array(
@@ -163,6 +203,7 @@ final class Bookings {
 					'paid'      => __( 'Paid', 'prime-fleet' ),
 					'refunded'  => __( 'Refunded', 'prime-fleet' ),
 				),
+				'trailing'    => $export,
 			)
 		);
 
@@ -173,25 +214,28 @@ final class Bookings {
 				$filtered ? __( 'Try another search or reset filters.', 'prime-fleet' ) : __( 'Guest submissions will appear here with PF- references.', 'prime-fleet' )
 			);
 		} else {
-			echo '<div class="prime-fleet-table-wrap"><table class="prime-fleet-table"><thead><tr>';
-			echo '<th>' . esc_html__( 'Reference', 'prime-fleet' ) . '</th>';
-			echo '<th>' . esc_html__( 'Customer', 'prime-fleet' ) . '</th>';
-			echo '<th>' . esc_html__( 'Pickup', 'prime-fleet' ) . '</th>';
-			echo '<th>' . esc_html__( 'Fare', 'prime-fleet' ) . '</th>';
-			echo '<th>' . esc_html__( 'Status', 'prime-fleet' ) . '</th>';
-			echo '<th>' . esc_html__( 'Payment', 'prime-fleet' ) . '</th>';
-			echo '<th></th>';
+			echo '<div class="prime-fleet-table-wrap"><table class="prime-fleet-table prime-fleet-table--ops"><thead><tr>';
+			echo '<th class="col-ref">' . esc_html__( 'Reference', 'prime-fleet' ) . '</th>';
+			echo '<th class="col-customer">' . esc_html__( 'Customer', 'prime-fleet' ) . '</th>';
+			echo '<th class="col-pickup">' . esc_html__( 'Pickup', 'prime-fleet' ) . '</th>';
+			echo '<th class="col-fare">' . esc_html__( 'Fare', 'prime-fleet' ) . '</th>';
+			echo '<th class="col-status">' . esc_html__( 'Status', 'prime-fleet' ) . '</th>';
+			echo '<th class="col-pay">' . esc_html__( 'Payment', 'prime-fleet' ) . '</th>';
 			echo '</tr></thead><tbody>';
 			foreach ( $rows as $r ) {
-				$fare = esc_html( self::fare_display( $r ) );
+				$fare   = esc_html( self::fare_display( $r ) );
+				$pickup = ! empty( $r['pickup_datetime'] )
+					? date_i18n( 'Y-m-d H:i', strtotime( $r['pickup_datetime'] ) )
+					: '—';
+				$q = esc_attr( wp_json_encode( array( 'id' => (int) $r['id'] ) ) );
 				echo '<tr>';
-				echo '<td><strong>' . esc_html( $r['reference'] ) . '</strong></td>';
-				echo '<td>' . esc_html( $r['customer_name'] ) . '<br><span class="prime-fleet-muted">' . esc_html( $r['customer_email'] ) . '</span></td>';
-				echo '<td>' . esc_html( $r['pickup_datetime'] ? $r['pickup_datetime'] : '—' ) . '</td>';
-				echo '<td>' . $fare . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo '<td>' . esc_html( self::status_label( $r['status'] ) ) . '</td>';
-				echo '<td>' . esc_html( self::pay_label( (string) $r['payment_status'] ) ) . '</td>';
-				echo '<td><button type="button" class="prime-fleet-btn prime-fleet-btn--ghost" data-pf-panel="bookings" data-pf-query="' . esc_attr( wp_json_encode( array( 'id' => (int) $r['id'] ) ) ) . '">' . esc_html__( 'View', 'prime-fleet' ) . '</button></td>';
+				echo '<td class="col-ref"><button type="button" class="prime-fleet-row-link" data-pf-panel="bookings" data-pf-query="' . $q . '">' . esc_html( $r['reference'] ) . '</button>';
+				echo ' <span class="prime-fleet-row-sep">·</span> <button type="button" class="prime-fleet-row-link" data-pf-panel="bookings" data-pf-query="' . $q . '">' . esc_html__( 'View', 'prime-fleet' ) . '</button></td>';
+				echo '<td class="col-customer">' . esc_html( $r['customer_name'] ) . '<br><span class="prime-fleet-muted">' . esc_html( $r['customer_email'] ) . '</span></td>';
+				echo '<td class="col-pickup prime-fleet-table__mono">' . esc_html( $pickup ) . '</td>';
+				echo '<td class="col-fare">' . $fare . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo '<td class="col-status"><span class="prime-fleet-pill prime-fleet-pill--' . esc_attr( self::status_tone( $r['status'] ) ) . '">' . esc_html( self::status_label( $r['status'] ) ) . '</span></td>';
+				echo '<td class="col-pay"><span class="prime-fleet-pill prime-fleet-pill--' . esc_attr( self::pay_tone( (string) $r['payment_status'] ) ) . '">' . esc_html( self::pay_label( (string) $r['payment_status'] ) ) . '</span></td>';
 				echo '</tr>';
 			}
 			echo '</tbody></table></div>';
@@ -199,16 +243,302 @@ final class Bookings {
 		}
 		echo '</div>';
 
-		$csv_q = Table_List::query_params( $args );
-		$csv_q['prime_fleet_csv'] = '1';
-		$csv_url = admin_url( 'admin.php?page=prime-fleet&panel=bookings&' . http_build_query( $csv_q ) );
-
 		View::shell(
 			__( 'Bookings', 'prime-fleet' ),
 			ob_get_clean(),
-			array(
-				'<a class="prime-fleet-btn prime-fleet-btn--ghost" href="' . esc_url( $csv_url ) . '">' . esc_html__( 'Export CSV', 'prime-fleet' ) . '</a>',
+			array( self::view_switcher( 'list' ) )
+		);
+	}
+
+	/**
+	 * Month calendar of pickups.
+	 */
+	private static function render_calendar() {
+		global $wpdb;
+
+		$today = current_time( 'Y-m-d' );
+		$ym    = isset( $_GET['ym'] ) ? sanitize_text_field( wp_unslash( $_GET['ym'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$cal_m = isset( $_GET['cal_month'] ) ? absint( $_GET['cal_month'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$cal_y = isset( $_GET['cal_year'] ) ? absint( $_GET['cal_year'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( $cal_m >= 1 && $cal_m <= 12 && $cal_y >= 2000 && $cal_y <= 2100 ) {
+			$ym = sprintf( '%04d-%02d', $cal_y, $cal_m );
+		}
+		if ( ! preg_match( '/^\d{4}-\d{2}$/', $ym ) ) {
+			$ym = substr( $today, 0, 7 );
+		}
+		$year  = (int) substr( $ym, 0, 4 );
+		$month = (int) substr( $ym, 5, 2 );
+		$month_start = sprintf( '%04d-%02d-01', $year, $month );
+		$month_end   = gmdate( 'Y-m-t', strtotime( $month_start . ' 12:00:00' ) );
+		$prev_ym     = gmdate( 'Y-m', strtotime( $month_start . ' -1 month' ) );
+		$next_ym     = gmdate( 'Y-m', strtotime( $month_start . ' +1 month' ) );
+
+		$status  = isset( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$payment = isset( $_GET['payment'] ) ? sanitize_key( wp_unslash( $_GET['payment'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+		$sql    = 'SELECT id, reference, customer_name, status, payment_status, pickup_datetime, fare_total, currency
+			FROM ' . Schema::table( 'bookings' ) . '
+			WHERE pickup_datetime >= %s AND pickup_datetime <= %s';
+		$params = array( $month_start . ' 00:00:00', $month_end . ' 23:59:59' );
+		if ( $status ) {
+			$sql     .= ' AND status = %s';
+			$params[] = $status;
+		}
+		if ( $payment ) {
+			$sql     .= ' AND payment_status = %s';
+			$params[] = $payment;
+		}
+		$sql .= ' ORDER BY pickup_datetime ASC, id ASC LIMIT 800';
+
+		$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+		$by_day = array();
+		foreach ( (array) $rows as $r ) {
+			if ( empty( $r['pickup_datetime'] ) ) {
+				continue;
+			}
+			$key = substr( (string) $r['pickup_datetime'], 0, 10 );
+			if ( ! isset( $by_day[ $key ] ) ) {
+				$by_day[ $key ] = array();
+			}
+			$by_day[ $key ][] = $r;
+		}
+
+		$week_start = (int) get_option( 'start_of_week', 1 ); // 0=Sun … 6=Sat.
+		$first_ts   = strtotime( $month_start . ' 12:00:00' );
+		$first_dow  = (int) gmdate( 'w', $first_ts ); // 0=Sun.
+		$lead       = ( $first_dow - $week_start + 7 ) % 7;
+		$days_in_m  = (int) gmdate( 't', $first_ts );
+		$grid_start = strtotime( $month_start . ' 12:00:00 -' . $lead . ' days' );
+		$total_cells = (int) ceil( ( $lead + $days_in_m ) / 7 ) * 7;
+
+		$dow_labels = array();
+		for ( $i = 0; $i < 7; $i++ ) {
+			$dow_labels[] = date_i18n( 'D', strtotime( 'Sunday +' . ( ( $week_start + $i ) % 7 ) . ' days' ) );
+		}
+
+		$month_label = date_i18n( 'F Y', $first_ts );
+		$cal_query   = array( 'view' => 'calendar', 'ym' => $ym );
+		if ( $status ) {
+			$cal_query['status'] = $status;
+		}
+		if ( $payment ) {
+			$cal_query['payment'] = $payment;
+		}
+
+		$day_modals = array();
+
+		ob_start();
+		echo '<div class="prime-fleet-card prime-fleet-cal">';
+		echo '<div class="prime-fleet-cal__toolbar">';
+		echo '<div class="prime-fleet-cal__nav">';
+		echo '<button type="button" class="button prime-fleet-cal__ctrl prime-fleet-cal__ctrl--icon" data-pf-panel="bookings" data-pf-query="' . esc_attr( wp_json_encode( array_merge( $cal_query, array( 'ym' => $prev_ym ) ) ) ) . '" aria-label="' . esc_attr__( 'Previous month', 'prime-fleet' ) . '">' . View::chevron( 'prev' ) . '</button>';
+		echo '<form class="prime-fleet-cal__jump" data-pf-table-filter="1" data-pf-panel="bookings">';
+		echo '<input type="hidden" name="view" value="calendar" />';
+		if ( $status ) {
+			echo '<input type="hidden" name="status" value="' . esc_attr( $status ) . '" />';
+		}
+		if ( $payment ) {
+			echo '<input type="hidden" name="payment" value="' . esc_attr( $payment ) . '" />';
+		}
+		echo '<label class="screen-reader-text" for="pf-cal-month">' . esc_html__( 'Month', 'prime-fleet' ) . '</label>';
+		echo '<select id="pf-cal-month" class="prime-fleet-cal__ctrl" name="cal_month" data-pf-native="1" data-pf-no-search="1" aria-label="' . esc_attr__( 'Month', 'prime-fleet' ) . '">';
+		for ( $m = 1; $m <= 12; $m++ ) {
+			printf(
+				'<option value="%1$02d" %2$s>%3$s</option>',
+				$m,
+				selected( $month, $m, false ),
+				esc_html( date_i18n( 'F', strtotime( sprintf( '2020-%02d-15', $m ) ) ) )
+			);
+		}
+		echo '</select>';
+		echo '<label class="screen-reader-text" for="pf-cal-year">' . esc_html__( 'Year', 'prime-fleet' ) . '</label>';
+		echo '<select id="pf-cal-year" class="prime-fleet-cal__ctrl" name="cal_year" data-pf-native="1" data-pf-no-search="1" aria-label="' . esc_attr__( 'Year', 'prime-fleet' ) . '">';
+		$y_now = (int) substr( $today, 0, 4 );
+		for ( $y = $y_now - 2; $y <= $y_now + 3; $y++ ) {
+			printf( '<option value="%1$d" %2$s>%1$d</option>', $y, selected( $year, $y, false ) );
+		}
+		echo '</select>';
+		echo '<button type="submit" class="button button-primary">' . esc_html__( 'Go', 'prime-fleet' ) . '</button>';
+		echo '</form>';
+		echo '<button type="button" class="button prime-fleet-cal__ctrl prime-fleet-cal__ctrl--icon" data-pf-panel="bookings" data-pf-query="' . esc_attr( wp_json_encode( array_merge( $cal_query, array( 'ym' => $next_ym ) ) ) ) . '" aria-label="' . esc_attr__( 'Next month', 'prime-fleet' ) . '">' . View::chevron( 'next' ) . '</button>';
+		echo '<button type="button" class="button" data-pf-panel="bookings" data-pf-query="' . esc_attr( wp_json_encode( array_merge( $cal_query, array( 'ym' => substr( $today, 0, 7 ) ) ) ) ) . '">' . esc_html__( 'Today', 'prime-fleet' ) . '</button>';
+		echo '</div>';
+		echo '<div class="prime-fleet-cal__meta">';
+		echo '<strong class="prime-fleet-cal__title">' . esc_html( $month_label ) . '</strong>';
+		echo '<span class="prime-fleet-muted">' . esc_html(
+			sprintf(
+				/* translators: %d booking count */
+				_n( '%d booking', '%d bookings', count( (array) $rows ), 'prime-fleet' ),
+				count( (array) $rows )
 			)
+		) . '</span>';
+		echo '</div>';
+		echo '<form class="prime-fleet-cal__filters alignleft actions" data-pf-table-filter="1" data-pf-panel="bookings">';
+		echo '<input type="hidden" name="view" value="calendar" />';
+		echo '<input type="hidden" name="ym" value="' . esc_attr( $ym ) . '" />';
+		echo '<label class="screen-reader-text" for="pf-cal-status">' . esc_html__( 'Filter by status', 'prime-fleet' ) . '</label>';
+		echo '<select id="pf-cal-status" name="status" class="prime-fleet-cal__ctrl" data-pf-native="1" data-pf-no-search="1">';
+		echo '<option value="">' . esc_html__( 'All statuses', 'prime-fleet' ) . '</option>';
+		foreach ( array(
+			'pending_confirmation' => __( 'Pending', 'prime-fleet' ),
+			'confirmed'            => __( 'Confirmed', 'prime-fleet' ),
+			'cancelled'            => __( 'Cancelled', 'prime-fleet' ),
+			'completed'            => __( 'Completed', 'prime-fleet' ),
+			'no_show'              => __( 'No-show', 'prime-fleet' ),
+		) as $val => $lab ) {
+			printf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $val ), selected( $status, $val, false ), esc_html( $lab ) );
+		}
+		echo '</select>';
+		echo '<label class="screen-reader-text" for="pf-cal-payment">' . esc_html__( 'Filter by payment', 'prime-fleet' ) . '</label>';
+		echo '<select id="pf-cal-payment" name="payment" class="prime-fleet-cal__ctrl" data-pf-native="1" data-pf-no-search="1">';
+		echo '<option value="">' . esc_html__( 'All payments', 'prime-fleet' ) . '</option>';
+		foreach ( array(
+			'unpaid'    => __( 'Unpaid', 'prime-fleet' ),
+			'link_sent' => __( 'Link sent', 'prime-fleet' ),
+			'paid'      => __( 'Paid', 'prime-fleet' ),
+			'refunded'  => __( 'Refunded', 'prime-fleet' ),
+		) as $val => $lab ) {
+			printf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $val ), selected( $payment, $val, false ), esc_html( $lab ) );
+		}
+		echo '</select>';
+		echo '<input type="submit" class="button action" value="' . esc_attr__( 'Filter', 'prime-fleet' ) . '" />';
+		echo '</form>';
+		echo '</div>'; // toolbar.
+
+		echo '<div class="prime-fleet-cal__board">';
+		echo '<div class="prime-fleet-cal__dow" aria-hidden="true">';
+		foreach ( $dow_labels as $lab ) {
+			echo '<span>' . esc_html( $lab ) . '</span>';
+		}
+		echo '</div>';
+
+		echo '<div class="prime-fleet-cal__grid" role="grid" aria-label="' . esc_attr( $month_label ) . '">';
+		for ( $i = 0; $i < $total_cells; $i++ ) {
+			$cell_ts  = strtotime( '+' . $i . ' days', $grid_start );
+			$cell_day = gmdate( 'Y-m-d', $cell_ts );
+			$in_month = ( gmdate( 'Y-m', $cell_ts ) === $ym );
+			$is_today = ( $cell_day === $today );
+			$jobs     = isset( $by_day[ $cell_day ] ) ? $by_day[ $cell_day ] : array();
+			$count    = count( $jobs );
+			$tpl_id   = 'prime-fleet-tpl-cal-' . str_replace( '-', '', $cell_day );
+			$day_title = date_i18n( get_option( 'date_format' ) ? get_option( 'date_format' ) : 'M j, Y', strtotime( $cell_day . ' 12:00:00' ) );
+			$classes  = 'prime-fleet-cal__cell';
+			if ( ! $in_month ) {
+				$classes .= ' is-outside';
+			}
+			if ( $is_today ) {
+				$classes .= ' is-today';
+			}
+			if ( $count ) {
+				$classes .= ' has-jobs';
+				if ( $count >= 3 ) {
+					$classes .= ' has-jobs-many';
+				} elseif ( 2 === $count ) {
+					$classes .= ' has-jobs-2';
+				} else {
+					$classes .= ' has-jobs-1';
+				}
+			}
+
+			echo '<div class="' . esc_attr( $classes ) . '" role="gridcell">';
+			if ( $count ) {
+				echo '<button type="button" class="prime-fleet-cal__daynum" data-pf-open-modal="' . esc_attr( $tpl_id ) . '" data-pf-modal-title="' . esc_attr( $day_title ) . '" aria-label="' . esc_attr(
+					sprintf(
+						/* translators: 1: date label, 2: booking count */
+						_n( '%1$s, %2$d booking', '%1$s, %2$d bookings', $count, 'prime-fleet' ),
+						$day_title,
+						$count
+					)
+				) . '">';
+			} else {
+				echo '<div class="prime-fleet-cal__daynum">';
+			}
+			echo '<span class="prime-fleet-cal__date">' . esc_html( gmdate( 'j', $cell_ts ) ) . '</span>';
+			if ( $count ) {
+				echo '<span class="prime-fleet-cal__count">' . esc_html( (string) $count ) . '</span>';
+			}
+			echo $count ? '</button>' : '</div>';
+			if ( $jobs ) {
+				echo '<ul class="prime-fleet-cal__chips">';
+				$shown = 0;
+				foreach ( $jobs as $job ) {
+					if ( $shown >= 3 ) {
+						break;
+					}
+					$tone = self::status_tone( (string) $job['status'] );
+					$time = date_i18n( 'g:i A', strtotime( $job['pickup_datetime'] ) );
+					echo '<li><button type="button" class="prime-fleet-cal__chip prime-fleet-cal__chip--' . esc_attr( $tone ) . '" data-pf-panel="bookings" data-pf-query="' . esc_attr( wp_json_encode( array( 'id' => (int) $job['id'] ) ) ) . '" title="' . esc_attr( $job['reference'] . ' · ' . $job['customer_name'] ) . '">';
+					echo '<span class="prime-fleet-cal__chip-time">' . esc_html( $time ) . '</span> ';
+					echo '<span class="prime-fleet-cal__chip-ref">' . esc_html( $job['reference'] ) . '</span>';
+					echo '</button></li>';
+					++$shown;
+				}
+				if ( $count > 3 ) {
+					echo '<li><button type="button" class="prime-fleet-cal__more" data-pf-open-modal="' . esc_attr( $tpl_id ) . '" data-pf-modal-title="' . esc_attr( $day_title ) . '">' . esc_html(
+						sprintf(
+							/* translators: %d remaining bookings */
+							__( '+%d more', 'prime-fleet' ),
+							$count - 3
+						)
+					) . '</button></li>';
+				}
+				echo '</ul>';
+				$day_modals[ $cell_day ] = array(
+					'tpl'   => $tpl_id,
+					'title' => $day_title,
+					'jobs'  => $jobs,
+				);
+			}
+			echo '</div>';
+		}
+		echo '</div>'; // grid.
+		echo '</div>'; // board.
+
+		foreach ( $day_modals as $modal ) {
+			echo '<div id="' . esc_attr( $modal['tpl'] ) . '" hidden>';
+			echo '<div data-pf-modal-content class="prime-fleet-cal-daylist">';
+			echo '<p class="prime-fleet-cal-daylist__meta">' . esc_html(
+				sprintf(
+					/* translators: %d booking count */
+					_n( '%d booking this day', '%d bookings this day', count( $modal['jobs'] ), 'prime-fleet' ),
+					count( $modal['jobs'] )
+				)
+			) . '</p>';
+			echo '<div class="prime-fleet-table-wrap"><table class="prime-fleet-table prime-fleet-table--ops"><thead><tr>';
+			echo '<th>' . esc_html__( 'Time', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Reference', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Customer', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Status', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Payment', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Fare', 'prime-fleet' ) . '</th>';
+			echo '</tr></thead><tbody>';
+			foreach ( $modal['jobs'] as $job ) {
+				$q = esc_attr( wp_json_encode( array( 'id' => (int) $job['id'] ) ) );
+				echo '<tr>';
+				echo '<td class="prime-fleet-table__mono">' . esc_html( date_i18n( 'g:i A', strtotime( $job['pickup_datetime'] ) ) ) . '</td>';
+				echo '<td><button type="button" class="prime-fleet-row-link" data-pf-panel="bookings" data-pf-query="' . $q . '" data-pf-modal-close="1">' . esc_html( $job['reference'] ) . '</button></td>';
+				echo '<td>' . esc_html( $job['customer_name'] ) . '</td>';
+				echo '<td><span class="prime-fleet-pill prime-fleet-pill--' . esc_attr( self::status_tone( (string) $job['status'] ) ) . '">' . esc_html( self::status_label( (string) $job['status'] ) ) . '</span></td>';
+				echo '<td><span class="prime-fleet-pill prime-fleet-pill--' . esc_attr( self::pay_tone( (string) $job['payment_status'] ) ) . '">' . esc_html( self::pay_label( (string) $job['payment_status'] ) ) . '</span></td>';
+				echo '<td>' . esc_html( self::fare_display( $job ) ) . '</td>';
+				echo '</tr>';
+			}
+			echo '</tbody></table></div>';
+			echo '<div class="prime-fleet-modal__footer"><button type="button" class="prime-fleet-btn prime-fleet-btn--ghost" data-pf-modal-close="1">' . esc_html__( 'Close', 'prime-fleet' ) . '</button></div>';
+			echo '</div></div>';
+		}
+
+		echo '</div>'; // card.
+
+		View::shell(
+			sprintf(
+				/* translators: %s month label */
+				__( 'Bookings · %s', 'prime-fleet' ),
+				$month_label
+			),
+			ob_get_clean(),
+			array( self::view_switcher( 'calendar', array( 'ym' => $ym ) ) )
 		);
 	}
 
@@ -248,10 +578,37 @@ final class Bookings {
 				Queue::on_confirmed( $id );
 				do_action( 'prime_fleet_booking_status_changed', $id, 'confirmed', $current['status'] );
 				$notice = View::notice( __( 'Booking confirmed. Reminders scheduled.', 'prime-fleet' ), 'success' );
-			} elseif ( 'cancel' === $action && $current && 'cancelled' !== $current['status'] ) {
+			} elseif ( 'cancel' === $action && $current ) {
+				$cancellable = in_array( (string) $current['status'], array( 'pending_confirmation', 'confirmed' ), true );
+				if ( ! $cancellable ) {
+					$notice = View::notice( __( 'This booking can no longer be cancelled.', 'prime-fleet' ), 'error' );
+				} else {
+					$wpdb->update(
+						Schema::table( 'bookings' ),
+						array( 'status' => 'cancelled' ),
+						array( 'id' => $id ),
+						array( '%s' ),
+						array( '%d' )
+					);
+					$wpdb->insert(
+						Schema::table( 'booking_events' ),
+						array(
+							'booking_id' => $id,
+							'event_type' => 'status_changed',
+							'actor_id'   => get_current_user_id(),
+							'message'    => 'Cancelled by staff',
+							'meta_json'  => wp_json_encode( array( 'status' => 'cancelled' ) ),
+						),
+						array( '%d', '%s', '%d', '%s', '%s' )
+					);
+					Queue::on_cancelled( $id );
+					do_action( 'prime_fleet_booking_status_changed', $id, 'cancelled', $current['status'] );
+					$notice = View::notice( __( 'Booking cancelled. Guest notified.', 'prime-fleet' ), 'success' );
+				}
+			} elseif ( 'mark_completed' === $action && $current && 'confirmed' === $current['status'] ) {
 				$wpdb->update(
 					Schema::table( 'bookings' ),
-					array( 'status' => 'cancelled' ),
+					array( 'status' => 'completed' ),
 					array( 'id' => $id ),
 					array( '%s' ),
 					array( '%d' )
@@ -262,14 +619,36 @@ final class Bookings {
 						'booking_id' => $id,
 						'event_type' => 'status_changed',
 						'actor_id'   => get_current_user_id(),
-						'message'    => 'Cancelled by staff',
-						'meta_json'  => wp_json_encode( array( 'status' => 'cancelled' ) ),
+						'message'    => 'Marked completed by staff',
+						'meta_json'  => wp_json_encode( array( 'status' => 'completed' ) ),
 					),
 					array( '%d', '%s', '%d', '%s', '%s' )
 				);
-				Queue::on_cancelled( $id );
-				do_action( 'prime_fleet_booking_status_changed', $id, 'cancelled', $current['status'] );
-				$notice = View::notice( __( 'Booking cancelled. Guest notified.', 'prime-fleet' ), 'success' );
+				Queue::cancel_pending_reminders( $id );
+				do_action( 'prime_fleet_booking_status_changed', $id, 'completed', $current['status'] );
+				$notice = View::notice( __( 'Booking marked completed.', 'prime-fleet' ), 'success' );
+			} elseif ( 'mark_no_show' === $action && $current && 'confirmed' === $current['status'] ) {
+				$wpdb->update(
+					Schema::table( 'bookings' ),
+					array( 'status' => 'no_show' ),
+					array( 'id' => $id ),
+					array( '%s' ),
+					array( '%d' )
+				);
+				$wpdb->insert(
+					Schema::table( 'booking_events' ),
+					array(
+						'booking_id' => $id,
+						'event_type' => 'status_changed',
+						'actor_id'   => get_current_user_id(),
+						'message'    => 'Marked no-show by staff',
+						'meta_json'  => wp_json_encode( array( 'status' => 'no_show' ) ),
+					),
+					array( '%d', '%s', '%d', '%s', '%s' )
+				);
+				Queue::cancel_pending_reminders( $id );
+				do_action( 'prime_fleet_booking_status_changed', $id, 'no_show', $current['status'] );
+				$notice = View::notice( __( 'Booking marked no-show. Fare kept; reminders cleared.', 'prime-fleet' ), 'success' );
 			} elseif ( 'update_pickup' === $action && $current && 'cancelled' !== $current['status'] ) {
 				$pickup = sanitize_text_field( wp_unslash( $_POST['pickup_datetime'] ?? '' ) );
 				$pickup = str_replace( 'T', ' ', $pickup );
@@ -406,6 +785,65 @@ final class Bookings {
 						'success'
 					);
 				}
+			} elseif ( 'save_staff_notes' === $action && $current ) {
+				$notes = isset( $_POST['internal_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['internal_notes'] ) ) : '';
+				if ( strlen( $notes ) > 10000 ) {
+					$notes = substr( $notes, 0, 10000 );
+				}
+				$prev = isset( $current['internal_notes'] ) ? (string) $current['internal_notes'] : '';
+				$wpdb->update(
+					Schema::table( 'bookings' ),
+					array( 'internal_notes' => $notes ),
+					array( 'id' => $id ),
+					array( '%s' ),
+					array( '%d' )
+				);
+				if ( $prev !== $notes ) {
+					$wpdb->insert(
+						Schema::table( 'booking_events' ),
+						array(
+							'booking_id' => $id,
+							'event_type' => 'note',
+							'actor_id'   => get_current_user_id(),
+							'message'    => '' === $notes ? 'Staff note cleared' : 'Staff note updated',
+							'meta_json'  => wp_json_encode(
+								array(
+									'length' => strlen( $notes ),
+								)
+							),
+						),
+						array( '%d', '%s', '%d', '%s', '%s' )
+					);
+				}
+				$notice = View::notice( __( 'Staff notes saved.', 'prime-fleet' ), 'success' );
+			} elseif ( 'add_amendment' === $action && $current ) {
+				$result = Amendments::add(
+					$id,
+					array(
+						'type'     => sanitize_key( wp_unslash( $_POST['adjustment_type'] ?? 'manual' ) ),
+						'qty'      => isset( $_POST['adjustment_qty'] ) ? (float) wp_unslash( $_POST['adjustment_qty'] ) : 1,
+						'amount'   => isset( $_POST['adjustment_amount'] ) && '' !== (string) wp_unslash( $_POST['adjustment_amount'] )
+							? (float) wp_unslash( $_POST['adjustment_amount'] )
+							: null,
+						'reason'   => isset( $_POST['adjustment_reason'] ) ? sanitize_textarea_field( wp_unslash( $_POST['adjustment_reason'] ) ) : '',
+						'notify'   => ! empty( $_POST['adjustment_notify'] ),
+						'actor_id' => get_current_user_id(),
+					)
+				);
+				if ( is_wp_error( $result ) ) {
+					$notice = View::notice( $result->get_error_message(), 'error' );
+				} else {
+					$msg = sprintf(
+						/* translators: 1: currency amount added, 2: new fare total */
+						__( 'Amendment saved (+%1$s). Fare now %2$s.', 'prime-fleet' ),
+						$current['currency'] . ' ' . number_format( (float) $result['amount'], 2 ),
+						$current['currency'] . ' ' . number_format( (float) $result['fare_total'], 2 )
+					);
+					if ( ! empty( $result['notified'] ) ) {
+						$msg .= ' ' . __( 'Guest notified.', 'prime-fleet' );
+					}
+					$notice = View::notice( $msg, 'success' );
+				}
 			}
 		}
 
@@ -456,7 +894,7 @@ final class Bookings {
 			echo $notice; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
-		$status_mod = 'pending_confirmation' === $row['status'] ? 'is-pending' : ( 'confirmed' === $row['status'] ? 'is-confirmed' : ( 'cancelled' === $row['status'] ? 'is-cancelled' : '' ) );
+		$status_mod = 'pending_confirmation' === $row['status'] ? 'is-pending' : ( 'confirmed' === $row['status'] ? 'is-confirmed' : ( 'cancelled' === $row['status'] ? 'is-cancelled' : ( 'completed' === $row['status'] ? 'is-completed' : ( 'no_show' === $row['status'] ? 'is-noshow' : '' ) ) ) );
 		$pay_mod    = 'paid' === $row['payment_status'] ? 'is-paid' : ( 'unpaid' === $row['payment_status'] ? 'is-unpaid' : '' );
 		$fare_label = self::fare_display( $row );
 		$needs_review = (int) $row['manual_review'] && (float) $row['fare_total'] > 0;
@@ -471,19 +909,7 @@ final class Bookings {
 		$is_true_quote = (int) $row['manual_review'] && (float) $row['fare_total'] <= 0;
 		$pickup_day  = $row['pickup_datetime'] ? date_i18n( 'D, M j', strtotime( $row['pickup_datetime'] ) ) : '—';
 		$pickup_time = $row['pickup_datetime'] ? date_i18n( 'g:i A', strtotime( $row['pickup_datetime'] ) ) : '';
-		$guest_name  = (string) $row['customer_name'];
-		$initials    = '';
-		foreach ( preg_split( '/\s+/', trim( $guest_name ) ) as $part ) {
-			if ( '' !== $part ) {
-				$initials .= strtoupper( substr( $part, 0, 1 ) );
-			}
-			if ( strlen( $initials ) >= 2 ) {
-				break;
-			}
-		}
-		if ( '' === $initials ) {
-			$initials = '?';
-		}
+		$guest_name = (string) $row['customer_name'];
 
 		$vehicles = $wpdb->get_results(
 			'SELECT id, name, customer_display_name FROM ' . Schema::table( 'vehicles' ) . ' WHERE is_active = 1 ORDER BY display_order ASC, id ASC',
@@ -518,7 +944,19 @@ final class Bookings {
 			echo '<button type="submit" class="prime-fleet-btn">' . esc_html__( 'Confirm booking', 'prime-fleet' ) . '</button>';
 			echo '</form>';
 		}
-		if ( 'cancelled' !== $row['status'] ) {
+		if ( 'confirmed' === $row['status'] ) {
+			echo '<form method="post" class="prime-fleet-bd__confirm">';
+			wp_nonce_field( self::NONCE );
+			echo '<input type="hidden" name="prime_fleet_booking_action" value="mark_completed" />';
+			echo '<button type="submit" class="prime-fleet-btn prime-fleet-btn--ghost" data-pf-confirm-title="' . esc_attr__( 'Mark completed', 'prime-fleet' ) . '" data-pf-confirm-ok="' . esc_attr__( 'Mark completed', 'prime-fleet' ) . '" data-pf-confirm="' . esc_attr__( 'Mark this trip completed? Pending reminders will be cleared. You can still add post-job amendments after.', 'prime-fleet' ) . '">' . esc_html__( 'Mark completed', 'prime-fleet' ) . '</button>';
+			echo '</form>';
+			echo '<form method="post" class="prime-fleet-bd__confirm">';
+			wp_nonce_field( self::NONCE );
+			echo '<input type="hidden" name="prime_fleet_booking_action" value="mark_no_show" />';
+			echo '<button type="submit" class="prime-fleet-btn prime-fleet-btn--ghost" data-pf-confirm-title="' . esc_attr__( 'Mark no-show', 'prime-fleet' ) . '" data-pf-confirm-ok="' . esc_attr__( 'Mark no-show', 'prime-fleet' ) . '" data-pf-confirm="' . esc_attr__( 'Mark this trip as no-show? Full fare is kept, pending reminders are cleared, and the vehicle window frees up.', 'prime-fleet' ) . '">' . esc_html__( 'Mark no-show', 'prime-fleet' ) . '</button>';
+			echo '</form>';
+		}
+		if ( 'cancelled' !== $row['status'] && 'completed' !== $row['status'] && 'no_show' !== $row['status'] ) {
 			echo '<form method="post" class="prime-fleet-bd__confirm">';
 			wp_nonce_field( self::NONCE );
 			echo '<input type="hidden" name="prime_fleet_booking_action" value="cancel" />';
@@ -572,15 +1010,12 @@ final class Bookings {
 		/* —— Guest (top left) —— */
 		echo '<section class="prime-fleet-bd__panel prime-fleet-bd__panel--guest">';
 		echo '<h3 class="prime-fleet-bd__panel-title">' . esc_html__( 'Guest', 'prime-fleet' ) . '</h3>';
-		echo '<div class="prime-fleet-bd__guest">';
-		echo '<div class="prime-fleet-bd__avatar" aria-hidden="true">' . esc_html( $initials ) . '</div>';
-		echo '<div class="prime-fleet-bd__guest-body">';
 		echo '<p class="prime-fleet-bd__guest-name">' . esc_html( $guest_name ) . '</p>';
-		echo '<div class="prime-fleet-bd__contact">';
-		self::contact_row( __( 'Email', 'prime-fleet' ), $row['customer_email'] );
-		self::contact_row( __( 'Phone', 'prime-fleet' ), $row['customer_phone'] );
-		self::contact_row( __( 'WhatsApp', 'prime-fleet' ), $row['customer_whatsapp'] ? $row['customer_whatsapp'] : '—' );
-		echo '</div></div></div></section>';
+		echo '<table class="prime-fleet-bd__meta"><tbody>';
+		self::meta_row( __( 'Email', 'prime-fleet' ), $row['customer_email'] );
+		self::meta_row( __( 'Phone', 'prime-fleet' ), $row['customer_phone'] );
+		self::meta_row( __( 'WhatsApp', 'prime-fleet' ), $row['customer_whatsapp'] ? $row['customer_whatsapp'] : '—' );
+		echo '</tbody></table></section>';
 
 		/* —— Trip (top right) —— */
 		echo '<section class="prime-fleet-bd__panel prime-fleet-bd__panel--trip">';
@@ -623,10 +1058,22 @@ final class Bookings {
 
 		$has_fare_lines = ! empty( $snapshot['explanation'] ) && is_array( $snapshot['explanation'] );
 		$has_coupon_snap = $coupon_code && ( ! empty( $snapshot['coupon'] ) || $coupon_disc );
-		if ( $has_fare_lines || $has_coupon_snap ) {
+		$orig_fare       = isset( $snapshot['original_fare_total'] ) ? (float) $snapshot['original_fare_total'] : null;
+		$has_amendments  = ! empty( $snapshot['adjustments'] ) && is_array( $snapshot['adjustments'] );
+		if ( $has_fare_lines || $has_coupon_snap || ( null !== $orig_fare && $has_amendments ) ) {
 			echo '<div class="prime-fleet-bd__fare-note">';
 			echo '<h4 class="prime-fleet-bd__subhead">' . esc_html__( 'Fare breakdown', 'prime-fleet' ) . '</h4>';
 			echo '<ul class="prime-fleet-bd__fare-list">';
+			if ( null !== $orig_fare && $has_amendments ) {
+				echo '<li class="prime-fleet-bd__fare-base">' . esc_html(
+					sprintf(
+						/* translators: 1: currency code, 2: original fare */
+						__( 'Original fare: %1$s %2$s', 'prime-fleet' ),
+						$row['currency'],
+						number_format( $orig_fare, 2 )
+					)
+				) . '</li>';
+			}
 			if ( $has_fare_lines ) {
 				foreach ( $snapshot['explanation'] as $line ) {
 					echo '<li>' . esc_html( (string) $line ) . '</li>';
@@ -677,20 +1124,98 @@ final class Bookings {
 		echo '<section class="prime-fleet-bd__panel prime-fleet-bd__panel--activity">';
 		echo '<h3 class="prime-fleet-bd__panel-title">' . esc_html__( 'Activity', 'prime-fleet' ) . '</h3>';
 		if ( $events ) {
-			echo '<div class="prime-fleet-bd__feed">';
+			echo '<div class="prime-fleet-table-wrap"><table class="prime-fleet-table prime-fleet-table--ops"><thead><tr>';
+			echo '<th>' . esc_html__( 'When', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Event', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Detail', 'prime-fleet' ) . '</th>';
+			echo '</tr></thead><tbody>';
 			foreach ( $events as $ev ) {
 				$type_label = self::event_label( (string) $ev['event_type'] );
 				$msg        = $ev['message'] ? (string) $ev['message'] : $type_label;
-				echo '<div class="prime-fleet-bd__feed-item">';
-				echo '<span class="prime-fleet-bd__feed-marker" aria-hidden="true"></span>';
-				echo '<div class="prime-fleet-bd__feed-body">';
-				echo '<p class="prime-fleet-bd__feed-title">' . esc_html( $msg ) . '</p>';
-				echo '<p class="prime-fleet-bd__feed-meta">' . esc_html( $type_label ) . ' · ' . esc_html( date_i18n( 'M j, Y · g:i A', strtotime( $ev['created_at'] ) ) ) . '</p>';
-				echo '</div></div>';
+				echo '<tr>';
+				echo '<td class="prime-fleet-table__mono">' . esc_html( date_i18n( 'Y-m-d H:i', strtotime( $ev['created_at'] ) ) ) . '</td>';
+				echo '<td>' . esc_html( $type_label ) . '</td>';
+				echo '<td>' . esc_html( $msg ) . '</td>';
+				echo '</tr>';
 			}
-			echo '</div>';
+			echo '</tbody></table></div>';
 		} else {
 			echo '<p class="prime-fleet-bd__empty">' . esc_html__( 'No activity yet.', 'prime-fleet' ) . '</p>';
+		}
+		echo '</section>';
+
+		/* —— Staff notes (internal; surfaces on Overview) —— */
+		$staff_notes = isset( $row['internal_notes'] ) ? (string) $row['internal_notes'] : '';
+		echo '<section class="prime-fleet-bd__panel prime-fleet-bd__panel--notes">';
+		echo '<h3 class="prime-fleet-bd__panel-title">' . esc_html__( 'Staff notes', 'prime-fleet' ) . '</h3>';
+		echo '<p class="prime-fleet-bd__offer-help">' . esc_html__( 'Internal only — guests never see this. Notes also appear on the Overview staff-notes feed.', 'prime-fleet' ) . '</p>';
+		echo '<form method="post" class="prime-fleet-bd__notes-form">';
+		wp_nonce_field( self::NONCE );
+		echo '<input type="hidden" name="prime_fleet_booking_action" value="save_staff_notes" />';
+		echo '<div class="prime-fleet-field">';
+		echo '<label for="pf-bd-notes">' . esc_html__( 'Notes', 'prime-fleet' ) . '</label>';
+		echo '<textarea id="pf-bd-notes" name="internal_notes" rows="4" maxlength="10000" placeholder="' . esc_attr__( 'e.g. VIP meet at door 3, prefers quiet vehicle…', 'prime-fleet' ) . '">' . esc_textarea( $staff_notes ) . '</textarea>';
+		echo '</div>';
+		echo '<div class="prime-fleet-bd__inline-action"><button type="submit" class="prime-fleet-btn prime-fleet-btn--ghost">' . esc_html__( 'Save notes', 'prime-fleet' ) . '</button></div>';
+		echo '</form></section>';
+
+		/* —— Post-job amendments —— */
+		$can_amend = in_array( (string) $row['status'], array( 'confirmed', 'completed', 'no_show' ), true );
+		$adj_rows  = Amendments::for_booking( $id );
+		$type_labels = Amendments::type_labels();
+		echo '<section class="prime-fleet-bd__panel prime-fleet-bd__panel--amend">';
+		echo '<h3 class="prime-fleet-bd__panel-title">' . esc_html__( 'Amendments', 'prime-fleet' ) . '</h3>';
+		echo '<p class="prime-fleet-bd__offer-help">' . esc_html__( 'Extra hours, wait, or stops after the job. Original fare stays visible; total updates for reports and lookup.', 'prime-fleet' ) . '</p>';
+
+		if ( $adj_rows ) {
+			echo '<div class="prime-fleet-table-wrap prime-fleet-bd__amend-list"><table class="prime-fleet-table prime-fleet-table--compact"><thead><tr>';
+			echo '<th>' . esc_html__( 'When', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Type', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Qty', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Amount', 'prime-fleet' ) . '</th>';
+			echo '<th>' . esc_html__( 'Reason', 'prime-fleet' ) . '</th>';
+			echo '</tr></thead><tbody>';
+			foreach ( $adj_rows as $adj ) {
+				$t = (string) $adj['adjustment_type'];
+				echo '<tr>';
+				echo '<td>' . esc_html( date_i18n( 'M j · g:i A', strtotime( $adj['created_at'] ) ) ) . '</td>';
+				echo '<td>' . esc_html( isset( $type_labels[ $t ] ) ? $type_labels[ $t ] : $t ) . '</td>';
+				echo '<td>' . esc_html( rtrim( rtrim( number_format( (float) $adj['qty'], 2, '.', '' ), '0' ), '.' ) ) . '</td>';
+				echo '<td class="prime-fleet-table__mono">+' . esc_html( $row['currency'] . ' ' . number_format( (float) $adj['amount'], 2 ) ) . '</td>';
+				echo '<td>' . esc_html( (string) $adj['reason'] ) . '</td>';
+				echo '</tr>';
+			}
+			echo '</tbody></table></div>';
+		} else {
+			echo '<p class="prime-fleet-bd__empty">' . esc_html__( 'No amendments yet.', 'prime-fleet' ) . '</p>';
+		}
+
+		if ( $can_amend ) {
+			$suggest_hours = Amendments::suggest_amount( $row, 'extra_hours', 2 );
+			echo '<form method="post" class="prime-fleet-bd__amend-form" data-pf-amend-form="1">';
+			wp_nonce_field( self::NONCE );
+			echo '<input type="hidden" name="prime_fleet_booking_action" value="add_amendment" />';
+			echo '<div class="prime-fleet-bd__amend-grid">';
+			echo '<div class="prime-fleet-field"><label for="pf-bd-adj-type">' . esc_html__( 'Type', 'prime-fleet' ) . '</label>';
+			echo '<select id="pf-bd-adj-type" name="adjustment_type" data-pf-native="1" data-pf-no-search="1" required>';
+			foreach ( $type_labels as $tk => $tl ) {
+				printf( '<option value="%s">%s</option>', esc_attr( $tk ), esc_html( $tl ) );
+			}
+			echo '</select></div>';
+			echo '<div class="prime-fleet-field"><label for="pf-bd-adj-qty">' . esc_html__( 'Qty', 'prime-fleet' ) . '</label>';
+			echo '<input id="pf-bd-adj-qty" type="number" name="adjustment_qty" min="0.25" step="0.25" value="2" required />';
+			echo '<p class="prime-fleet-bd__field-hint">' . esc_html__( 'Hours, 30-min wait intervals, or stop count.', 'prime-fleet' ) . '</p></div>';
+			echo '<div class="prime-fleet-field"><label for="pf-bd-adj-amount">' . esc_html__( 'Amount', 'prime-fleet' ) . '</label>';
+			echo '<input id="pf-bd-adj-amount" type="number" name="adjustment_amount" min="0" step="0.01" value="' . esc_attr( $suggest_hours > 0 ? (string) $suggest_hours : '' ) . '" placeholder="' . esc_attr__( 'Auto or enter', 'prime-fleet' ) . '" />';
+			echo '<p class="prime-fleet-bd__field-hint">' . esc_html__( 'Leave blank to auto-price from rates; or override.', 'prime-fleet' ) . '</p></div>';
+			echo '</div>';
+			echo '<div class="prime-fleet-field"><label for="pf-bd-adj-reason">' . esc_html__( 'Reason', 'prime-fleet' ) . '</label>';
+			echo '<textarea id="pf-bd-adj-reason" name="adjustment_reason" rows="2" maxlength="2000" placeholder="' . esc_attr__( 'e.g. Guest held 45 min at curb + 1 grocery stop', 'prime-fleet' ) . '"></textarea></div>';
+			echo '<label class="prime-fleet-bd__check"><input type="checkbox" name="adjustment_notify" value="1" /> ' . esc_html__( 'Notify guest of updated fare', 'prime-fleet' ) . '</label>';
+			echo '<div class="prime-fleet-bd__inline-action"><button type="submit" class="prime-fleet-btn prime-fleet-btn--ghost">' . esc_html__( 'Add amendment', 'prime-fleet' ) . '</button></div>';
+			echo '</form>';
+		} else {
+			echo '<p class="prime-fleet-muted">' . esc_html__( 'Confirm or complete this booking before adding amendments.', 'prime-fleet' ) . '</p>';
 		}
 		echo '</section>';
 
@@ -706,15 +1231,13 @@ final class Bookings {
 				$pickup_val = gmdate( 'Y-m-d\TH:i', strtotime( $row['pickup_datetime'] ) );
 			}
 			echo '<section class="prime-fleet-bd__panel prime-fleet-bd__panel--ops">';
-			echo '<div class="prime-fleet-bd__offer-head">';
 			echo '<h3 class="prime-fleet-bd__panel-title">' . esc_html__( 'Update pickup', 'prime-fleet' ) . '</h3>';
 			echo '<p class="prime-fleet-bd__offer-help">' . esc_html__( 'Changes notify the guest and reschedule reminders if confirmed.', 'prime-fleet' ) . '</p>';
-			echo '</div>';
-			echo '<form method="post" class="prime-fleet-bd__offer-form">';
+			echo '<form method="post" class="prime-fleet-bd__inline-form">';
 			wp_nonce_field( self::NONCE );
 			echo '<input type="hidden" name="prime_fleet_booking_action" value="update_pickup" />';
 			echo '<div class="prime-fleet-field"><label for="pf-bd-pickup">' . esc_html__( 'Pickup', 'prime-fleet' ) . '</label><input id="pf-bd-pickup" type="datetime-local" name="pickup_datetime" value="' . esc_attr( $pickup_val ) . '" required /></div>';
-			echo '<div class="prime-fleet-bd__offer-action"><button type="submit" class="prime-fleet-btn prime-fleet-btn--ghost">' . esc_html__( 'Save & notify', 'prime-fleet' ) . '</button></div>';
+			echo '<div class="prime-fleet-bd__inline-action"><button type="submit" class="prime-fleet-btn prime-fleet-btn--ghost">' . esc_html__( 'Save & notify', 'prime-fleet' ) . '</button></div>';
 			echo '</form></section>';
 
 			/* —— Payment (M4) —— */
@@ -742,10 +1265,7 @@ final class Bookings {
 			echo '<h3 class="prime-fleet-bd__panel-title">' . esc_html__( 'Payment', 'prime-fleet' ) . '</h3>';
 			echo '<p class="prime-fleet-bd__offer-help">' . esc_html__( 'Issue or re-send a tracked guest pay link (instructions, custom link, or Stripe). Regenerate invalidates the old token.', 'prime-fleet' ) . '</p>';
 			echo '</div>';
-			echo '<div class="prime-fleet-bd__pay-badge prime-fleet-bd__pay-badge--' . esc_attr( sanitize_html_class( $pay_status ) ) . '">';
-			echo '<span class="prime-fleet-bd__pay-badge-label">' . esc_html__( 'Status', 'prime-fleet' ) . '</span>';
-			echo '<strong>' . esc_html( self::pay_label( $pay_status ) ) . '</strong>';
-			echo '</div>';
+			echo '<span class="prime-fleet-pill prime-fleet-pill--' . esc_attr( self::pay_tone( $pay_status ) ) . '">' . esc_html( self::pay_label( $pay_status ) ) . '</span>';
 			echo '</div>';
 
 			if ( $latest_pay && ! empty( $latest_pay['external_id'] ) ) {
@@ -770,7 +1290,7 @@ final class Bookings {
 				echo '<form method="post" class="prime-fleet-bd__pay-form">';
 				wp_nonce_field( self::NONCE );
 				echo '<input type="hidden" name="prime_fleet_booking_action" value="issue_payment" />';
-				echo '<div class="prime-fleet-field prime-fleet-bd__pay-method"><label for="pf-bd-paymethod">' . esc_html__( 'Method', 'prime-fleet' ) . '</label><select id="pf-bd-paymethod" name="payment_method">';
+				echo '<div class="prime-fleet-field prime-fleet-bd__pay-method"><label for="pf-bd-paymethod">' . esc_html__( 'Method', 'prime-fleet' ) . '</label><select id="pf-bd-paymethod" name="payment_method" data-pf-no-search="1">';
 				foreach ( $pay_methods as $mid => $pm ) {
 					echo '<option value="' . esc_attr( $mid ) . '"' . selected( $selected_m, $mid, false ) . '>' . esc_html( $pm->label() ) . '</option>';
 				}
@@ -843,8 +1363,16 @@ final class Bookings {
 		echo '</div>'; /* layout */
 		echo '</div>'; /* bd */
 
-		$back = '<button type="button" class="prime-fleet-btn prime-fleet-btn--ghost" data-pf-panel="bookings">' . esc_html__( '← Back to bookings', 'prime-fleet' ) . '</button>';
-		View::shell( __( 'Booking detail', 'prime-fleet' ), ob_get_clean(), array( $back ) );
+		$back = '<button type="button" class="prime-fleet-row-link" data-pf-panel="bookings" data-pf-query="' . esc_attr( wp_json_encode( array( 'view' => 'calendar' ) ) ) . '">' . esc_html__( '← Back to bookings', 'prime-fleet' ) . '</button>';
+		View::shell(
+			sprintf(
+				/* translators: %s booking reference */
+				__( 'Booking · %s', 'prime-fleet' ),
+				$row['reference']
+			),
+			ob_get_clean(),
+			array( $back )
+		);
 	}
 
 	/**
@@ -852,10 +1380,17 @@ final class Bookings {
 	 * @param string $value Value.
 	 */
 	private static function contact_row( $label, $value ) {
-		echo '<div class="prime-fleet-bd__contact-row">';
-		echo '<span class="prime-fleet-bd__contact-label">' . esc_html( $label ) . '</span>';
-		echo '<span class="prime-fleet-bd__contact-value">' . esc_html( (string) $value ) . '</span>';
-		echo '</div>';
+		self::meta_row( $label, $value );
+	}
+
+	/**
+	 * Dense label/value row for booking detail.
+	 *
+	 * @param string $label Label.
+	 * @param string $value Value.
+	 */
+	private static function meta_row( $label, $value ) {
+		echo '<tr><th scope="row">' . esc_html( $label ) . '</th><td>' . esc_html( (string) $value ) . '</td></tr>';
 	}
 
 	/**
@@ -905,6 +1440,7 @@ final class Bookings {
 			'payment_refunded_notify'  => __( 'Refund notice sent', 'prime-fleet' ),
 			'payment_pending_verification' => __( 'Guest payment notice', 'prime-fleet' ),
 			'note'                     => __( 'Note', 'prime-fleet' ),
+			'amendment'                => __( 'Amendment', 'prime-fleet' ),
 		);
 		return isset( $map[ $type ] ) ? $map[ $type ] : ucwords( str_replace( '_', ' ', $type ) );
 	}
@@ -915,12 +1451,42 @@ final class Bookings {
 	 */
 	private static function status_label( $status ) {
 		$map = array(
-			'pending_confirmation' => __( 'Pending Confirmation', 'prime-fleet' ),
+			'pending_confirmation' => __( 'Pending', 'prime-fleet' ),
 			'confirmed'            => __( 'Confirmed', 'prime-fleet' ),
 			'cancelled'            => __( 'Cancelled', 'prime-fleet' ),
 			'completed'            => __( 'Completed', 'prime-fleet' ),
+			'no_show'              => __( 'No-show', 'prime-fleet' ),
 		);
 		return isset( $map[ $status ] ) ? $map[ $status ] : $status;
+	}
+
+	/**
+	 * @param string $status Status.
+	 * @return string
+	 */
+	private static function status_tone( $status ) {
+		$map = array(
+			'pending_confirmation' => 'warn',
+			'confirmed'            => 'ok',
+			'cancelled'            => 'danger',
+			'completed'            => 'off',
+			'no_show'              => 'danger',
+		);
+		return isset( $map[ $status ] ) ? $map[ $status ] : 'off';
+	}
+
+	/**
+	 * @param string $status Payment status.
+	 * @return string
+	 */
+	private static function pay_tone( $status ) {
+		$map = array(
+			'unpaid'    => 'warn',
+			'link_sent' => 'info',
+			'paid'      => 'ok',
+			'refunded'  => 'off',
+		);
+		return isset( $map[ $status ] ) ? $map[ $status ] : 'off';
 	}
 
 	/**
@@ -997,21 +1563,19 @@ final class Bookings {
 	 */
 	private static function render_slot_offer_panel( array $vehicles ) {
 		echo '<section class="prime-fleet-bd__panel prime-fleet-bd__panel--offer" id="prime-fleet-bd-slot-offer">';
-		echo '<div class="prime-fleet-bd__offer-head">';
 		echo '<h3 class="prime-fleet-bd__panel-title">' . esc_html__( 'Send slot offer', 'prime-fleet' ) . '</h3>';
 		echo '<p class="prime-fleet-bd__offer-help">' . esc_html__( 'Propose an alternative pickup when the requested window is full. Guest receives a secure accept link.', 'prime-fleet' ) . '</p>';
-		echo '</div>';
-		echo '<form method="post" class="prime-fleet-bd__offer-form">';
+		echo '<form method="post" class="prime-fleet-bd__inline-form">';
 		wp_nonce_field( self::NONCE );
 		echo '<input type="hidden" name="prime_fleet_booking_action" value="send_slot_offer" />';
 		echo '<div class="prime-fleet-field"><label for="pf-bd-proposed">' . esc_html__( 'Proposed pickup', 'prime-fleet' ) . '</label><input id="pf-bd-proposed" type="datetime-local" name="proposed_datetime" required /></div>';
-		echo '<div class="prime-fleet-field"><label for="pf-bd-vehicle">' . esc_html__( 'Vehicle', 'prime-fleet' ) . '</label><select id="pf-bd-vehicle" name="offer_vehicle_id"><option value="0">' . esc_html__( 'Any free vehicle', 'prime-fleet' ) . '</option>';
+		echo '<div class="prime-fleet-field"><label for="pf-bd-vehicle">' . esc_html__( 'Vehicle', 'prime-fleet' ) . '</label><select id="pf-bd-vehicle" name="offer_vehicle_id" data-pf-no-search="1"><option value="0">' . esc_html__( 'Any free vehicle', 'prime-fleet' ) . '</option>';
 		foreach ( $vehicles as $v ) {
 			$label = $v['customer_display_name'] ? $v['customer_display_name'] : $v['name'];
 			echo '<option value="' . esc_attr( (string) (int) $v['id'] ) . '">' . esc_html( $label ) . '</option>';
 		}
 		echo '</select></div>';
-		echo '<div class="prime-fleet-bd__offer-action"><button type="submit" class="prime-fleet-btn">' . esc_html__( 'Send offer', 'prime-fleet' ) . '</button></div>';
+		echo '<div class="prime-fleet-bd__inline-action"><button type="submit" class="prime-fleet-btn">' . esc_html__( 'Send offer', 'prime-fleet' ) . '</button></div>';
 		echo '</form></section>';
 	}
 

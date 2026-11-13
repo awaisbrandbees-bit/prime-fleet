@@ -7,6 +7,7 @@
 
 namespace Prime_Fleet\Admin\Pages;
 
+use Prime_Fleet\Admin\Table_List;
 use Prime_Fleet\Admin\View;
 use Prime_Fleet\Database\Schema;
 use Prime_Fleet\Install\Capabilities;
@@ -39,39 +40,49 @@ final class Messages {
 		if ( $notice ) {
 			echo $notice; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
-
-		self::subnav( $mtab, $edit_id );
-
+		?>
+		<div class="prime-fleet-subpages prime-fleet-settings-layout">
+			<nav class="prime-fleet-subpages__nav prime-fleet-settings-nav" aria-label="<?php esc_attr_e( 'Messages pages', 'prime-fleet' ); ?>">
+				<p class="prime-fleet-settings-nav__label"><?php esc_html_e( 'Messages', 'prime-fleet' ); ?></p>
+				<ul class="prime-fleet-settings-nav__list">
+					<li>
+						<button
+							type="button"
+							class="prime-fleet-settings-nav__link<?php echo ( 'templates' === $mtab && ! $edit_id ) ? ' is-active' : ''; ?>"
+							data-pf-panel="templates"
+							data-pf-query="<?php echo esc_attr( wp_json_encode( array( 'mtab' => 'templates' ) ) ); ?>"
+							aria-current="<?php echo ( 'templates' === $mtab && ! $edit_id ) ? 'page' : 'false'; ?>"
+						><?php esc_html_e( 'Templates', 'prime-fleet' ); ?></button>
+					</li>
+					<li>
+						<button
+							type="button"
+							class="prime-fleet-settings-nav__link<?php echo ( 'outbox' === $mtab ) ? ' is-active' : ''; ?>"
+							data-pf-panel="templates"
+							data-pf-query="<?php echo esc_attr( wp_json_encode( array( 'mtab' => 'outbox' ) ) ); ?>"
+							aria-current="<?php echo ( 'outbox' === $mtab ) ? 'page' : 'false'; ?>"
+						><?php esc_html_e( 'WhatsApp outbox', 'prime-fleet' ); ?></button>
+					</li>
+				</ul>
+			</nav>
+			<div class="prime-fleet-subpages__main prime-fleet-settings-main">
+				<?php
+				if ( $edit_id ) {
+					self::render_edit( $edit_id );
+				} elseif ( 'outbox' === $mtab ) {
+					self::render_outbox();
+				} else {
+					self::render_list();
+				}
+				?>
+			</div>
+		</div>
+		<?php
+		$title = ( 'outbox' === $mtab ) ? __( 'WhatsApp outbox', 'prime-fleet' ) : __( 'Message templates', 'prime-fleet' );
 		if ( $edit_id ) {
-			self::render_edit( $edit_id );
-		} elseif ( 'outbox' === $mtab ) {
-			self::render_outbox();
-		} else {
-			self::render_list();
+			$title = __( 'Edit template', 'prime-fleet' );
 		}
-
-		View::shell( __( 'Messages', 'prime-fleet' ), ob_get_clean() );
-	}
-
-	/**
-	 * @param string $mtab Active tab.
-	 * @param int    $edit_id Edit ID.
-	 */
-	private static function subnav( $mtab, $edit_id ) {
-		echo '<nav class="prime-fleet-settings-tabs prime-fleet-messages-tabs" role="tablist" aria-label="' . esc_attr__( 'Messages sections', 'prime-fleet' ) . '">';
-		printf(
-			'<button type="button" class="prime-fleet-settings-tabs__btn%s" data-pf-panel="templates" data-pf-query="%s">%s</button>',
-			( 'templates' === $mtab && ! $edit_id ) ? ' is-active' : '',
-			esc_attr( wp_json_encode( array( 'mtab' => 'templates' ) ) ),
-			esc_html__( 'Templates', 'prime-fleet' )
-		);
-		printf(
-			'<button type="button" class="prime-fleet-settings-tabs__btn%s" data-pf-panel="templates" data-pf-query="%s">%s</button>',
-			( 'outbox' === $mtab ) ? ' is-active' : '',
-			esc_attr( wp_json_encode( array( 'mtab' => 'outbox' ) ) ),
-			esc_html__( 'WhatsApp outbox', 'prime-fleet' )
-		);
-		echo '</nav>';
+		View::shell( $title, ob_get_clean() );
 	}
 
 	/**
@@ -118,7 +129,7 @@ final class Messages {
 			echo '<td><span class="prime-fleet-badge' . ( (int) $row['email_enabled'] ? '' : ' prime-fleet-badge--off' ) . '">' . esc_html( $email_on ) . '</span></td>';
 			echo '<td><span class="prime-fleet-badge' . ( (int) $row['whatsapp_enabled'] ? '' : ' prime-fleet-badge--off' ) . '">' . esc_html( $wa_on ) . '</span></td>';
 			echo '<td><span class="prime-fleet-badge' . ( $enabled ? ' prime-fleet-badge--ok' : ' prime-fleet-badge--off' ) . '">' . esc_html( $enabled ? __( 'Enabled', 'prime-fleet' ) : __( 'Disabled', 'prime-fleet' ) ) . '</span></td>';
-			echo '<td class="prime-fleet-table__actions"><button type="button" class="prime-fleet-btn prime-fleet-btn--ghost" data-pf-panel="templates" data-pf-query="' . esc_attr( wp_json_encode( array( 'edit' => (int) $row['id'], 'mtab' => 'templates' ) ) ) . '">' . esc_html__( 'Edit', 'prime-fleet' ) . '</button></td>';
+			echo '<td class="prime-fleet-table__actions"><button type="button" class="prime-fleet-row-link" data-pf-panel="templates" data-pf-query="' . esc_attr( wp_json_encode( array( 'edit' => (int) $row['id'], 'mtab' => 'templates' ) ) ) . '">' . esc_html__( 'Edit', 'prime-fleet' ) . '</button></td>';
 			echo '</tr>';
 		}
 		echo '</tbody></table></div></div>';
@@ -203,16 +214,31 @@ final class Messages {
 	 */
 	private static function render_outbox() {
 		global $wpdb;
-		$table = Schema::table( 'communications' );
-		$rows  = $wpdb->get_results(
-			"SELECT c.*, b.reference
-			FROM {$table} c
-			LEFT JOIN " . Schema::table( 'bookings' ) . ' b ON b.id = c.booking_id
-			WHERE c.channel = \'whatsapp\'
-			ORDER BY c.id DESC
-			LIMIT 100',
-			ARRAY_A
+		$table    = Schema::table( 'communications' );
+		$bookings = Schema::table( 'bookings' );
+		$per_page = Table_List::PER_PAGE;
+		$paged    = max( 1, absint( $_GET['paged'] ?? 1 ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$total    = (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM {$table} WHERE channel = 'whatsapp'"
 		);
+		$pages  = max( 1, (int) ceil( $total / $per_page ) );
+		$paged  = min( $paged, $pages );
+		$offset = ( $paged - 1 ) * $per_page;
+		$rows   = $total
+			? $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT c.*, b.reference
+					FROM {$table} c
+					LEFT JOIN {$bookings} b ON b.id = c.booking_id
+					WHERE c.channel = 'whatsapp'
+					ORDER BY c.id DESC
+					LIMIT %d OFFSET %d",
+					$per_page,
+					$offset
+				),
+				ARRAY_A
+			)
+			: array();
 
 		$settings = get_option( 'prime_fleet_settings', array() );
 		$driver   = is_array( $settings ) && ! empty( $settings['whatsapp_driver'] ) ? $settings['whatsapp_driver'] : 'stub';
@@ -263,6 +289,15 @@ final class Messages {
 				echo '</tr>';
 			}
 			echo '</tbody></table></div>';
+			echo Table_List::pagination( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				'templates',
+				$total,
+				array(
+					'mtab'     => 'outbox',
+					'paged'    => $paged,
+					'per_page' => $per_page,
+				)
+			);
 		}
 		echo '</div>';
 	}

@@ -62,29 +62,25 @@ final class Notices_Guard {
 		}
 
 		$css = '
-			body.toplevel_page_prime-fleet #wpbody-content > .notice,
-			body.toplevel_page_prime-fleet #wpbody-content > .notice-success,
-			body.toplevel_page_prime-fleet #wpbody-content > .notice-warning,
-			body.toplevel_page_prime-fleet #wpbody-content > .notice-error,
-			body.toplevel_page_prime-fleet #wpbody-content > .notice-info,
-			body.toplevel_page_prime-fleet #wpbody-content > .updated,
-			body.toplevel_page_prime-fleet #wpbody-content > .error,
-			body.toplevel_page_prime-fleet #wpbody-content > .update-nag,
-			body.toplevel_page_prime-fleet #wpbody-content > .e-notice,
-			body.toplevel_page_prime-fleet #wpbody-content > .elementor-message,
-			body.toplevel_page_prime-fleet #wpbody-content > .woocommerce-message,
-			body.toplevel_page_prime-fleet #wpbody-content > .woocommerce-error,
-			body.toplevel_page_prime-fleet #wpbody-content > .woocommerce-info,
-			body.toplevel_page_prime-fleet .wrap > .notice:not(.prime-fleet-notice),
+			body.prime-fleet-admin #wpbody-content > .notice,
+			body.prime-fleet-admin #wpbody-content > .notice-success,
+			body.prime-fleet-admin #wpbody-content > .notice-warning,
+			body.prime-fleet-admin #wpbody-content > .notice-error,
+			body.prime-fleet-admin #wpbody-content > .notice-info,
+			body.prime-fleet-admin #wpbody-content > .updated,
+			body.prime-fleet-admin #wpbody-content > .error,
+			body.prime-fleet-admin #wpbody-content > .update-nag,
+			body.prime-fleet-admin #wpbody-content > .e-notice,
+			body.prime-fleet-admin #wpbody-content > .elementor-message,
+			body.prime-fleet-admin #wpbody-content > .woocommerce-message,
+			body.prime-fleet-admin #wpbody-content > .woocommerce-error,
+			body.prime-fleet-admin #wpbody-content > .woocommerce-info,
+			body.prime-fleet-admin .wrap > .notice:not(.prime-fleet-notice),
 			.prime-fleet-app ~ .notice,
 			.prime-fleet-panel > .notice:not(.prime-fleet-notice) {
 				display: none !important;
 			}
-			body.toplevel_page_prime-fleet #wpfooter,
-			body.toplevel_page_prime-fleet #wpfooter #footer-left,
-			body.toplevel_page_prime-fleet #wpfooter #footer-upgrade {
-				display: none !important;
-			}
+			/* Do NOT hide #wpfooter — that collapses page height and breaks window scroll. */
 		';
 		wp_register_style( 'prime-fleet-hide-notices', false, array(), PRIME_FLEET_VERSION );
 		wp_enqueue_style( 'prime-fleet-hide-notices' );

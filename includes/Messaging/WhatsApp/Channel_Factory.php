@@ -31,7 +31,10 @@ final class Channel_Factory {
 		$driver = isset( $settings['whatsapp_driver'] ) ? sanitize_key( (string) $settings['whatsapp_driver'] ) : 'stub';
 
 		if ( 'openwa' === $driver ) {
-			// Temporary local testing only — never the client/production path.
+			// Temporary local testing only — blocked outside WP_DEBUG / PRIME_FLEET_ALLOW_OPENWA.
+			if ( ! OpenWA_Channel::is_dev_allowed() ) {
+				return new Stub_Channel();
+			}
 			return new OpenWA_Channel();
 		}
 

@@ -26,7 +26,7 @@ final class Merge_Vars {
 			ARRAY_A
 		);
 		if ( ! $booking ) {
-			return new \WP_Error( 'prime_fleet_merge_booking', 'Booking not found.' );
+			return new \WP_Error( 'prime_fleet_merge_booking', __( 'Booking not found.', 'prime-fleet' ) );
 		}
 
 		$service = $wpdb->get_var(
@@ -51,12 +51,12 @@ final class Merge_Vars {
 				$disc = (float) $snapshot['coupon']['discount'];
 			}
 			$coupon_discount = trim( $booking['currency'] . ' ' . number_format( $disc, 2 ) );
-			$coupon_rows     = '<tr><td style="padding:4px 0;color:#6b778c;">Coupon</td><td style="padding:4px 0;text-align:right;font-weight:700;">'
+			$coupon_rows     = '<tr><td style="padding:4px 0;color:#6b778c;">' . esc_html__( 'Coupon', 'prime-fleet' ) . '</td><td style="padding:4px 0;text-align:right;font-weight:700;">'
 				. esc_html( $coupon_code ) . '</td></tr>'
-				. '<tr><td style="padding:4px 0;color:#6b778c;">Discount</td><td style="padding:4px 0;text-align:right;font-weight:700;">−'
+				. '<tr><td style="padding:4px 0;color:#6b778c;">' . esc_html__( 'Discount', 'prime-fleet' ) . '</td><td style="padding:4px 0;text-align:right;font-weight:700;">−'
 				. esc_html( $coupon_discount ) . '</td></tr>';
-			$coupon_note = '<p style="margin:10px 0 0;font-size:14px;color:#0b1d39;">Coupon <strong>'
-				. esc_html( $coupon_code ) . '</strong> · discount −' . esc_html( $coupon_discount ) . '</p>';
+			$coupon_note = '<p style="margin:10px 0 0;font-size:14px;color:#0b1d39;">' . esc_html__( 'Coupon', 'prime-fleet' ) . ' <strong>'
+				. esc_html( $coupon_code ) . '</strong> · ' . esc_html__( 'discount', 'prime-fleet' ) . ' −' . esc_html( $coupon_discount ) . '</p>';
 		}
 
 		$vehicle_name    = '';

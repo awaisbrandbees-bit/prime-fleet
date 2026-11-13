@@ -70,7 +70,7 @@ final class Services {
 		}
 		echo $navigate; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-		echo '<div class="prime-fleet-card">';
+		echo '<div class="prime-fleet-card prime-fleet-card--list">';
 		echo Table_List::toolbar(
 			'services',
 			$args,
@@ -110,7 +110,7 @@ final class Services {
 				echo '<td>' . ( $row['customer_visible'] ? '<span class="prime-fleet-badge prime-fleet-badge--ok">Yes</span>' : '<span class="prime-fleet-badge prime-fleet-badge--off">No</span>' ) . '</td>';
 				echo '<td>' . ( $row['is_active'] ? '<span class="prime-fleet-badge prime-fleet-badge--ok">Active</span>' : '<span class="prime-fleet-badge prime-fleet-badge--off">Off</span>' ) . '</td>';
 				echo '<td class="prime-fleet-table__actions">';
-				echo View::panel_button( __( 'Configure', 'prime-fleet' ), 'service_edit', 'ghost', array( 'service_id' => (int) $row['id'] ) );
+				echo View::panel_button( __( 'Configure', 'prime-fleet' ), 'service_edit', 'link', array( 'service_id' => (int) $row['id'] ) );
 				echo ' <button type="button" class="prime-fleet-btn prime-fleet-btn--danger" data-pf-confirm-title="' . esc_attr__( 'Delete service', 'prime-fleet' ) . '" data-pf-confirm="' . esc_attr__( 'This removes the service and its attached booking fields. This cannot be undone.', 'prime-fleet' ) . '" data-pf-panel="services" data-pf-query="' . esc_attr( wp_json_encode( $del_q ) ) . '">' . esc_html__( 'Delete', 'prime-fleet' ) . '</button>';
 				echo '</td></tr>';
 			}

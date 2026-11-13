@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin menu — single console entry.
+ * Admin menu — WooCommerce-style WP submenus (no in-app sidebar).
  *
  * @package Prime_Fleet
  */
@@ -18,11 +18,10 @@ final class Menu {
 	 */
 	public function hooks() {
 		add_action( 'admin_menu', array( $this, 'register' ) );
-		add_action( 'admin_menu', array( $this, 'collapse_submenus' ), 999 );
 	}
 
 	/**
-	 * Register Prime Fleet console only.
+	 * Register Prime Fleet + one WP submenu per console page.
 	 */
 	public function register() {
 		add_menu_page(
@@ -35,9 +34,21 @@ final class Menu {
 			26
 		);
 
+		foreach ( App::wp_menu_items() as $item ) {
+			add_submenu_page(
+				'prime-fleet',
+				$item['label'],
+				$item['label'],
+				$item['cap'],
+				$item['slug'],
+				array( App::class, 'render' )
+			);
+		}
+
 		// Keep a hidden legacy route for direct service editor bookmarks.
+		// Parent = prime-fleet so the left submenu stays open (null parent collapses it).
 		add_submenu_page(
-			null,
+			'prime-fleet',
 			__( 'Edit Service', 'prime-fleet' ),
 			__( 'Edit Service', 'prime-fleet' ),
 			Capabilities::MANAGE,
@@ -49,12 +60,6 @@ final class Menu {
 				echo '</div></div>';
 			}
 		);
-	}
-
-	/**
-	 * Remove auto-created duplicate submenu under Prime Fleet.
-	 */
-	public function collapse_submenus() {
-		remove_submenu_page( 'prime-fleet', 'prime-fleet' );
+		remove_submenu_page( 'prime-fleet', 'prime-fleet-service-edit' );
 	}
 }

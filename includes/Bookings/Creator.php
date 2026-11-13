@@ -11,6 +11,7 @@ use Prime_Fleet\Database\Schema;
 use Prime_Fleet\Pricing\Engine;
 use Prime_Fleet\REST\Controller;
 use Prime_Fleet\REST\Rate_Limiter;
+use Prime_Fleet\Security\Captcha;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -23,14 +24,19 @@ final class Creator {
 	 * @return array|\WP_Error
 	 */
 	public static function create_from_request( array $raw ) {
-		$limit = Rate_Limiter::allow( 'bookings', 20, 60 );
+		$limit = Rate_Limiter::allow_configured( 'bookings' );
 		if ( is_wp_error( $limit ) ) {
 			return $limit;
 		}
 
 		$email_for_limit = isset( $raw['customer_email'] ) ? strtolower( sanitize_email( (string) $raw['customer_email'] ) ) : '';
 		if ( $email_for_limit ) {
-			$email_limit = Rate_Limiter::allow( 'bookings_email_' . md5( $email_for_limit ), 24, HOUR_IN_SECONDS );
+			$email_max = 24;
+			$settings  = get_option( 'prime_fleet_settings', array() );
+			if ( is_array( $settings ) && isset( $settings['rl_bookings_email_per_hour'] ) && '' !== $settings['rl_bookings_email_per_hour'] ) {
+				$email_max = max( 1, min( 200, absint( $settings['rl_bookings_email_per_hour'] ) ) );
+			}
+			$email_limit = Rate_Limiter::allow( 'bookings_email_' . md5( $email_for_limit ), $email_max, HOUR_IN_SECONDS );
 			if ( is_wp_error( $email_limit ) ) {
 				return $email_limit;
 			}
@@ -39,12 +45,25 @@ final class Creator {
 		// Honeypot — must be empty.
 		$hp = isset( $raw['company_website'] ) ? (string) $raw['company_website'] : ( isset( $raw['website'] ) ? (string) $raw['website'] : '' );
 		if ( '' !== trim( $hp ) ) {
+			\Prime_Fleet\Logging\Logger::warning(
+				'honeypot',
+				'Booking honeypot tripped — soft-fake success returned',
+				array(
+					'ip'    => Rate_Limiter::client_ip(),
+					'field' => isset( $raw['company_website'] ) ? 'company_website' : 'website',
+				)
+			);
 			// Soft-fail: look like success to bots without saving.
 			return array(
 				'reference' => 'PF-' . strtoupper( substr( md5( (string) microtime( true ) ), 0, 6 ) ),
 				'status'    => 'pending_confirmation',
 				'message'   => __( 'Your transfer request is Pending Confirmation.', 'prime-fleet' ),
 			);
+		}
+
+		$captcha = Captcha::verify_request( $raw );
+		if ( is_wp_error( $captcha ) ) {
+			return $captcha;
 		}
 
 		$idem = isset( $raw['idempotency_key'] ) ? sanitize_text_field( (string) $raw['idempotency_key'] ) : '';

@@ -1,20 +1,30 @@
 /* Prime Fleet Admin Console */
 
 :root {
-	--sle-navy: #0b1d39;
-	--sle-navy-2: #132a4a;
-	--sle-ink: #18212f;
-	--sle-gold: #d7a64a;
-	--sle-gold-hover: #c49438;
-	--sle-bg: #eef1f6;
+	/* Vik-clean ops chrome — soft cards, quiet borders, mid navy */
+	--sle-navy: #2a4566;
+	--sle-navy-2: #355578;
+	--sle-ink: #1e293b;
+	--sle-gold: #d0b96a;
+	--sle-gold-hover: #c0a85a;
+	--sle-bg: #f3f5f7;
 	--sle-surface: #ffffff;
-	--sle-line: #dde3ec;
-	--sle-muted: #6b778c;
-	--sle-danger: #9b2c2c;
-	--sle-ok: #1f6b4a;
-	--sle-radius: 14px;
-	--sle-shadow: 0 10px 30px rgba(11, 29, 57, .06);
-	--sle-font: "Segoe UI", system-ui, -apple-system, sans-serif;
+	--sle-line: #e8ecf0;
+	--sle-line-strong: #cfd5da;
+	--sle-muted: #64748b;
+	--sle-danger: #b32d2e;
+	--sle-ok: #007017;
+	--sle-accent: #1e5a82;
+	--sle-peach: #ffe8d6;
+	--sle-peach-2: #ffd0a8;
+	--sle-peach-3: #ffb984;
+	--sle-radius: 12px;
+	--sle-radius-sm: 10px;
+	--sle-radius-xs: 8px;
+	--sle-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.04);
+	--sle-shadow-pop: 0 10px 30px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(15, 23, 42, 0.06);
+	--sle-font: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+	--sle-font-size: 14px;
 }
 
 /* Keep WP / third-party notices off Prime Fleet console (backup; Notices_Guard also strips hooks). */
@@ -27,199 +37,773 @@ body.toplevel_page_prime-fleet #wpbody-content > .elementor-message {
 	display: none !important;
 }
 
+/*
+ * Layout policy (v20): leave WP #wpwrap/#wpcontent alone.
+ * Only neutralize the classic float trap + reclaim .wrap side margins so the
+ * plugin band actually fills the WP content column (no fake right grey gutter).
+ */
 body.toplevel_page_prime-fleet #wpbody-content {
-	padding-top: 12px;
+	float: none;
+	width: auto;
 }
 
-body.toplevel_page_prime-fleet #wpbody-content > .wrap.prime-fleet-app {
-	margin: 24px 20px 72px 0 !important;
-	padding-top: 0 !important;
+body.prime-fleet-admin #wpbody-content > .wrap.prime-fleet-app {
+	/*
+	 * Gutters live INSIDE the app (box-sizing:border-box + width:auto).
+	 * Never width:100% + horizontal margin — that paints past #wpcontent.
+	 * Right pad matches WP’s left pad (~20px) so content doesn’t kiss the window edge.
+	 */
+	margin: 12px 0 0;
+	padding: 0 16px 0 0;
+	width: auto;
+	max-width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+	overflow: visible;
 }
 
-body.toplevel_page_prime-fleet #wpfooter {
-	display: none !important;
+/*
+ * Hard bottom spacer — real in-flow block inside OUR wrap only (not padding).
+ * Do not touch WP #adminmenu / #wpwrap clearfix for spacing.
+ */
+body.prime-fleet-admin #wpbody-content > .wrap.prime-fleet-app::after {
+	content: "";
+	display: block;
+	height: 160px;
+	width: 100%;
+	max-width: 100%;
+	pointer-events: none;
+	flex-shrink: 0;
 }
 
+.prime-fleet-app,
+.prime-fleet-app *,
+.prime-fleet-app *::before,
+.prime-fleet-app *::after {
+	box-sizing: border-box;
+}
+
+/*
+ * WIDTH LOCK — do not weaken these without re-checking 1280px + WP menu expanded.
+ * Recurring overflow came from fixed minmax(Npx) tracks + missing min-width:0.
+ * See .cursor/rules/prime-fleet-admin-width.mdc
+ */
 .prime-fleet-app {
-	max-width: none;
+	width: auto;
+	max-width: 100%;
+	min-width: 0;
 	font-family: var(--sle-font);
+	font-size: var(--sle-font-size);
 	color: var(--sle-ink);
-	clear: both;
+	-webkit-font-smoothing: antialiased;
+	/* NEVER clear:both — clears floated #adminmenu and drops the console ~1200px down. */
+	clear: none;
+	/* Isolate descendant clear/float from #adminmenu (tablenav, footer, br.clear). */
+	display: flow-root;
 	position: relative;
+	/*
+	 * Do NOT set overflow-x:clip here — with overflow-y:visible browsers force
+	 * overflow-y to auto/clip and the last Overview cards get cut at the bottom.
+	 */
 	overflow: visible;
+	box-sizing: border-box;
 }
 
-.prime-fleet-app__chrome {
-	background: linear-gradient(160deg, var(--sle-navy) 0%, var(--sle-navy-2) 55%, #1a3358 100%);
-	border-radius: 18px;
-	padding: 18px 18px 14px;
-	box-shadow: var(--sle-shadow);
-	color: #fff;
-	margin-bottom: 18px;
-	overflow: visible;
-	position: relative;
-	z-index: 20;
+.prime-fleet-app__chrome,
+.prime-fleet-panel,
+.prime-fleet-panel-body,
+.prime-fleet-panel-head,
+.prime-fleet-stats,
+.prime-fleet-split,
+.prime-fleet-card,
+.prime-fleet-app__sidebar,
+.prime-fleet-app__main {
+	max-width: 100%;
+	min-width: 0;
 }
 
-.prime-fleet-app__top {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 1rem;
-	margin-bottom: 14px;
-	padding-bottom: 12px;
-	border-bottom: 1px solid rgba(255,255,255,.08);
+/* Full-width content — navigation lives in WP Admin left menu (WooCommerce-style). */
+.prime-fleet-app__layout,
+.prime-fleet-app__layout--full {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+}
+
+.prime-fleet-app__layout--full .prime-fleet-app__main {
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+}
+
+/* Legacy in-app sidebar — hidden; WP Admin menu is the navigator now. */
+.prime-fleet-app__sidebar {
+	display: none !important;
 }
 
 .prime-fleet-app__brand {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: 8px;
+	padding: 2px 12px 10px;
+	margin: 0 0 4px;
+	border-bottom: 1px solid var(--sle-line);
+}
+
+.prime-fleet-app__brand-name {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--sle-ink);
+	line-height: 1.25;
+	min-width: 0;
 }
 
 .prime-fleet-app__mark {
 	display: grid;
 	place-items: center;
-	width: 44px;
-	height: 44px;
-	border-radius: 12px;
-	background: var(--sle-gold);
-	color: var(--sle-navy);
+	width: 28px;
+	height: 28px;
+	border-radius: 4px;
+	background: var(--sle-navy);
+	color: var(--sle-gold);
 	font-weight: 800;
-	letter-spacing: .04em;
-	font-size: 13px;
+	font-size: 10px;
+	border: 0;
+	flex: 0 0 auto;
+	letter-spacing: .02em;
 }
 
-.prime-fleet-app__eyebrow {
-	margin: 0;
-	font-size: 11px;
-	letter-spacing: .18em;
-	text-transform: uppercase;
-	color: rgba(215, 166, 74, .95);
-	font-weight: 700;
-}
-
-.prime-fleet-app__top h1 {
-	margin: 2px 0 0;
+.prime-fleet-app-nav {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
 	padding: 0;
-	border: 0;
-	color: #fff;
-	font-size: 1.35rem;
-	font-weight: 700;
-	line-height: 1.2;
 }
 
-.prime-fleet-app__nav {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	overflow: visible;
+.prime-fleet-app-nav__list,
+.prime-fleet-app-nav__sublist {
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
-.prime-fleet-app__nav-scroll {
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	flex: 1;
-	min-width: 0;
-	overflow-x: auto;
-	overflow-y: hidden;
-	scrollbar-width: none;
-	padding: 4px 2px;
-	-ms-overflow-style: none;
+.prime-fleet-app-nav__sublist {
+	padding: 2px 0 6px;
 }
 
-.prime-fleet-app__nav-scroll::-webkit-scrollbar {
-	display: none;
-}
-
-.prime-fleet-tab {
-	appearance: none;
-	border: 0;
-	background: transparent;
-	color: rgba(255,255,255,.72);
-	border-radius: 10px;
-	padding: 9px 13px;
-	font-size: 13px;
-	font-weight: 650;
-	cursor: pointer;
-	line-height: 1.2;
-	white-space: nowrap;
-	transition: background .15s ease, color .15s ease;
-	flex: 0 0 auto;
-}
-
-.prime-fleet-tab:hover {
-	background: rgba(255,255,255,.08);
-	color: #fff;
-}
-
-.prime-fleet-tab.is-active {
-	background: var(--sle-gold);
-	color: var(--sle-navy);
-}
-
-.prime-fleet-more {
-	position: relative;
-	flex: 0 0 auto;
-	z-index: 30;
-}
-
-.prime-fleet-more__toggle {
-	border: 1px solid rgba(255,255,255,.18) !important;
-}
-
-.prime-fleet-more__caret {
-	display: inline-block;
-	width: 0;
-	height: 0;
-	margin-left: 6px;
-	border-left: 4px solid transparent;
-	border-right: 4px solid transparent;
-	border-top: 5px solid currentColor;
-	vertical-align: middle;
-}
-
-.prime-fleet-more__menu {
-	position: absolute;
-	top: calc(100% + 10px);
-	right: 0;
-	min-width: 200px;
-	background: #fff;
-	border: 1px solid var(--sle-line);
-	border-radius: 12px;
-	box-shadow: 0 18px 40px rgba(11,29,57,.22);
-	padding: 6px;
-	z-index: 1000;
-}
-
-.prime-fleet-more__menu[hidden] {
+.prime-fleet-app-nav__sublist[hidden] {
 	display: none !important;
 }
 
-.prime-fleet-more__item {
+.prime-fleet-app-nav__group {
+	margin: 2px 0 0;
+	border-top: 1px solid var(--sle-line);
+	padding-top: 2px;
+}
+
+.prime-fleet-app-nav__toggle {
+	appearance: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	width: 100%;
+	margin: 0;
+	padding: 8px 12px;
+	border: 0;
+	background: transparent;
+	color: var(--sle-muted);
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.3;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	text-align: left;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.prime-fleet-app-nav__toggle:hover,
+.prime-fleet-app-nav__toggle.is-active {
+	color: var(--sle-navy);
+	background: #fafbfc;
+}
+
+.prime-fleet-app-nav__toggle:focus-visible {
+	outline: 2px solid var(--sle-navy);
+	outline-offset: -2px;
+}
+
+.prime-fleet-app-nav__chevron {
+	width: 0;
+	height: 0;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-top: 5px solid currentColor;
+	flex: 0 0 auto;
+	opacity: .7;
+	transform: rotate(-90deg);
+	transition: transform 150ms ease;
+}
+
+.prime-fleet-app-nav__group.is-open .prime-fleet-app-nav__chevron {
+	transform: rotate(0deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.prime-fleet-app-nav__chevron { transition: none; }
+}
+
+.prime-fleet-app-nav__link {
+	appearance: none;
 	display: block;
 	width: 100%;
 	text-align: left;
-	appearance: none;
 	border: 0;
+	border-left: 3px solid transparent;
 	background: transparent;
 	color: var(--sle-ink);
-	border-radius: 8px;
-	padding: 10px 12px;
-	font-weight: 600;
+	padding: 7px 12px 7px 11px;
 	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.3;
 	cursor: pointer;
+	border-radius: 0;
+	box-sizing: border-box;
 }
 
-.prime-fleet-more__item:hover,
-.prime-fleet-more__item.is-active {
-	background: #f4f1ea;
+.prime-fleet-app-nav__link--sub {
+	padding-left: 22px;
+	font-weight: 500;
+	font-size: 12.5px;
+	color: #3c434a;
+}
+
+.prime-fleet-app-nav__link:hover {
+	background: #f6f7f7;
 	color: var(--sle-navy);
 }
 
+.prime-fleet-app-nav__link.is-active,
+.prime-fleet-app-nav__link[aria-current="page"] {
+	background: #f0f6fc;
+	border-left-color: var(--sle-navy);
+	color: var(--sle-navy);
+}
+
+.prime-fleet-app-nav__link:focus-visible {
+	outline: 2px solid var(--sle-navy);
+	outline-offset: -2px;
+}
+
+.prime-fleet-app__main {
+	min-width: 0;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+.prime-fleet-app__main .prime-fleet-panel,
+.prime-fleet-app__main .prime-fleet-panel-body,
+.prime-fleet-app__main .prime-fleet-panel-head,
+.prime-fleet-app__main .prime-fleet-card,
+.prime-fleet-app__main .prime-fleet-table-tools,
+.prime-fleet-app__main .prime-fleet-table-wrap {
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+}
+
+.prime-fleet-app__chrome {
+	display: none; /* replaced by .prime-fleet-topbar */
+}
+
+/* Page top bar — traditional ops header (title + meta + actions) */
+.prime-fleet-topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin: 0 0 16px;
+	padding: 16px 20px;
+	background: #fff;
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius);
+	box-shadow: var(--sle-shadow);
+	min-width: 0;
+	box-sizing: border-box;
+	overflow: visible;
+	position: relative;
+	z-index: 40;
+}
+
+.prime-fleet-topbar__right {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-left: auto;
+	min-width: 0;
+	overflow: visible;
+	position: relative;
+	z-index: 41;
+}
+
+/* Header notification bell (Vik-style badge) */
+.prime-fleet-notify {
+	position: relative;
+	flex: 0 0 auto;
+}
+.prime-fleet-notify__bell {
+	appearance: none;
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: #edf2f7;
+	color: var(--sle-navy);
+	cursor: pointer;
+	box-shadow: none;
+	line-height: 1;
+}
+.prime-fleet-notify__bell:hover {
+	background: #e2e8f0;
+	color: var(--sle-ink);
+}
+.prime-fleet-notify__bell:focus-visible {
+	outline: 2px solid var(--sle-navy);
+	outline-offset: 2px;
+}
+.prime-fleet-notify.is-open .prime-fleet-notify__bell {
+	background: var(--sle-navy);
+	color: #fff;
+}
+.prime-fleet-notify__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	line-height: 0;
+}
+.prime-fleet-notify__icon svg {
+	display: block;
+	width: 16px;
+	height: 16px;
+}
+.prime-fleet-notify__badge {
+	position: absolute;
+	top: -4px;
+	right: -5px;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 5px;
+	border-radius: 9px;
+	background: #d63638;
+	color: #fff;
+	font-size: 11px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	line-height: 1;
+	letter-spacing: 0;
+	text-align: center;
+	border: 2px solid #edf2f7;
+	box-shadow: none;
+	pointer-events: none;
+}
+.prime-fleet-notify.is-open .prime-fleet-notify__badge {
+	border-color: var(--sle-navy);
+	background: #fff;
+	color: #d63638;
+}
+.prime-fleet-notify__badge[hidden] { display: none !important; }
+.prime-fleet-notify__panel {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	z-index: 100040;
+	width: min(340px, calc(100vw - 32px));
+	background: #fff;
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius);
+	box-shadow: var(--sle-shadow-pop);
+	overflow: hidden;
+}
+.prime-fleet-notify__panel[hidden] { display: none !important; }
+.prime-fleet-notify__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 12px 14px;
+	border-bottom: 1px solid var(--sle-line);
+}
+.prime-fleet-notify__head strong {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--sle-ink);
+}
+.prime-fleet-notify__refresh {
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0;
+	padding: 4px 2px;
+	border: 0;
+	background: transparent;
+	color: var(--sle-navy);
+	font-size: 12px;
+	font-weight: 650;
+	cursor: pointer;
+	line-height: 1;
+}
+.prime-fleet-notify__refresh:hover { text-decoration: underline; }
+.prime-fleet-notify__refresh:disabled {
+	cursor: wait;
+	text-decoration: none;
+	opacity: .85;
+}
+.prime-fleet-notify__refresh-spin {
+	display: none;
+	width: 12px;
+	height: 12px;
+	border: 1.5px solid rgba(42, 69, 102, .22);
+	border-top-color: var(--sle-navy);
+	border-radius: 50%;
+	box-sizing: border-box;
+}
+.prime-fleet-notify.is-refreshing .prime-fleet-notify__refresh-spin {
+	display: inline-block;
+	animation: primeFleetSpin .7s linear infinite;
+}
+.prime-fleet-notify.is-refreshing .prime-fleet-notify__refresh-label {
+	opacity: .7;
+}
+.prime-fleet-notify__list {
+	list-style: none;
+	margin: 0;
+	padding: 6px 0;
+	max-height: 320px;
+	overflow: auto;
+	position: relative;
+	min-height: 72px;
+}
+.prime-fleet-notify__list.is-refreshing::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: rgba(255, 255, 255, .55);
+	pointer-events: none;
+}
+.prime-fleet-notify__list.is-refreshing::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 1;
+	width: 22px;
+	height: 22px;
+	margin: -11px 0 0 -11px;
+	border: 2px solid rgba(42, 69, 102, .18);
+	border-top-color: var(--sle-navy);
+	border-radius: 50%;
+	animation: primeFleetSpin .7s linear infinite;
+	pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.prime-fleet-notify.is-refreshing .prime-fleet-notify__refresh-spin,
+	.prime-fleet-notify__list.is-refreshing::before {
+		animation: none;
+		border-top-color: var(--sle-navy);
+		opacity: .9;
+	}
+}
+.prime-fleet-notify__empty {
+	padding: 18px 16px;
+	font-size: 13px;
+	color: var(--sle-muted);
+	line-height: 1.4;
+}
+.prime-fleet-notify__item {
+	appearance: none;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	width: 100%;
+	margin: 0;
+	padding: 10px 14px;
+	border: 0;
+	border-left: 3px solid transparent;
+	background: transparent;
+	text-align: left;
+	cursor: pointer;
+	font: inherit;
+	color: inherit;
+}
+.prime-fleet-notify__item--warn { border-left-color: #d97706; }
+.prime-fleet-notify__item--pay { border-left-color: var(--sle-accent); }
+.prime-fleet-notify__item:hover { background: #f8fafc; }
+.prime-fleet-notify__item-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+.prime-fleet-notify__ref {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--sle-ink);
+}
+.prime-fleet-notify__reason {
+	font-size: 11px;
+	font-weight: 650;
+	color: var(--sle-muted);
+	white-space: nowrap;
+}
+.prime-fleet-notify__item-meta {
+	font-size: 12px;
+	color: var(--sle-muted);
+	line-height: 1.35;
+}
+.prime-fleet-notify__foot {
+	padding: 10px 14px 12px;
+	border-top: 1px solid var(--sle-line);
+	background: #fafbfc;
+}
+
+.prime-fleet-topbar__left {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+	flex: 1 1 220px;
+}
+
+.prime-fleet-topbar__eyebrow {
+	margin: 0;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0;
+	text-transform: none;
+	color: var(--sle-muted);
+	line-height: 1.2;
+}
+
+.prime-fleet-topbar__title,
+#prime-fleet-shell-title {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	color: var(--sle-ink);
+	font-size: 1.45rem;
+	font-weight: 700;
+	line-height: 1.25;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.prime-fleet-topbar__meta {
+	margin: 2px 0 0;
+	font-size: 13px;
+	line-height: 1.35;
+	color: var(--sle-muted);
+}
+
+.prime-fleet-topbar__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-left: 0;
+	min-width: 0;
+}
+
+.prime-fleet-topbar__actions:empty {
+	display: none;
+}
+
+/* Panel head title is mirrored in the top bar — keep only if no topbar sync */
+.prime-fleet-app .prime-fleet-panel-head.is-lifted {
+	display: none;
+}
+
+/* Legacy ribbon kept inert if any markup remains */
+.prime-fleet-ribbon {
+	display: none !important;
+}
+
+@media (max-width: 960px) {
+	.prime-fleet-app__layout,
+	.prime-fleet-app__layout--full {
+		display: block;
+	}
+	.prime-fleet-app-nav__list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0;
+	}
+	.prime-fleet-app-nav__link {
+		border-left: 0;
+		border-bottom: 2px solid transparent;
+		width: auto;
+		padding: 8px 10px;
+	}
+	.prime-fleet-app-nav__link--sub {
+		padding-left: 10px;
+	}
+	.prime-fleet-app-nav__link.is-active,
+	.prime-fleet-app-nav__link[aria-current="page"] {
+		border-bottom-color: var(--sle-navy);
+		border-left-color: transparent;
+	}
+	.prime-fleet-app-nav__sublist {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.prime-fleet-app-nav__sublist[hidden] {
+		display: none !important;
+	}
+}
+
+.prime-fleet-ribbon__logo {
+	appearance: none;
+	border: 0;
+	background: transparent;
+	padding: 4px;
+	margin-right: 6px;
+	cursor: pointer;
+	border-radius: 6px;
+	flex: 0 0 auto;
+}
+.prime-fleet-ribbon__logo-mark {
+	display: grid;
+	place-items: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 6px;
+	background: var(--sle-gold);
+	color: var(--sle-navy);
+	font-weight: 800;
+	font-size: 12px;
+}
+
+.prime-fleet-ribbon__items {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	flex: 1 1 auto;
+	min-width: 0;
+	flex-wrap: wrap;
+}
+
+.prime-fleet-ribbon__btn {
+	appearance: none;
+	border: 0;
+	background: transparent;
+	color: rgba(255,255,255,.92);
+	width: 40px;
+	height: 40px;
+	border-radius: 6px;
+	display: inline-grid;
+	place-items: center;
+	cursor: pointer;
+	padding: 0;
+	flex: 0 0 auto;
+}
+.prime-fleet-ribbon__btn:hover {
+	background: rgba(255,255,255,.1);
+	color: #fff;
+}
+.prime-fleet-ribbon__btn.is-active,
+.prime-fleet-ribbon__btn[aria-current="page"] {
+	background: var(--sle-gold);
+	color: var(--sle-navy);
+}
+.prime-fleet-ribbon__btn:focus-visible {
+	outline: 2px solid #fff;
+	outline-offset: 1px;
+}
+.prime-fleet-ribbon__svg {
+	display: block;
+	width: 20px;
+	height: 20px;
+	flex: 0 0 auto;
+}
+
+.prime-fleet-ribbon__group {
+	position: relative;
+	flex: 0 0 auto;
+}
+.prime-fleet-ribbon__menu {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	min-width: 200px;
+	background: #fff;
+	border: 1px solid var(--sle-line);
+	border-radius: 8px;
+	box-shadow: 0 10px 28px rgba(0,0,0,.16);
+	padding: 6px;
+	z-index: 1000;
+}
+.prime-fleet-ribbon__menu[hidden] {
+	display: none !important;
+}
+.prime-fleet-ribbon__menu-item {
+	appearance: none;
+	display: block;
+	width: 100%;
+	text-align: left;
+	border: 0;
+	background: transparent;
+	color: var(--sle-ink);
+	border-radius: 4px;
+	padding: 9px 12px;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+}
+.prime-fleet-ribbon__menu-item:hover,
+.prime-fleet-ribbon__menu-item.is-active {
+	background: #f0f6fc;
+	color: var(--sle-navy);
+}
+
+/* Legacy hooks kept so older selectors don’t break */
+.prime-fleet-app__nav,
+.prime-fleet-app__nav-scroll,
+.prime-fleet-tab,
+.prime-fleet-more,
+.pf-nav-track,
+.pf-pill {
+	display: none !important;
+}
+.prime-fleet-panel.pf-content-fade {
+	transition: none;
+}
+
 .prime-fleet-panel {
-	min-height: 280px;
+	min-height: 240px;
 	position: relative;
 	z-index: 1;
 	overflow: visible;
@@ -229,17 +813,20 @@ body.toplevel_page_prime-fleet #wpfooter {
 	pointer-events: none;
 }
 
-/* Loader â€” scoped to SLE console only (not WP admin chrome) */
+/*
+ * Loader — small chip only (portaled to <body>).
+ * Never a full-viewport white sheet: that looked like a blank card and blocked scroll.
+ */
 .prime-fleet-loader-overlay {
-	position: absolute;
+	position: fixed;
 	inset: 0;
-	z-index: 70;
-	display: grid;
-	place-items: center;
-	align-content: center;
-	background: rgba(238, 241, 246, .78);
-	backdrop-filter: blur(5px);
-	border-radius: 18px;
+	z-index: 100050;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding-top: 96px;
+	background: transparent;
+	pointer-events: none;
 }
 
 .prime-fleet-loader-overlay[hidden] {
@@ -247,59 +834,66 @@ body.toplevel_page_prime-fleet #wpfooter {
 }
 
 .prime-fleet-loader {
-	position: sticky;
-	top: 42%;
-	display: flex;
-	flex-direction: column;
+	display: inline-flex;
 	align-items: center;
-	gap: 14px;
+	gap: 8px;
+	padding: 8px 12px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 2px;
+	box-shadow: none;
 }
 
-.prime-fleet-loader__ring {
-	width: 46px;
-	height: 46px;
+.prime-fleet-loader__spin {
+	width: 16px;
+	height: 16px;
 	border-radius: 50%;
-	border: 3px solid rgba(11, 29, 57, .12);
-	border-top-color: var(--sle-gold);
-	border-right-color: var(--sle-navy);
+	border: 2px solid #dcdcde;
+	border-top-color: #2271b1;
 	animation: primeFleetSpin .75s linear infinite;
-	box-shadow: 0 0 0 6px rgba(215, 166, 74, .12);
+	flex: 0 0 auto;
 }
 
 .prime-fleet-loader__label {
-	font-size: 12px;
-	font-weight: 700;
-	letter-spacing: .1em;
-	text-transform: uppercase;
-	color: var(--sle-navy);
+	font-size: 13px;
+	font-weight: 400;
+	color: #1d2327;
+	line-height: 1.2;
 }
 
 @keyframes primeFleetSpin {
 	to { transform: rotate(360deg); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+	.prime-fleet-loader__spin {
+		animation: none;
+		border-top-color: #2271b1;
+		opacity: .85;
+	}
+}
+
 .prime-fleet-panel-head {
 	display: flex;
 	justify-content: space-between;
-	align-items: flex-end;
-	gap: 1rem;
-	margin-bottom: 14px;
+	align-items: center;
+	gap: 12px;
+	margin: 0 0 16px;
+	padding: 0 0 12px;
+	border-bottom: 1px solid var(--sle-line);
 }
 
 .prime-fleet-panel-head__eyebrow {
-	margin: 0;
-	font-size: 11px;
-	letter-spacing: .16em;
-	text-transform: uppercase;
-	color: var(--sle-gold);
-	font-weight: 700;
+	display: none; /* AI tell — removed */
 }
 
 .prime-fleet-panel-head__title {
-	margin: 4px 0 0;
-	font-size: 1.45rem;
-	color: var(--sle-navy);
-	font-weight: 700;
+	margin: 0;
+	font-size: 1.35rem;
+	color: var(--sle-ink);
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: 1.3;
 }
 
 .prime-fleet-panel-head__actions {
@@ -316,71 +910,130 @@ body.toplevel_page_prime-fleet #wpfooter {
 	align-items: center;
 	justify-content: center;
 	gap: 6px;
-	background: var(--sle-gold);
-	color: var(--sle-navy) !important;
-	border: 1px solid transparent;
-	border-radius: 8px;
-	padding: 10px 14px;
-	font-weight: 700;
+	box-sizing: border-box;
+	background: var(--sle-navy);
+	color: #fff !important;
+	border: 1px solid var(--sle-navy);
+	border-radius: var(--sle-radius-xs);
+	padding: 0 14px;
+	font-weight: 600;
 	font-size: 13px;
 	text-decoration: none !important;
 	cursor: pointer;
-	line-height: 1.2;
-	box-shadow: 0 1px 0 rgba(11,29,57,.08);
+	line-height: 1;
+	box-shadow: none;
+	min-height: 36px;
+	height: 36px;
+}
+
+.prime-fleet-btn--compact {
+	min-height: 28px;
+	padding: 2px 8px;
+	font-size: 12px;
+	font-weight: 600;
 }
 
 .prime-fleet-btn:hover {
-	background: var(--sle-gold-hover);
-	color: var(--sle-navy) !important;
+	background: var(--sle-navy-2);
+	border-color: var(--sle-navy-2);
+	color: #fff !important;
 }
 
 .prime-fleet-btn--ghost {
 	background: #fff;
-	border-color: var(--sle-line);
+	border-color: var(--sle-line-strong);
 	color: var(--sle-ink) !important;
 	box-shadow: none;
+	border-radius: var(--sle-radius-xs);
 }
 
-.prime-fleet-btn--ghost:hover {
-	border-color: #c9d2df;
-	background: #f8fafc;
+.prime-fleet-btn--ghost:hover,
+.prime-fleet-btn--ghost:focus-visible {
+	border-color: #98a2b3;
+	background: #f6f7f7;
+	color: var(--sle-ink) !important; /* never inherit solid btn white */
 }
 
 .prime-fleet-btn--danger {
-	background: #f8e8e8;
+	background: #fff;
 	color: var(--sle-danger) !important;
-	border-color: #efd0d0;
+	border-color: #dba7a9;
+}
+
+.prime-fleet-btn--danger:hover {
+	background: #fcf0f1;
+	color: var(--sle-danger) !important;
+}
+
+/* List-row actions: WP/Vik-like links, not fat pills. */
+.prime-fleet-table__actions .prime-fleet-btn,
+.prime-fleet-table__actions .prime-fleet-btn--ghost,
+.prime-fleet-table__actions .prime-fleet-btn--danger {
+	min-height: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	box-shadow: none;
+	border-radius: 0;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.prime-fleet-table__actions .prime-fleet-btn,
+.prime-fleet-table__actions .prime-fleet-btn--ghost {
+	color: var(--sle-navy) !important;
+}
+
+.prime-fleet-table__actions .prime-fleet-btn:hover,
+.prime-fleet-table__actions .prime-fleet-btn--ghost:hover {
+	background: transparent;
+	color: var(--sle-navy-2) !important;
+	text-decoration: underline;
+}
+
+.prime-fleet-table__actions .prime-fleet-btn--danger {
+	color: var(--sle-danger) !important;
+}
+
+.prime-fleet-table__actions .prime-fleet-btn--danger:hover {
+	background: transparent;
+	text-decoration: underline;
+	color: var(--sle-danger) !important;
+}
+
+.prime-fleet-table__actions .prime-fleet-btn + .prime-fleet-btn,
+.prime-fleet-table__actions .prime-fleet-row-link + .prime-fleet-btn,
+.prime-fleet-table__actions .prime-fleet-btn + .prime-fleet-row-link {
+	margin-left: 10px;
 }
 
 .prime-fleet-card {
 	background: var(--sle-surface);
 	border: 1px solid var(--sle-line);
 	border-radius: var(--sle-radius);
-	padding: 18px;
-	box-shadow: 0 1px 0 rgba(11, 29, 57, .03);
+	padding: 16px 18px;
+	box-shadow: var(--sle-shadow);
+	max-width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
 }
 
-.prime-fleet-card--flush { padding: 0; overflow: hidden; }
-.prime-fleet-card__pad { padding: 18px 18px 8px; }
-.prime-fleet-card + .prime-fleet-card { margin-top: 14px; }
+.prime-fleet-card--list {
+	padding: 12px 14px 10px;
+}
+
+.prime-fleet-card--flush { padding: 0; overflow: visible; }
+.prime-fleet-card__pad { padding: 14px 16px 8px; }
+.prime-fleet-card + .prime-fleet-card { margin-top: 12px; }
 
 .prime-fleet-section { margin-bottom: 14px; }
-.prime-fleet-section__head { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--sle-line); }
-.prime-fleet-section__head h3 { margin: 0 0 4px; color: var(--sle-navy); font-size: 1rem; }
-.prime-fleet-section__head p { margin: 0; color: var(--sle-muted); font-size: 13px; }
+.prime-fleet-section__head { margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--sle-line); }
+.prime-fleet-section__head h3 { margin: 0 0 4px; color: var(--sle-ink); font-size: 14px; font-weight: 600; }
+.prime-fleet-section__head p { margin: 0; color: var(--sle-muted); font-size: 13px; line-height: 1.45; }
 
 .prime-fleet-hero {
-	display: grid;
-	grid-template-columns: 1.4fr auto;
-	gap: 18px;
-	align-items: center;
-	background:
-		radial-gradient(circle at 90% 10%, rgba(215,166,74,.22), transparent 40%),
-		linear-gradient(135deg, #0f2444, #183456);
-	color: #fff;
-	border-radius: 18px;
-	padding: 22px 22px;
-	margin-bottom: 14px;
+	display: none !important; /* marketing hero removed — traditional ops pages */
 }
 
 .prime-fleet-hero__kicker {
@@ -408,63 +1061,164 @@ body.toplevel_page_prime-fleet #wpfooter {
 
 .prime-fleet-stats {
 	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr));
-	gap: 12px;
-	margin-bottom: 14px;
+	grid-template-columns: repeat(4, minmax(0, 1fr)); /* equal widths */
+	gap: 8px;
+	margin-bottom: 8px;
 	align-items: stretch;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+}
+@media (max-width: 1100px) {
+	.prime-fleet-stats {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+@media (max-width: 560px) {
+	.prime-fleet-stats {
+		grid-template-columns: minmax(0, 1fr);
+	}
 }
 
+/* Traditional KPI tiles — plain surface, equal height, no dots / pastel fills */
 .prime-fleet-stat {
 	background: var(--sle-surface);
 	border: 1px solid var(--sle-line);
-	border-radius: var(--sle-radius);
-	padding: 14px 14px 12px;
-	min-height: 0;
+	border-radius: var(--sle-radius-xs);
+	padding: 12px 14px;
+	min-height: 88px;
+	height: 100%;
+	min-width: 0;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	justify-content: flex-start;
+	gap: 2px;
+	box-shadow: none;
+	box-sizing: border-box;
+	position: relative;
+	overflow: hidden;
 }
 
 .prime-fleet-stat__label {
+	display: block;
 	color: var(--sle-muted);
-	font-size: 11px;
-	text-transform: uppercase;
-	letter-spacing: .08em;
-	font-weight: 700;
+	font-size: 12px;
+	text-transform: none;
+	letter-spacing: 0;
+	font-weight: 600;
+	line-height: 1.3;
+	min-height: 1.3em;
+}
+.prime-fleet-stat__label::before {
+	content: none;
+	display: none;
 }
 
 .prime-fleet-stat__value {
-	font-size: 1.55rem;
-	line-height: 1;
-	color: var(--sle-navy);
-	font-weight: 800;
-	margin: 0;
+	font-size: 1.45rem;
+	line-height: 1.15;
+	color: var(--sle-ink);
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	margin: 4px 0 0;
+	flex: 0 0 auto;
+	letter-spacing: -0.01em;
+	min-height: 1.45em;
 }
 
-.prime-fleet-stat__hint { color: var(--sle-muted); font-size: 12px; }
+.prime-fleet-stat__hint {
+	color: var(--sle-muted);
+	font-size: 12px;
+	line-height: 1.35;
+	margin-top: auto;
+	padding-top: 6px;
+	min-height: calc(1.35em * 2 + 6px);
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* Tone variants: quiet text emphasis only — keep same white card shell */
+.prime-fleet-stat--warn,
+.prime-fleet-stat--navy,
+.prime-fleet-stat--pay,
+.prime-fleet-stat--danger {
+	background: var(--sle-surface);
+	border-color: var(--sle-line);
+}
+.prime-fleet-stat--warn .prime-fleet-stat__label::before,
+.prime-fleet-stat--navy .prime-fleet-stat__label::before,
+.prime-fleet-stat--pay .prime-fleet-stat__label::before,
+.prime-fleet-stat--danger .prime-fleet-stat__label::before {
+	content: none;
+	display: none;
+}
+.prime-fleet-stat--warn .prime-fleet-stat__label,
+.prime-fleet-stat--navy .prime-fleet-stat__label,
+.prime-fleet-stat--pay .prime-fleet-stat__label,
+.prime-fleet-stat--danger .prime-fleet-stat__label {
+	color: var(--sle-muted);
+}
+.prime-fleet-stat--warn .prime-fleet-stat__value,
+.prime-fleet-stat--navy .prime-fleet-stat__value,
+.prime-fleet-stat--pay .prime-fleet-stat__value {
+	color: var(--sle-ink);
+}
+.prime-fleet-stat--danger .prime-fleet-stat__value {
+	color: var(--sle-danger);
+}
+.prime-fleet-stat--warn .prime-fleet-stat__hint,
+.prime-fleet-stat--navy .prime-fleet-stat__hint,
+.prime-fleet-stat--pay .prime-fleet-stat__hint,
+.prime-fleet-stat--danger .prime-fleet-stat__hint {
+	color: var(--sle-muted);
+}
 
 .prime-fleet-split {
 	display: grid;
-	grid-template-columns: 1.35fr 1fr;
+	grid-template-columns: repeat(2, minmax(0, 1fr)); /* equal card widths */
 	gap: 12px;
 	align-items: stretch;
 	position: relative;
 	z-index: 1;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	margin-bottom: 8px;
+}
+@media (max-width: 960px) {
+	.prime-fleet-split {
+		grid-template-columns: minmax(0, 1fr);
+	}
 }
 
 .prime-fleet-card--equal {
 	display: flex;
 	flex-direction: column;
 	min-height: 0;
-	height: auto;
+	height: 100%;
+	align-self: stretch;
 	overflow: visible;
+	width: 100%;
 }
 
 .prime-fleet-card--equal .prime-fleet-jump {
-	flex: 1;
+	flex: 1 1 auto;
 }
 
-.prime-fleet-split > * { min-width: 0; }
+/* Sibling stacked-card margin must NOT apply inside a 2-up grid */
+.prime-fleet-split > .prime-fleet-card + .prime-fleet-card {
+	margin-top: 0;
+}
+
+.prime-fleet-split > * {
+	min-width: 0;
+	min-height: 0;
+	height: 100%;
+	align-self: stretch;
+}
 
 .prime-fleet-checklist {
 	list-style: none;
@@ -474,11 +1228,26 @@ body.toplevel_page_prime-fleet #wpfooter {
 
 .prime-fleet-checklist li {
 	display: grid;
-	grid-template-columns: 1fr auto auto;
-	gap: 10px;
+	grid-template-columns: minmax(0, 1fr) auto auto;
+	gap: 8px;
 	align-items: center;
-	padding: 12px 18px;
+	padding: 8px 14px;
 	border-top: 1px solid var(--sle-line);
+	min-width: 0;
+}
+
+.prime-fleet-checklist li > span {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.prime-fleet-checklist .prime-fleet-btn {
+	height: 28px !important;
+	min-height: 28px !important;
+	padding: 0 10px !important;
+	font-size: 12px !important;
 }
 
 .prime-fleet-checklist li.is-done span::before {
@@ -506,6 +1275,807 @@ body.toplevel_page_prime-fleet #wpfooter {
 
 .prime-fleet-jump .prime-fleet-btn { width: 100%; justify-content: flex-start; }
 
+/* —— Dense Overview (Vik-inspired ops board) —— */
+.prime-fleet-dash {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	padding-bottom: 8px;
+	overflow: visible;
+	box-sizing: border-box;
+}
+
+.prime-fleet-dash__board {
+	display: grid;
+	/* Both tracks must be able to shrink (minmax 0) or the rail blows the viewport. */
+	grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+	gap: 10px;
+	/* Equal column height so Catalog can pin to the main column bottom. */
+	align-items: stretch;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	overflow: visible;
+	box-sizing: border-box;
+}
+
+.prime-fleet-dash__main,
+.prime-fleet-dash__rail,
+.prime-fleet-dash__full {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 8px;
+	min-width: 0;
+	max-width: 100%;
+	min-height: 0;
+	height: 100%;
+	overflow: visible;
+}
+
+/* Week / fleet / utilization — full content width under the 2-col board (no half-empty right gutter). */
+.prime-fleet-dash__full {
+	width: 100%;
+	height: auto;
+	margin-top: 8px;
+	padding-bottom: 8px;
+}
+
+/* Upper cards stay content-height; last card in each column fills leftover so bottoms sync. */
+.prime-fleet-dash__main > .prime-fleet-card,
+.prime-fleet-dash__rail > .prime-fleet-card {
+	flex: 0 0 auto;
+	height: auto;
+	align-self: stretch;
+}
+
+.prime-fleet-dash__main > .prime-fleet-card:last-child,
+.prime-fleet-dash__rail > .prime-fleet-card:last-child {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+
+.prime-fleet-dash__main > .prime-fleet-card:last-child .prime-fleet-dash-pager,
+.prime-fleet-dash__rail > .prime-fleet-card:last-child .prime-fleet-checklist {
+	margin-top: auto;
+}
+
+.prime-fleet-dash-widget {
+	margin: 0;
+	padding: 12px 14px;
+}
+
+.prime-fleet-dash-widget.prime-fleet-card--flush {
+	padding: 0;
+}
+
+/* Stacked dash cards: flex gap only — kill sibling margin that doubles spacing */
+.prime-fleet-dash .prime-fleet-card + .prime-fleet-card,
+.prime-fleet-dash__main > .prime-fleet-card + .prime-fleet-card,
+.prime-fleet-dash__rail > .prime-fleet-card + .prime-fleet-card,
+.prime-fleet-dash__full > .prime-fleet-card + .prime-fleet-card {
+	margin-top: 0;
+}
+
+.prime-fleet-dash-widget__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 8px;
+}
+
+.prime-fleet-dash-widget__head--pad {
+	padding: 12px 14px 0;
+	margin-bottom: 6px;
+}
+
+.prime-fleet-dash-widget__title {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--sle-ink);
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.prime-fleet-dash-widget__meta {
+	font-size: 12px;
+	color: var(--sle-muted);
+}
+
+.prime-fleet-dash-count {
+	display: inline-grid;
+	place-items: center;
+	min-width: 22px;
+	height: 20px;
+	padding: 0 6px;
+	border-radius: 4px;
+	background: #eef2f6;
+	color: var(--sle-navy);
+	font-size: 11px;
+	font-weight: 700;
+}
+
+.prime-fleet-dash-empty {
+	padding: 12px 14px;
+	color: var(--sle-muted);
+	font-size: 13px;
+}
+
+/* Staff notes — one-by-one slide; small arrows bottom-right (no side chrome / scrollbar). */
+.prime-fleet-dash-notes-carousel {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+	width: 100%;
+}
+
+.prime-fleet-dash-notes-viewport {
+	width: 100%;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.prime-fleet-dash-notes {
+	display: flex;
+	align-items: stretch;
+	gap: 8px;
+	width: max-content;
+	max-width: none;
+	padding: 0;
+	transform: translateX(0);
+	transition: transform .28s ease;
+	will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.prime-fleet-dash-notes {
+		transition: none;
+	}
+}
+
+.prime-fleet-dash-notes__nav {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 4px;
+	min-height: 22px;
+}
+
+/*
+ * Icon chevrons: SVG (not ‹ ›) so ink is geometrically centered —
+ * unicode guillemets sit low in the font em-box and always look off.
+ */
+.prime-fleet-chev {
+	display: block;
+	width: 0.85em;
+	height: 0.85em;
+	flex: 0 0 auto;
+	overflow: visible;
+	pointer-events: none;
+}
+.prime-fleet-chev path {
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.75;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.prime-fleet-dash-notes__arrow,
+.prime-fleet-cal__ctrl--icon.button,
+.prime-fleet-dispatch-bar__nav.button,
+.prime-fleet-dt__nav-btn {
+	display: inline-flex !important;
+	align-items: center;
+	justify-content: center;
+	line-height: 0 !important;
+}
+
+.prime-fleet-dash-notes__arrow {
+	box-sizing: border-box;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	min-width: 22px;
+	margin: 0;
+	padding: 0;
+	border: 1px solid var(--sle-line-strong, #c3c4c7);
+	border-radius: 3px;
+	background: #fff;
+	color: var(--sle-ink, #1d2327);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 0;
+	cursor: pointer;
+}
+
+.prime-fleet-dash-notes__arrow:hover:not(:disabled) {
+	border-color: var(--sle-navy, #2a4566);
+	color: var(--sle-navy, #2a4566);
+}
+
+.prime-fleet-dash-notes__arrow:focus-visible {
+	outline: 2px solid var(--sle-navy, #2a4566);
+	outline-offset: 1px;
+}
+
+.prime-fleet-dash-notes__arrow:disabled {
+	opacity: .35;
+	cursor: default;
+}
+
+.prime-fleet-dash-note {
+	/* Width set in JS so exactly 4 full cards fill the viewport (no partial 5th). */
+	flex: 0 0 auto;
+	height: 108px;
+	min-height: 108px;
+	max-height: 108px;
+	padding: 10px;
+	border-radius: 4px;
+	border: 1px solid transparent;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 8px;
+	box-shadow: var(--sle-shadow);
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.prime-fleet-dash-note p {
+	margin: 0;
+	font-size: 12.5px;
+	line-height: 1.4;
+	color: #3d3a32;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	line-clamp: 3;
+	overflow: hidden;
+	min-height: 0;
+	flex: 1 1 auto;
+}
+
+.prime-fleet-dash-note footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
+	font-size: 11px;
+	color: #6b6558;
+	flex: 0 0 auto;
+	min-width: 0;
+}
+
+.prime-fleet-dash-note footer span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	min-width: 0;
+}
+
+.prime-fleet-dash-note__ref {
+	appearance: none;
+	border: 0;
+	background: transparent;
+	padding: 0;
+	color: var(--sle-navy);
+	font-weight: 700;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.prime-fleet-dash-note--amber { background: #fff6d6; border-color: #ead9a0; }
+.prime-fleet-dash-note--sage { background: #eaf5e6; border-color: #c5dcbd; }
+.prime-fleet-dash-note--sky { background: #e7f1fb; border-color: #bfcfe3; }
+.prime-fleet-dash-note--rose { background: #fbeeee; border-color: #e3c7c7; }
+.prime-fleet-dash-note--tip { background: #f6f7f7; border-color: var(--sle-line); flex: 1 1 auto; min-height: 56px; }
+
+.prime-fleet-dash-table-wrap {
+	overflow-x: auto;
+	width: 100%;
+}
+
+.prime-fleet-dash-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 12.5px;
+}
+
+.prime-fleet-dash-table th,
+.prime-fleet-dash-table td {
+	padding: 10px 12px;
+	text-align: left;
+	border-top: 1px solid var(--sle-line);
+	vertical-align: middle;
+}
+
+.prime-fleet-dash-table thead th {
+	background: #f6f7f7;
+	color: var(--sle-muted);
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .03em;
+	border-top: 0;
+}
+
+.prime-fleet-dash-table__act {
+	width: 1%;
+	white-space: nowrap;
+}
+
+.prime-fleet-dash-pager {
+	min-width: 0;
+	max-width: 100%;
+}
+
+.prime-fleet-dash-pager__bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px 12px;
+	padding: 8px 12px 10px;
+	border-top: 1px solid var(--sle-line);
+	background: #fafbfc;
+}
+
+.prime-fleet-dash-pager__meta {
+	margin: 0;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--sle-muted);
+}
+
+.prime-fleet-dash-pager__nav {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	margin-left: auto;
+}
+
+.prime-fleet-dash-pager__pages {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+}
+
+.prime-fleet-dash-pager__btn {
+	min-height: 32px;
+	padding: 4px 10px;
+}
+
+.prime-fleet-dash-pager__btn:disabled {
+	opacity: .45;
+	cursor: not-allowed;
+}
+
+.prime-fleet-dash-pager [data-pf-dash-row][hidden],
+.prime-fleet-dash-feed [data-pf-dash-row][hidden],
+.prime-fleet-dash-fleet [data-pf-dash-row][hidden] {
+	display: none !important;
+}
+
+.prime-fleet-dash-widget .prime-fleet-dash-pager__bar {
+	margin-top: 2px;
+	border-radius: 0 0 var(--sle-radius, 8px) var(--sle-radius, 8px);
+}
+
+.prime-fleet-dash-badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 2px 8px;
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.4;
+	white-space: nowrap;
+}
+
+.prime-fleet-dash-badge.is-pending,
+.prime-fleet-dash-badge.is-warn { background: #f4e1b5; color: #7a5a12; }
+.prime-fleet-dash-badge.is-confirmed,
+.prime-fleet-dash-badge.is-ok { background: #d9f0e4; color: var(--sle-ok); }
+.prime-fleet-dash-badge.is-cancelled,
+.prime-fleet-dash-badge.is-danger { background: #f8d7da; color: var(--sle-danger); }
+.prime-fleet-dash-badge.is-info { background: #dbeafe; color: #1e4b8c; }
+.prime-fleet-dash-badge.is-off { background: #eef1f5; color: #667085; }
+
+.prime-fleet-dash-week {
+	display: grid;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	gap: 6px;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	align-items: stretch;
+}
+
+.prime-fleet-dash-day {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 4px;
+	padding: 8px 4px;
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius);
+	background: #fff;
+	text-align: center;
+	height: 100%;
+	min-height: 0;
+	box-sizing: border-box;
+}
+
+.prime-fleet-dash-day.is-today {
+	border-color: var(--sle-navy);
+	box-shadow: inset 0 0 0 1px var(--sle-navy);
+}
+
+.prime-fleet-dash-day strong {
+	font-size: 12px;
+	color: var(--sle-ink);
+}
+
+.prime-fleet-dash-day > span {
+	font-size: 11px;
+	color: var(--sle-muted);
+}
+
+.prime-fleet-dash-ring {
+	--pf-pct: 0;
+	width: min(64px, 100%);
+	aspect-ratio: 1;
+	height: auto;
+	max-width: 64px;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+	background: conic-gradient(var(--pf-ring, var(--sle-navy)) calc(var(--pf-pct) * 1%), #e8ecf1 0);
+	position: relative;
+}
+
+.prime-fleet-dash-ring::before {
+	content: "";
+	position: absolute;
+	inset: 8px;
+	border-radius: 50%;
+	background: #fff;
+}
+
+.prime-fleet-dash-ring__val {
+	position: relative;
+	z-index: 1;
+	font-size: 11px;
+	font-weight: 700;
+	color: var(--sle-ink);
+}
+
+.prime-fleet-dash-ring--idle { --pf-ring: #98a2b3; }
+.prime-fleet-dash-ring--ok { --pf-ring: #2f6b4f; }
+.prime-fleet-dash-ring--busy { --pf-ring: #c47f1a; }
+.prime-fleet-dash-ring--hot { --pf-ring: #b42318; }
+
+.prime-fleet-dash-fleet {
+	display: grid;
+	/* auto-fit (not auto-fill): collapse empty tracks so 5–6 cards stretch full width */
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: 6px;
+	align-items: stretch;
+	width: 100%;
+	min-width: 0;
+}
+
+@media (min-width: 1100px) {
+	.prime-fleet-dash-fleet {
+		grid-template-columns: repeat(6, minmax(0, 1fr));
+	}
+}
+
+.prime-fleet-dash-fleet__item {
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius-xs);
+	padding: 8px 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 2px;
+	background: #fafbfc;
+	min-height: 58px;
+	max-height: 58px;
+	min-width: 0;
+	box-sizing: border-box;
+}
+
+.prime-fleet-dash-fleet__item strong {
+	font-size: 12.5px;
+	font-weight: 650;
+	color: var(--sle-ink);
+	line-height: 1.25;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.prime-fleet-dash-fleet__count {
+	font-size: 12px;
+	color: var(--sle-muted);
+	line-height: 1.2;
+	white-space: nowrap;
+}
+
+.prime-fleet-dash-feed {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.prime-fleet-dash-feed__item {
+	display: grid;
+	grid-template-columns: 36px minmax(0, 1fr);
+	gap: 10px;
+	align-items: start;
+}
+
+.prime-fleet-dash-avatar {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+	background: #dbe4f0;
+	color: var(--sle-navy);
+	font-size: 11px;
+	font-weight: 700;
+}
+
+.prime-fleet-dash-feed__top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 2px;
+}
+
+.prime-fleet-dash-feed__body p {
+	margin: 0 0 4px;
+	font-size: 12.5px;
+	line-height: 1.4;
+	color: var(--sle-ink);
+}
+
+.prime-fleet-dash-forecast__stats {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+	margin-bottom: 14px;
+}
+
+.prime-fleet-dash-forecast--wide {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 148px;
+	gap: 14px 18px;
+	align-items: center;
+	width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+}
+
+.prime-fleet-dash-forecast--wide .prime-fleet-dash-forecast__stats {
+	margin: 0;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 8px;
+	min-width: 0;
+}
+
+.prime-fleet-dash-forecast--wide .prime-fleet-dash-forecast__stats > div {
+	padding: 10px 12px;
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius-xs);
+	background: #f8fafc;
+	box-shadow: none;
+	min-width: 0;
+}
+
+.prime-fleet-dash-forecast__viz {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+	width: 100%;
+}
+
+.prime-fleet-dash-forecast__stats span {
+	display: block;
+	font-size: 11px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.prime-fleet-dash-forecast__stats strong {
+	font-size: 1.15rem;
+	color: var(--sle-navy);
+}
+
+.prime-fleet-dash-forecast--wide .prime-fleet-dash-forecast__stats strong {
+	font-size: 1.2rem;
+	line-height: 1.15;
+}
+
+.prime-fleet-dash-forecast--wide .prime-fleet-dash-legend {
+	width: 100%;
+	max-width: 148px;
+}
+
+.prime-fleet-dash-donut {
+	--pf-pct: 0;
+	width: 132px;
+	height: 132px;
+	margin: 0 auto 12px;
+	border-radius: 50%;
+	background: conic-gradient(var(--sle-navy) calc(var(--pf-pct) * 1%), #d9e2ec 0);
+	display: grid;
+	place-items: center;
+	position: relative;
+	flex: 0 0 auto;
+}
+
+.prime-fleet-dash-forecast--wide .prime-fleet-dash-donut {
+	margin: 0;
+	width: 132px;
+	height: 132px;
+}
+
+@media (max-width: 900px) {
+	.prime-fleet-dash-forecast--wide {
+		grid-template-columns: 1fr;
+	}
+	.prime-fleet-dash-forecast--wide .prime-fleet-dash-forecast__stats {
+		grid-template-columns: 1fr 1fr;
+	}
+	.prime-fleet-dash-forecast--wide .prime-fleet-dash-legend {
+		max-width: none;
+	}
+}
+
+.prime-fleet-dash-donut::before {
+	content: "";
+	position: absolute;
+	inset: 24px;
+	border-radius: 50%;
+	background: #fff;
+}
+
+.prime-fleet-dash-donut__hole {
+	position: relative;
+	z-index: 1;
+	text-align: center;
+}
+
+.prime-fleet-dash-donut__hole strong {
+	display: block;
+	font-size: 1.25rem;
+	color: var(--sle-navy);
+}
+
+.prime-fleet-dash-donut__hole em {
+	font-style: normal;
+	font-size: 11px;
+	color: var(--sle-muted);
+}
+
+.prime-fleet-dash-legend {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 6px;
+	font-size: 12px;
+	color: var(--sle-muted);
+}
+
+.prime-fleet-dash-legend i {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border-radius: 2px;
+	margin-right: 6px;
+	vertical-align: middle;
+}
+
+.prime-fleet-dash-legend i.is-used { background: var(--sle-navy); }
+.prime-fleet-dash-legend i.is-free { background: #d9e2ec; }
+
+.prime-fleet-dash-legend strong {
+	float: right;
+	color: var(--sle-ink);
+}
+
+.prime-fleet-dash-counters {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1px;
+	background: var(--sle-line);
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius);
+	overflow: hidden;
+}
+
+.prime-fleet-dash-counters > div {
+	background: #fff;
+	padding: 10px 8px;
+	text-align: center;
+	min-height: 64px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	box-sizing: border-box;
+}
+
+.prime-fleet-dash-counters strong {
+	display: block;
+	font-size: 1.2rem;
+	color: var(--sle-navy);
+	line-height: 1.2;
+}
+
+.prime-fleet-dash-counters strong.is-up { color: var(--sle-ok); }
+.prime-fleet-dash-counters strong.is-down { color: var(--sle-danger); }
+
+.prime-fleet-dash-counters span {
+	font-size: 11px;
+	color: var(--sle-muted);
+}
+
+/* Tone colors live with .prime-fleet-stat--* blocks above */
+
+@media (max-width: 1200px) {
+	.prime-fleet-dash__board {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.prime-fleet-dash__rail {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 14px;
+		overflow: visible;
+	}
+}
+
+@media (max-width: 900px) {
+	.prime-fleet-dash-week {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+	.prime-fleet-dash__rail {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 600px) {
+	.prime-fleet-dash-week {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
 .prime-fleet-coming {
 	text-align: center;
 	padding: 48px 24px;
@@ -515,11 +2085,11 @@ body.toplevel_page_prime-fleet #wpfooter {
 	width: 56px;
 	height: 56px;
 	margin: 0 auto 14px;
-	border-radius: 14px;
+	border-radius: var(--sle-radius);
 	display: grid;
 	place-items: center;
-	background: linear-gradient(145deg, #efe6cf, #f8f3e6);
-	border: 1px solid #e5d8b5;
+	background: #f6f7f7;
+	border: 1px solid var(--sle-line);
 	color: var(--sle-navy);
 }
 
@@ -581,15 +2151,19 @@ body.toplevel_page_prime-fleet #wpfooter {
 .prime-fleet-field input[type="datetime-local"],
 .prime-fleet-field select,
 .prime-fleet-field textarea {
+	box-sizing: border-box;
 	width: 100%;
 	max-width: 100%;
-	border: 1px solid #d5dbe6;
-	border-radius: 10px;
-	padding: 10px 12px;
+	min-width: 0;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
+	padding: 8px 12px;
 	background: #fff;
 	color: var(--sle-ink);
-	box-shadow: inset 0 1px 1px rgba(11,29,57,.03);
-	min-height: 42px;
+	font-family: inherit;
+	font-size: 13px;
+	box-shadow: none;
+	min-height: 36px;
 	line-height: 1.3;
 }
 
@@ -602,8 +2176,8 @@ body.toplevel_page_prime-fleet #wpfooter {
 .prime-fleet-field select:focus,
 .prime-fleet-field textarea:focus {
 	outline: none;
-	border-color: #c9a35a;
-	box-shadow: 0 0 0 3px rgba(215,166,74,.2);
+	border-color: var(--sle-navy);
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12);
 }
 
 /* Multi-select checkbox dropdown (closed by default) */
@@ -617,20 +2191,27 @@ body.toplevel_page_prime-fleet #wpfooter {
 	justify-content: space-between;
 	gap: 0.5rem;
 	width: 100%;
-	min-height: 42px;
-	padding: 10px 12px;
-	border: 1px solid #d5dbe6;
-	border-radius: 10px;
+	min-height: 36px;
+	height: 36px;
+	padding: 0 10px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
 	background: #fff;
 	color: var(--sle-ink);
 	font: inherit;
+	font-size: 13px;
 	text-align: left;
 	cursor: pointer;
-	box-shadow: inset 0 1px 1px rgba(11,29,57,.03);
+	box-shadow: none;
 }
 .prime-fleet-ms__trigger:hover,
 .prime-fleet-ms.is-open .prime-fleet-ms__trigger {
-	border-color: #b8c2d4;
+	border-color: #9ca3af;
+	background: #f8fafc;
+}
+.prime-fleet-ms.is-open .prime-fleet-ms__trigger {
+	border-color: var(--sle-navy);
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12);
 }
 .prime-fleet-ms__label {
 	flex: 1;
@@ -662,10 +2243,12 @@ body.toplevel_page_prime-fleet #wpfooter {
 	max-height: 16rem;
 	overflow: auto;
 	padding: 0.35rem;
-	border: 1px solid #d5dbe6;
-	border-radius: 10px;
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius-sm);
 	background: #fff;
-	box-shadow: 0 10px 28px rgba(11,29,57,.12);
+	box-shadow: var(--sle-shadow-pop);
+	scrollbar-width: thin;
+	scrollbar-color: rgba(42, 69, 102, .35) transparent;
 }
 .prime-fleet-ms__option {
 	display: flex;
@@ -728,10 +2311,10 @@ body.toplevel_page_prime-fleet #wpfooter {
 	align-items: center;
 	gap: 10px;
 	width: 100%;
-	min-height: 42px;
-	padding: 10px 14px;
+	min-height: 36px;
+	padding: 8px 12px;
 	border: 1px solid var(--sle-line);
-	border-radius: 10px;
+	border-radius: var(--sle-radius-xs);
 	background: #f7f9fc;
 	font-weight: 600;
 	font-size: 13px;
@@ -853,10 +2436,10 @@ body.toplevel_page_prime-fleet #wpfooter {
 	width: 56px;
 	height: 56px;
 	margin: 0 auto 14px;
-	border-radius: 16px;
-	background: linear-gradient(145deg, #0b1d39 0%, #1a3358 100%);
-	border: 1px solid rgba(215, 166, 74, .35);
-	box-shadow: 0 10px 24px rgba(11, 29, 57, .12);
+	border-radius: var(--sle-radius);
+	background: var(--sle-navy);
+	border: 1px solid var(--sle-line);
+	box-shadow: none;
 	position: relative;
 }
 
@@ -928,11 +2511,11 @@ body.toplevel_page_prime-fleet #wpfooter {
 
 .prime-fleet-pay-card__key {
 	margin: 0;
-	font-size: 10px;
-	letter-spacing: .12em;
-	text-transform: uppercase;
-	color: var(--sle-gold);
-	font-weight: 800;
+	font-size: 12px;
+	letter-spacing: 0;
+	text-transform: none;
+	color: var(--sle-muted);
+	font-weight: 600;
 }
 
 .prime-fleet-pay-catalog {
@@ -965,8 +2548,8 @@ body.toplevel_page_prime-fleet #wpfooter {
 }
 
 .prime-fleet-confirm.is-info .prime-fleet-confirm__icon {
-	background: linear-gradient(145deg, #0b1d39 0%, #1a3358 100%);
-	box-shadow: 0 10px 24px rgba(11, 29, 57, .22);
+	background: var(--sle-navy);
+	box-shadow: none;
 }
 
 .prime-fleet-confirm.is-info .prime-fleet-confirm__icon::before,
@@ -1006,61 +2589,168 @@ body.toplevel_page_prime-fleet #wpfooter {
 	color: var(--sle-navy);
 }
 
+/* WP list-table style filter bar (tablenav + search-box). Flex — no float escape.
+ * NEVER clear:both — WP .tablenav { clear:both } clears floated #adminmenu and
+ * drops the filter bar ~1200px down (empty abyss on short pages like Surcharges). */
+.prime-fleet-table-tools.tablenav,
 .prime-fleet-table-tools {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 10px;
+	justify-content: space-between;
+	gap: 8px 12px;
+	float: none !important;
+	height: auto;
 	margin: 0 0 16px;
-	padding: 12px;
-	border-radius: 12px;
-	background: linear-gradient(180deg, #f7f9fc 0%, #f1f4f9 100%);
-	border: 1px solid var(--sle-line);
-}
-
-.prime-fleet-table-tools__search {
-	position: relative;
-	flex: 1 1 220px;
-	min-width: 180px;
-}
-
-.prime-fleet-table-tools__icon {
-	position: absolute;
-	left: 14px;
-	top: 50%;
-	width: 10px;
-	height: 10px;
-	margin-top: -6px;
-	border: 1.5px solid #8a95a8;
-	border-radius: 50%;
-	opacity: .85;
-	pointer-events: none;
+	padding: 0 0 12px;
+	border: 0;
+	border-bottom: 1px solid var(--sle-line);
+	background: transparent;
+	box-shadow: none;
+	clear: none !important;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
 	box-sizing: border-box;
 }
 
-.prime-fleet-table-tools__icon::after {
-	content: "";
-	position: absolute;
-	right: -4px;
-	bottom: -3px;
-	width: 5px;
-	height: 1.5px;
-	background: #8a95a8;
-	transform: rotate(45deg);
-	border-radius: 1px;
+.prime-fleet-table-tools::after {
+	display: none;
 }
 
-.prime-fleet-table-tools__search input[type="search"] {
-	width: 100%;
-	height: 40px;
-	padding: 0 12px 0 34px;
-	border: 1px solid var(--sle-line);
-	border-radius: 10px;
-	background: #fff;
+.prime-fleet-table-tools__actions.alignleft {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	float: none;
+	padding: 0;
+	min-width: 0;
+	max-width: 100%;
+}
+
+.prime-fleet-table-tools__actions .button {
+	margin: 0 !important;
+	min-height: 30px;
+	line-height: 2.15384615;
+	border-radius: var(--sle-radius-xs) !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+}
+
+/*
+ * WP / ASE paint filter .button in admin blue (#3858e9). Retheme every filter
+ * toolbar control to --sle-navy so Filters / Reset / Load day / calendar actions
+ * match the rest of the console (dropdowns already use navy focus).
+ */
+.prime-fleet-table-tools .button,
+.prime-fleet-table-tools .button.action,
+.prime-fleet-table-tools input.button,
+.prime-fleet-table-tools__search .button,
+.prime-fleet-table-tools__search input[type="submit"],
+.prime-fleet-table-tools input[type="submit"].button,
+.prime-fleet-table-tools input[id^="search-submit"],
+.prime-fleet-cal__toolbar .button,
+.prime-fleet-cal__filters .button,
+.prime-fleet-dispatch-bar .button {
+	color: var(--sle-navy) !important;
+	border-color: var(--sle-navy) !important;
+	background: #fff !important;
+	box-shadow: none !important;
+	text-shadow: none !important;
+	border-radius: var(--sle-radius-xs) !important;
+}
+.prime-fleet-table-tools .button:hover,
+.prime-fleet-table-tools .button:focus,
+.prime-fleet-table-tools .button:focus-visible,
+.prime-fleet-cal__toolbar .button:hover,
+.prime-fleet-cal__toolbar .button:focus,
+.prime-fleet-cal__toolbar .button:focus-visible,
+.prime-fleet-cal__filters .button:hover,
+.prime-fleet-cal__filters .button:focus,
+.prime-fleet-cal__filters .button:focus-visible,
+.prime-fleet-dispatch-bar .button:hover,
+.prime-fleet-dispatch-bar .button:focus,
+.prime-fleet-dispatch-bar .button:focus-visible {
+	color: var(--sle-navy-2) !important;
+	border-color: var(--sle-navy-2) !important;
+	background: #f8fafc !important;
+	box-shadow: 0 0 0 1px var(--sle-navy-2) !important;
+}
+.prime-fleet-table-tools .button-primary,
+.prime-fleet-table-tools .button.button-primary,
+.prime-fleet-cal__toolbar .button-primary,
+.prime-fleet-cal__filters .button-primary,
+.prime-fleet-dispatch-bar .button-primary,
+.prime-fleet-dispatch-bar .button.button-primary {
+	color: #fff !important;
+	background: var(--sle-navy) !important;
+	border-color: var(--sle-navy) !important;
+}
+.prime-fleet-table-tools .button-primary:hover,
+.prime-fleet-table-tools .button-primary:focus,
+.prime-fleet-table-tools .button-primary:focus-visible,
+.prime-fleet-cal__toolbar .button-primary:hover,
+.prime-fleet-cal__toolbar .button-primary:focus,
+.prime-fleet-cal__toolbar .button-primary:focus-visible,
+.prime-fleet-cal__filters .button-primary:hover,
+.prime-fleet-cal__filters .button-primary:focus,
+.prime-fleet-cal__filters .button-primary:focus-visible,
+.prime-fleet-dispatch-bar .button-primary:hover,
+.prime-fleet-dispatch-bar .button-primary:focus,
+.prime-fleet-dispatch-bar .button-primary:focus-visible {
+	color: #fff !important;
+	background: var(--sle-navy-2) !important;
+	border-color: var(--sle-navy-2) !important;
+	box-shadow: none !important;
+}
+
+.prime-fleet-table-tools__search.search-box,
+.prime-fleet-table-tools__search {
+	position: relative;
+	float: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+	max-width: 100%;
+	flex: 0 1 auto;
+}
+
+.prime-fleet-table-tools > br.clear {
+	display: none;
+}
+
+.prime-fleet-table-tools__icon {
+	display: none;
+}
+
+.prime-fleet-table-tools__search input[type="search"],
+.prime-fleet-table-tools input[type="search"],
+.prime-fleet-table-tools input[type="text"] {
+	box-sizing: border-box !important;
+	float: none;
+	width: 220px !important;
+	max-width: min(220px, 100%);
+	height: 30px !important;
+	min-height: 30px !important;
+	max-height: 30px !important;
+	margin: 0;
+	padding: 0 8px !important;
+	/* Match .prime-fleet-dt__trigger — all list/filter toolbars sitewide. */
+	border: 1px solid var(--sle-line-strong) !important;
+	border-radius: var(--sle-radius-xs) !important;
+	background: #fff !important;
 	color: var(--sle-ink);
-	font-size: 14px;
-	line-height: 1.2;
-	box-shadow: inset 0 1px 2px rgba(11, 29, 57, .03);
+	font-family: inherit;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	line-height: 1.3 !important;
+	box-shadow: none !important;
 	-webkit-appearance: none;
 	appearance: none;
 }
@@ -1070,10 +2760,67 @@ body.toplevel_page_prime-fleet #wpfooter {
 	-webkit-appearance: none;
 }
 
-.prime-fleet-table-tools__search input[type="search"]:focus {
+.prime-fleet-table-tools__search input[type="search"]:focus,
+.prime-fleet-table-tools input[type="search"]:focus,
+.prime-fleet-table-tools input[type="text"]:focus {
+	outline: none !important;
+	border-color: var(--sle-navy) !important;
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12) !important;
+}
+
+.prime-fleet-table-tools__select {
+	box-sizing: border-box !important;
+	float: none !important;
+	height: 30px !important;
+	min-height: 30px !important;
+	min-width: 120px;
+	max-width: 180px;
+	padding: 0 24px 0 8px !important;
+	/* Same chrome as .prime-fleet-dt__trigger (border, radius, type). */
+	border: 1px solid var(--sle-line-strong) !important;
+	border-radius: var(--sle-radius-xs) !important;
+	background: #fff !important;
+	color: var(--sle-ink);
+	font-family: inherit;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	line-height: 1.3 !important;
+	box-shadow: none !important;
+	vertical-align: middle;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.prime-fleet-table-tools__select:hover {
+	border-color: #9ca3af !important;
+	background: #f8fafc !important;
+}
+
+.prime-fleet-table-tools__select:focus {
 	outline: none;
-	border-color: var(--sle-gold);
-	box-shadow: 0 0 0 3px rgba(215, 166, 74, .2);
+	border-color: var(--sle-navy) !important;
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12);
+}
+
+.prime-fleet-table-tools__trailing {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 0 8px;
+	line-height: 30px;
+	white-space: nowrap;
+}
+
+.prime-fleet-table-tools__link {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--sle-navy);
+	text-decoration: none;
+}
+
+.prime-fleet-table-tools__link:hover {
+	color: var(--sle-navy-2);
+	text-decoration: underline;
 }
 
 .prime-fleet-select {
@@ -1108,39 +2855,47 @@ body.toplevel_page_prime-fleet #wpfooter {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 10px;
+	gap: 8px;
 	width: 100%;
-	min-height: 42px;
-	padding: 0 12px;
-	border: 1px solid #d5dbe6;
-	border-radius: 10px;
+	min-height: 36px;
+	height: 36px;
+	padding: 0 10px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
 	background: #fff;
 	color: var(--sle-ink);
-	font-size: 14px;
-	font-weight: 600;
+	font-size: 13px;
+	font-weight: 500;
 	font-family: inherit;
 	line-height: 1.3;
 	text-align: left;
 	cursor: pointer;
-	box-shadow: inset 0 1px 1px rgba(11, 29, 57, .03);
+	box-shadow: none;
 	transition: border-color .15s ease, box-shadow .15s ease;
 }
 
 .prime-fleet-select--toolbar .prime-fleet-select__trigger {
-	min-height: 40px;
-	height: 40px;
+	box-sizing: border-box;
+	min-height: 30px;
+	height: 30px;
+	padding: 0 10px;
+	border-color: var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
+	font-family: inherit;
 	font-size: 13px;
+	font-weight: 500;
+	box-shadow: none;
 }
 
 .prime-fleet-select__trigger:hover {
-	border-color: #c5cedb;
+	border-color: #b8c0cc;
 }
 
 .prime-fleet-select.is-open .prime-fleet-select__trigger,
 .prime-fleet-select__trigger:focus {
 	outline: none;
-	border-color: var(--sle-gold);
-	box-shadow: 0 0 0 3px rgba(215, 166, 74, .2);
+	border-color: var(--sle-navy);
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12);
 }
 
 .prime-fleet-select.is-disabled .prime-fleet-select__trigger,
@@ -1183,7 +2938,7 @@ body.toplevel_page_prime-fleet #wpfooter {
 
 .prime-fleet-select__menu {
 	position: fixed;
-	z-index: 100050;
+	z-index: 100120;
 	margin: 0;
 	padding: 6px;
 	border: 1px solid var(--sle-line);
@@ -1214,15 +2969,15 @@ body.toplevel_page_prime-fleet #wpfooter {
 .prime-fleet-select__search-icon {
 	position: absolute;
 	left: 16px;
-	top: 50%;
-	width: 10px;
-	height: 10px;
-	margin-top: -8px;
+	top: 15px;
+	width: 12px;
+	height: 12px;
 	border: 1.5px solid #8a95a8;
 	border-radius: 50%;
 	opacity: .7;
 	pointer-events: none;
 	box-sizing: border-box;
+	z-index: 1;
 }
 
 .prime-fleet-select__search-icon::after {
@@ -1237,11 +2992,13 @@ body.toplevel_page_prime-fleet #wpfooter {
 	border-radius: 1px;
 }
 
+/* Beat WP forms.css input[type=search] { padding: 0 12px } — modal menus sit outside .prime-fleet-app */
 .prime-fleet-app .prime-fleet-select__search-input,
-.prime-fleet-select__search-input {
+.prime-fleet-select__search-input,
+.prime-fleet-select__search-input[type="search"] {
 	width: 100%;
 	height: 36px;
-	padding: 0 12px 0 34px;
+	padding: 0 12px 0 36px !important;
 	border: 1px solid var(--sle-line) !important;
 	border-radius: 10px !important;
 	background: #fff !important;
@@ -1257,7 +3014,8 @@ body.toplevel_page_prime-fleet #wpfooter {
 }
 
 .prime-fleet-app .prime-fleet-select__search-input:focus,
-.prime-fleet-select__search-input:focus {
+.prime-fleet-select__search-input:focus,
+.prime-fleet-select__search-input[type="search"]:focus {
 	outline: none !important;
 	border-color: var(--sle-gold) !important;
 	box-shadow: 0 0 0 3px rgba(215, 166, 74, .2) !important;
@@ -1316,7 +3074,7 @@ body.toplevel_page_prime-fleet #wpfooter {
 }
 
 .prime-fleet-select__option.is-selected {
-	background: linear-gradient(135deg, var(--sle-navy) 0%, #1a3358 100%);
+	background: var(--sle-navy);
 	color: #fff;
 }
 
@@ -1362,9 +3120,14 @@ body.toplevel_page_prime-fleet #wpfooter {
 }
 
 .prime-fleet-table-tools .prime-fleet-btn {
-	height: 40px;
-	padding-left: 16px;
-	padding-right: 16px;
+	box-sizing: border-box !important;
+	height: 36px !important;
+	min-height: 36px !important;
+	max-height: 36px !important;
+	padding: 0 14px !important;
+	border-radius: var(--sle-radius-xs) !important;
+	font-size: 13px !important;
+	line-height: 1 !important;
 }
 
 .prime-fleet-table-pager {
@@ -1394,16 +3157,18 @@ body.toplevel_page_prime-fleet #wpfooter {
 
 .prime-fleet-table-pager__btn {
 	min-width: 36px;
+	min-height: 36px;
 	height: 36px;
 	padding: 0 10px;
-	border: 1px solid var(--sle-line);
-	border-radius: 10px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
 	background: #fff;
-	color: var(--sle-navy);
-	font-size: 13px;
-	font-weight: 700;
+	color: var(--sle-ink);
+	font-size: 12px;
+	font-weight: 600;
 	cursor: pointer;
-	transition: border-color .15s ease, background .15s ease, color .15s ease;
+	transition: none;
+	line-height: 1;
 }
 
 .prime-fleet-table-pager__btn:hover:not(:disabled):not(.is-active) {
@@ -1428,109 +3193,308 @@ body.toplevel_page_prime-fleet #wpfooter {
 	padding: 0 2px;
 }
 
-.prime-fleet-table-wrap { overflow-x: auto; }
+.prime-fleet-table-wrap {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
 
 .prime-fleet-table {
 	width: 100%;
+	max-width: none; /* allow intrinsic width; wrap scrolls */
 	border-collapse: collapse;
+	table-layout: auto;
 }
 
 .prime-fleet-table th,
 .prime-fleet-table td {
 	text-align: left;
-	padding: 12px 10px;
-	border-bottom: 1px solid var(--sle-line);
+	padding: 10px 10px;
+	border-bottom: 1px solid #e2e4e7;
 	vertical-align: middle;
+	font-size: 13px;
+}
+
+.prime-fleet-table--ops th,
+.prime-fleet-table--ops td {
+	padding: 8px 10px;
 }
 
 .prime-fleet-table th {
+	font-size: 12px;
+	text-transform: none;
+	letter-spacing: 0;
+	color: #50575e;
+	font-weight: 600;
+	background: #f6f7f7;
+}
+
+.prime-fleet-table__mono {
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+	font-size: 12px;
+	color: #3c434a;
+}
+
+.prime-fleet-table__actions,
+.prime-fleet-table--ops .col-act {
+	white-space: nowrap;
+	width: auto;
+	text-align: left;
+}
+
+.prime-fleet-table--ops {
+	table-layout: fixed;
+	width: 100%;
+}
+
+.prime-fleet-table--ops .col-ref { width: 18%; }
+.prime-fleet-table--ops .col-customer { width: 28%; }
+.prime-fleet-table--ops .col-pickup { width: 16%; }
+.prime-fleet-table--ops .col-fare { width: 14%; }
+.prime-fleet-table--ops .col-status { width: 12%; }
+.prime-fleet-table--ops .col-pay { width: 12%; }
+
+.prime-fleet-row-sep {
+	color: #c3c4c7;
+	margin: 0 2px;
+}
+
+.prime-fleet-card--list,
+.prime-fleet-topbar {
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+.prime-fleet-panel-body {
+	padding: 0;
+}
+
+.prime-fleet-panel-body > .prime-fleet-card--list,
+.prime-fleet-panel-body > .prime-fleet-bd {
+	width: 100%;
+}
+
+.prime-fleet-row-link {
+	display: inline;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--sle-navy);
+	font: inherit;
+	font-weight: 600;
+	font-size: 13px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.prime-fleet-row-link:hover,
+.prime-fleet-row-link:focus-visible {
+	color: var(--sle-navy-2);
+	text-decoration: underline;
+	outline: none;
+}
+
+.prime-fleet-pill {
+	display: inline-block;
+	padding: 2px 7px;
+	border-radius: var(--sle-radius-xs);
 	font-size: 11px;
-	text-transform: uppercase;
-	letter-spacing: .06em;
-	color: var(--sle-muted);
-	font-weight: 700;
+	font-weight: 600;
+	line-height: 1.4;
+	background: #f0f0f1;
+	color: #50575e;
+	border: 1px solid #dcdcde;
+}
+
+.prime-fleet-pill--ok {
+	background: #edfaef;
+	color: var(--sle-ok);
+	border-color: #c3e6cb;
+}
+
+.prime-fleet-pill--warn {
+	background: #fcf5e5;
+	color: #8a6d1d;
+	border-color: #f0e2b6;
+}
+
+.prime-fleet-pill--danger {
+	background: #fcf0f1;
+	color: var(--sle-danger);
+	border-color: #f1c6c8;
+}
+
+.prime-fleet-pill--info {
+	background: #f0f6fc;
+	color: #1e4b8c;
+	border-color: #c5d9ed;
+}
+
+.prime-fleet-pill--off {
+	background: #f6f7f7;
+	color: #646970;
+	border-color: #dcdcde;
 }
 
 .prime-fleet-badge {
 	display: inline-block;
-	padding: .2rem .55rem;
-	border-radius: 999px;
+	padding: 2px 7px;
+	border-radius: var(--sle-radius-xs);
 	font-size: 11px;
-	font-weight: 700;
-	background: #efe6cf;
+	font-weight: 600;
+	background: #f0f0f1;
 	color: var(--sle-navy);
+	border: 1px solid #dcdcde;
 }
 
-.prime-fleet-badge--ok { background: #d9f0e4; color: var(--sle-ok); }
-.prime-fleet-badge--warn { background: #f4e1b5; color: #7a5a12; }
-.prime-fleet-badge--off { background: #eef1f5; color: #667085; }
+.prime-fleet-badge--ok { background: #edfaef; color: var(--sle-ok); border-color: #c3e6cb; }
+.prime-fleet-badge--warn { background: #fcf5e5; color: #8a6d1d; border-color: #f0e2b6; }
+.prime-fleet-badge--off { background: #f6f7f7; color: #646970; border-color: #dcdcde; }
 
 .prime-fleet-tabs {
 	display: flex;
-	gap: 6px;
+	gap: 0;
 	flex-wrap: wrap;
 	margin-bottom: 14px;
-	padding: 6px;
-	background: #f3f5f9;
-	border-radius: 999px;
-	width: fit-content;
+	padding: 0;
+	background: #fff;
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius);
+	width: 100%;
 	max-width: 100%;
+	box-shadow: var(--sle-shadow);
 }
 
 .prime-fleet-tabs a,
 .prime-fleet-tab-lite {
 	appearance: none;
 	border: 0;
+	border-left: 3px solid transparent;
 	background: transparent;
 	text-decoration: none;
-	color: var(--sle-muted);
-	padding: 8px 14px;
-	border-radius: 999px;
-	font-weight: 700;
-	font-size: 12.5px;
+	color: var(--sle-ink);
+	padding: 9px 14px 9px 11px;
+	border-radius: 0;
+	font-weight: 600;
+	font-size: 13px;
 	cursor: pointer;
+}
+
+.prime-fleet-tabs a:hover,
+.prime-fleet-tab-lite:hover {
+	background: #f6f7f7;
+	color: var(--sle-navy);
 }
 
 .prime-fleet-tabs a.is-active,
 .prime-fleet-tab-lite.is-active {
-	background: var(--sle-navy);
-	color: #fff;
+	background: #f0f6fc;
+	border-left-color: var(--sle-navy);
+	color: var(--sle-navy);
 }
 
-/* Settings sub-tabs */
-.prime-fleet-settings-tabs {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-	margin: 0 0 16px;
-	padding: 5px;
-	background: #f3f5f9;
-	border: 1px solid var(--sle-line);
-	border-radius: 14px;
-	width: fit-content;
+/* Sub-pages layout (Settings, Pricing, …) — left page list + main. Larger screens use full band. */
+.prime-fleet-settings-layout,
+.prime-fleet-subpages {
+	display: grid;
+	grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+	gap: 20px;
+	align-items: start;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+}
+.prime-fleet-settings,
+.prime-fleet-settings-main,
+.prime-fleet-settings-panels,
+.prime-fleet-panel,
+.prime-fleet-panel-body {
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+}
+.prime-fleet-ribbon {
 	max-width: 100%;
 }
-.prime-fleet-settings-tabs__btn {
-	appearance: none;
-	border: 0;
-	background: transparent;
-	color: var(--sle-muted);
-	padding: 9px 14px;
-	border-radius: 10px;
+.prime-fleet-settings-nav,
+.prime-fleet-subpages__nav {
+	background: #fff;
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius);
+	padding: 8px 0;
+	position: sticky;
+	top: var(--wp-admin--admin-bar--height, 32px);
+	align-self: start;
+	z-index: 5;
+	box-shadow: var(--sle-shadow);
+	max-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px) - 16px);
+	overflow: auto;
+	min-width: 0;
+}
+
+@media screen and (max-width: 782px) {
+	.prime-fleet-settings-nav,
+	.prime-fleet-subpages__nav {
+		top: var(--wp-admin--admin-bar--height, 46px);
+		max-height: calc(100vh - var(--wp-admin--admin-bar--height, 46px) - 16px);
+	}
+}
+
+body:not(.admin-bar) .prime-fleet-settings-nav,
+body:not(.admin-bar) .prime-fleet-subpages__nav {
+	top: 0;
+	max-height: calc(100vh - 16px);
+}
+.prime-fleet-settings-nav__label {
+	margin: 0 12px 6px;
+	font-size: 11px;
 	font-weight: 700;
+	color: var(--sle-muted);
+	text-transform: uppercase;
+	letter-spacing: .04em;
+}
+.prime-fleet-settings-nav__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.prime-fleet-settings-nav__link {
+	appearance: none;
+	display: block;
+	width: 100%;
+	text-align: left;
+	border: 0;
+	border-left: 3px solid transparent;
+	background: transparent;
+	color: var(--sle-ink);
+	padding: 9px 12px 9px 11px;
 	font-size: 13px;
-	line-height: 1.2;
+	font-weight: 600;
+	line-height: 1.3;
 	cursor: pointer;
-	transition: background .15s ease, color .15s ease;
 }
-.prime-fleet-settings-tabs__btn:hover {
+.prime-fleet-settings-nav__link:hover {
+	background: #f6f7f7;
 	color: var(--sle-navy);
-	background: rgba(255,255,255,.7);
 }
-.prime-fleet-settings-tabs__btn.is-active {
-	background: var(--sle-navy);
-	color: #fff;
-	box-shadow: 0 4px 12px rgba(11,29,57,.18);
+.prime-fleet-settings-nav__link.is-active,
+.prime-fleet-settings-nav__link[aria-current="page"] {
+	background: #f0f6fc;
+	border-left-color: var(--sle-navy);
+	color: var(--sle-navy);
+}
+.prime-fleet-settings-nav__link:focus-visible {
+	outline: 2px solid var(--sle-navy);
+	outline-offset: -2px;
+}
+.prime-fleet-settings-main {
+	min-width: 0;
 }
 .prime-fleet-settings-panel[hidden] {
 	display: none !important;
@@ -1540,6 +3504,82 @@ body.toplevel_page_prime-fleet #wpfooter {
 }
 .prime-fleet-settings-panels .prime-fleet-section + .prime-fleet-section {
 	margin-top: 0;
+}
+.prime-fleet-settings .prime-fleet-field label,
+.prime-fleet-settings .prime-fleet-check {
+	font-size: 13px;
+}
+.prime-fleet-settings input[type="text"],
+.prime-fleet-settings input[type="number"],
+.prime-fleet-settings input[type="email"],
+.prime-fleet-settings input[type="url"],
+.prime-fleet-settings select,
+.prime-fleet-settings textarea {
+	font-size: 13px;
+	min-height: 36px;
+	padding: 6px 10px;
+	border-radius: var(--sle-radius-xs);
+	border: 1px solid var(--sle-line-strong);
+}
+
+@media (max-width: 782px) {
+	.prime-fleet-settings-layout,
+	.prime-fleet-subpages {
+		grid-template-columns: 1fr;
+	}
+	.prime-fleet-settings-nav,
+	.prime-fleet-subpages__nav {
+		position: static;
+	}
+	.prime-fleet-settings-nav__list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0;
+	}
+	.prime-fleet-settings-nav__link {
+		border-left: 0;
+		border-bottom: 2px solid transparent;
+		width: auto;
+	}
+	.prime-fleet-settings-nav__link.is-active,
+	.prime-fleet-settings-nav__link[aria-current="page"] {
+		border-bottom-color: var(--sle-navy);
+	}
+}
+
+/* Legacy class hooks (Messages still uses tabs strip) */
+.prime-fleet-settings-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0;
+	margin: 0 0 16px;
+	padding: 0;
+	background: #fff;
+	border: 1px solid var(--sle-line);
+	width: 100%;
+	border-radius: 3px;
+}
+.prime-fleet-settings-tabs__btn {
+	appearance: none;
+	border: 0;
+	border-right: 1px solid var(--sle-line);
+	border-bottom: 2px solid transparent;
+	background: transparent;
+	color: var(--sle-ink);
+	padding: 10px 14px;
+	font-weight: 600;
+	font-size: 13px;
+	cursor: pointer;
+}
+.prime-fleet-settings-tabs__btn:hover {
+	background: #f6f7f7;
+	color: var(--sle-navy);
+}
+.prime-fleet-settings-tabs__btn.is-active,
+.prime-fleet-settings-tabs__btn[aria-current="page"] {
+	background: #f0f6fc;
+	border-bottom-color: var(--sle-navy);
+	color: var(--sle-navy);
 }
 
 /* Messages editor */
@@ -1618,36 +3658,39 @@ body.toplevel_page_prime-fleet #wpfooter {
 @media (max-width: 720px) {
 	.prime-fleet-settings-tabs {
 		width: 100%;
-		border-radius: 12px;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		flex-wrap: nowrap;
 	}
 	.prime-fleet-settings-tabs__btn {
-		flex: 1 1 auto;
+		flex: 0 0 auto;
 		text-align: center;
-		padding: 10px 12px;
-		font-size: 12.5px;
+		padding: 12px 14px;
+		font-size: 13px;
+		white-space: nowrap;
 	}
 }
 
 .prime-fleet-sticky-save {
-	position: sticky;
-	bottom: 12px;
-	background: rgba(255,255,255,.92);
+	position: static; /* sticky was trapping / cutting off bottom on short viewports */
+	background: #f6f7f7;
 	border: 1px solid var(--sle-line);
-	border-radius: 12px;
-	padding: 12px 14px;
+	border-radius: 3px;
+	padding: 10px 12px;
 	margin-top: 14px;
 	display: flex;
 	gap: 8px;
 	justify-content: flex-end;
-	backdrop-filter: blur(8px);
-	box-shadow: 0 8px 24px rgba(11,29,57,.08);
+	backdrop-filter: none;
+	box-shadow: none;
 	z-index: 5;
 }
 
 .prime-fleet-builder-head,
 .prime-fleet-builder-row {
 	display: grid;
-	grid-template-columns: minmax(220px, 1.6fr) .7fr .7fr .9fr .55fr .7fr auto;
+	/* Every track must shrink (minmax(0,…)) — bare fr/auto mins overflow the column. */
+	grid-template-columns: minmax(0, 1.6fr) minmax(0, .7fr) minmax(0, .7fr) minmax(0, .9fr) minmax(0, .55fr) minmax(0, .7fr) auto;
 	gap: 10px;
 	align-items: start;
 }
@@ -1725,7 +3768,8 @@ body.toplevel_page_prime-fleet #wpfooter {
 	flex-wrap: wrap;
 	gap: 6px;
 	justify-content: flex-end;
-	white-space: nowrap;
+	white-space: normal;
+	min-width: 0;
 }
 
 .prime-fleet-field--block { grid-column: 1 / -1; }
@@ -1733,15 +3777,30 @@ body.toplevel_page_prime-fleet #wpfooter {
 /* Modal */
 body.prime-fleet-modal-open { overflow: hidden; }
 
-.prime-fleet-modal[hidden] { display: none !important; }
+.prime-fleet-modal[hidden],
+#prime-fleet-modal[hidden] {
+	display: none !important;
+}
 
-.prime-fleet-modal {
-	position: fixed;
-	inset: 0;
-	z-index: 100050;
-	display: grid;
-	place-items: center;
-	padding: 20px;
+.prime-fleet-modal:not([hidden]),
+#prime-fleet-modal.prime-fleet-modal:not([hidden]) {
+	--pf-modal-inset: 12px;
+	--pf-modal-max-w: 560px;
+	--pf-modal-max-h: 560px;
+	position: fixed !important;
+	inset: 0 !important;
+	z-index: 100100 !important;
+	display: flex !important;
+	align-items: flex-start !important;
+	justify-content: center !important;
+	box-sizing: border-box !important;
+	padding: var(--pf-modal-inset) !important;
+	margin: 0 !important;
+	width: auto !important;
+	height: auto !important;
+	max-width: none !important;
+	max-height: none !important;
+	overflow: hidden !important;
 }
 
 .prime-fleet-modal__backdrop {
@@ -1754,14 +3813,23 @@ body.prime-fleet-modal-open { overflow: hidden; }
 .prime-fleet-modal__dialog {
 	position: relative;
 	z-index: 1;
-	width: min(640px, 100%);
-	max-height: min(88vh, 900px);
-	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box !important;
+	/* Compact card — never full-bleed console width */
+	width: 560px !important;
+	max-width: 100% !important; /* 100% of padded flex area */
+	max-height: min(560px, 100%) !important;
+	overflow: hidden !important;
 	background: var(--sle-surface);
-	border-radius: 18px;
-	box-shadow: 0 28px 80px rgba(11, 29, 57, .35);
-	border: 1px solid rgba(215, 166, 74, .28);
-	animation: primeFleetModalIn .22s ease;
+	border-radius: var(--sle-radius);
+	box-shadow: 0 8px 24px rgba(16, 24, 40, .12);
+	border: 1px solid var(--sle-line);
+	animation: primeFleetModalIn .18s ease;
+	min-width: 0 !important;
+	min-height: 0 !important;
+	margin: 0 !important;
+	flex: 0 1 auto;
 }
 
 .prime-fleet-modal__head {
@@ -1769,28 +3837,23 @@ body.prime-fleet-modal-open { overflow: hidden; }
 	align-items: flex-start;
 	justify-content: space-between;
 	gap: 12px;
-	padding: 18px 20px 14px;
+	flex: 0 0 auto;
+	padding: 16px 20px 14px;
 	border-bottom: 1px solid var(--sle-line);
-	background: linear-gradient(180deg, #fbf8f1 0%, #fff 100%);
-	position: sticky;
-	top: 0;
+	background: #fff;
+	position: relative;
 	z-index: 2;
 }
 
 .prime-fleet-modal__eyebrow {
-	margin: 0;
-	font-size: 10px;
-	letter-spacing: .16em;
-	text-transform: uppercase;
-	color: var(--sle-gold);
-	font-weight: 800;
+	display: none;
 }
 
 .prime-fleet-modal__head h2 {
-	margin: 4px 0 0;
+	margin: 0;
 	font-size: 1.2rem;
 	color: var(--sle-navy);
-	font-weight: 750;
+	font-weight: 700;
 	line-height: 1.25;
 }
 
@@ -1800,7 +3863,7 @@ body.prime-fleet-modal-open { overflow: hidden; }
 	background: #f3f5f9;
 	width: 34px;
 	height: 34px;
-	border-radius: 10px;
+	border-radius: var(--sle-radius-xs);
 	font-size: 22px;
 	line-height: 1;
 	cursor: pointer;
@@ -1813,41 +3876,68 @@ body.prime-fleet-modal-open { overflow: hidden; }
 }
 
 .prime-fleet-modal__body {
-	padding: 18px 20px 8px;
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 18px 20px 0;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(42, 69, 102, .35) transparent;
 }
 
 .prime-fleet-modal__body .prime-fleet-form-grid {
-	margin-bottom: 8px;
+	margin-bottom: 4px;
 }
 
+.prime-fleet-modal__body > form,
+.prime-fleet-modal__body > .prime-fleet-form,
+.prime-fleet-modal__body > div {
+	padding-bottom: 4px;
+}
+
+.prime-fleet-modal__body .prime-fleet-checks,
+.prime-fleet-modal__body .prime-fleet-form-grid,
+.prime-fleet-modal__body .prime-fleet-help {
+	position: relative;
+	z-index: 0;
+}
+.prime-fleet-modal__body .prime-fleet-checks {
+	margin-bottom: 8px;
+}
 .prime-fleet-modal__footer {
 	display: flex;
 	justify-content: flex-end;
+	align-items: center;
 	flex-wrap: wrap;
 	gap: 8px;
-	padding: 14px 0 8px;
-	margin-top: 8px;
-	border-top: 1px solid var(--sle-line);
 	position: sticky;
 	bottom: 0;
-	background: linear-gradient(180deg, rgba(255,255,255,.7) 0%, #fff 40%);
+	z-index: 2;
+	margin: 20px -20px 0;
+	padding: 14px 20px 20px;
+	border-top: 1px solid var(--sle-line);
+	background: #fff;
+	box-shadow: 0 -8px 18px rgba(15, 23, 42, .06);
 }
 
 @keyframes primeFleetModalIn {
-	from { opacity: 0; transform: translateY(10px) scale(.98); }
-	to { opacity: 1; transform: none; }
+	from { opacity: 0; }
+	to { opacity: 1; }
 }
 
 /* Confirm dialog */
 .prime-fleet-confirm[hidden] { display: none !important; }
 
 .prime-fleet-confirm {
+	--pf-modal-inset: 40px;
 	position: fixed;
 	inset: 0;
-	z-index: 100070;
+	z-index: 100110;
 	display: grid;
 	place-items: center;
-	padding: 20px;
+	box-sizing: border-box;
+	padding: var(--pf-modal-inset);
 }
 
 .prime-fleet-confirm__backdrop {
@@ -1861,22 +3951,28 @@ body.prime-fleet-modal-open { overflow: hidden; }
 	position: relative;
 	z-index: 1;
 	width: min(420px, 100%);
+	max-height: min(560px, calc(100vh - (var(--pf-modal-inset) * 2)));
+	max-height: min(560px, calc(100dvh - (var(--pf-modal-inset) * 2)));
+	overflow: auto;
 	background: #fff;
-	border-radius: 18px;
-	border: 1px solid rgba(155, 44, 44, .18);
-	box-shadow: 0 28px 70px rgba(11, 29, 57, .32);
-	padding: 22px 22px 18px;
+	border-radius: var(--sle-radius);
+	border: 1px solid var(--sle-line);
+	box-shadow: 0 8px 24px rgba(16, 24, 40, .12);
+	padding: 20px 20px 20px;
 	animation: primeFleetModalIn .2s ease;
 	text-align: center;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(42, 69, 102, .35) transparent;
+	box-sizing: border-box;
 }
 
 .prime-fleet-confirm__icon {
-	width: 52px;
-	height: 52px;
-	margin: 0 auto 14px;
-	border-radius: 16px;
-	background: linear-gradient(145deg, #9b2c2c 0%, #7a1f1f 100%);
-	box-shadow: 0 10px 24px rgba(155, 44, 44, .28);
+	width: 48px;
+	height: 48px;
+	margin: 0 auto 12px;
+	border-radius: var(--sle-radius);
+	background: var(--sle-danger);
+	box-shadow: none;
 	position: relative;
 }
 
@@ -1896,12 +3992,7 @@ body.prime-fleet-modal-open { overflow: hidden; }
 .prime-fleet-confirm__icon::after { transform: translate(-50%, -50%) rotate(-45deg); }
 
 .prime-fleet-confirm__eyebrow {
-	margin: 0 0 4px;
-	font-size: 10px;
-	letter-spacing: .14em;
-	text-transform: uppercase;
-	color: var(--sle-gold);
-	font-weight: 800;
+	display: none;
 }
 
 .prime-fleet-confirm__dialog h2 {
@@ -1925,90 +4016,187 @@ body.prime-fleet-modal-open { overflow: hidden; }
 	flex-wrap: wrap;
 	gap: 8px;
 	margin-top: 18px;
+	padding-bottom: 2px;
 }
 
-/* Themed scrollbars (Firefox + WebKit) */
-body.toplevel_page_prime-fleet,
-.prime-fleet-app,
-.prime-fleet-modal__dialog,
-.prime-fleet-app__nav-scroll,
-.prime-fleet-table-wrap {
+/*
+ * Page scroll — SINGLE scrollport on html ONLY.
+ *
+ * HURT pattern (do not bring back):
+ *   body { overflow-x: clip/hidden; overflow-y: visible }
+ * If one axis isn’t visible, the visible axis computes to auto → body becomes a
+ * nested scrollport while html also scrolls. Then bottom/right content looks
+ * “gone” even after scrolling. Clip X only on html; body stays fully visible.
+ */
+html:has(body.prime-fleet-admin) {
+	height: auto !important;
+	min-height: 100%;
+	overflow-y: scroll !important;
+	overflow-x: clip !important;
+	scrollbar-gutter: stable;
 	scrollbar-width: thin;
-	scrollbar-color: rgba(215, 166, 74, .75) rgba(11, 29, 57, .08);
+	scrollbar-color: #bdc1c6 transparent;
 }
 
-body.toplevel_page_prime-fleet::-webkit-scrollbar,
+body.prime-fleet-admin,
+body.prime-fleet-admin.wp-admin,
+body.prime-fleet-admin.wp-core-ui {
+	height: auto !important;
+	min-height: 100%;
+	overflow: visible !important;
+}
+
+body.prime-fleet-admin #wpwrap,
+body.prime-fleet-admin #wpcontent,
+body.prime-fleet-admin #wpbody,
+body.prime-fleet-admin #wpbody-content {
+	overflow: visible !important;
+	max-height: none !important;
+	height: auto !important;
+}
+
+body.prime-fleet-admin #wpbody-content,
+body.prime-fleet-admin .prime-fleet-panel,
+body.prime-fleet-admin .prime-fleet-panel-body {
+	overflow: visible !important;
+	max-height: none !important;
+}
+
+/*
+ * Content column only — NEVER restyle #adminmenu / #adminmenuwrap / #adminmenuback.
+ * WP puts .clear clearfixes inside #wpcontent / #wpbody / #wpbody-content; those
+ * clear the floated admin menu and stretch the column ~1200px under short panels.
+ * flow-root isolates that without changing how the native menu looks or scrolls.
+ *
+ * Sticky #wpcontent ONLY on short panels (body.prime-fleet-admin--short from JS).
+ * On tall panels, sticky pins the column bottom to the viewport and crops the last
+ * cards / kills bottom breathing room — leave those pages position:static.
+ */
+body.prime-fleet-admin #wpcontent,
+body.prime-fleet-admin #wpbody,
+body.prime-fleet-admin #wpbody-content {
+	display: flow-root;
+}
+body.prime-fleet-admin #wpcontent {
+	position: static;
+}
+body.prime-fleet-admin.prime-fleet-admin--short #wpcontent {
+	position: sticky;
+	top: var(--wp-admin--admin-bar--height, 32px);
+	z-index: 1;
+}
+body.prime-fleet-admin #wpbody-content {
+	padding-bottom: 48px !important;
+}
+
+/*
+ * Footer only (not the menu): WP #wpfooter { clear:both } sits below the floated
+ * admin menu (~1200px), opening a gray hole under short panels. Keep menu native;
+ * stop the footer from clearing that float so it follows our wrap + ::after spacer.
+ */
+body.prime-fleet-admin #wpfooter {
+	position: relative !important;
+	inset: auto !important;
+	margin: 8px 0 24px !important;
+	padding: 12px 20px !important;
+	clear: none !important;
+}
+
+html:has(body.prime-fleet-admin)::-webkit-scrollbar,
+body.prime-fleet-admin::-webkit-scrollbar,
 .prime-fleet-app::-webkit-scrollbar,
-.prime-fleet-modal__dialog::-webkit-scrollbar,
+.prime-fleet-modal__body::-webkit-scrollbar,
 .prime-fleet-app__nav-scroll::-webkit-scrollbar,
-.prime-fleet-table-wrap::-webkit-scrollbar {
-	width: 10px;
-	height: 10px;
+.prime-fleet-table-wrap::-webkit-scrollbar,
+.prime-fleet-dt__pop::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
 }
 
-body.toplevel_page_prime-fleet::-webkit-scrollbar-track,
+html:has(body.prime-fleet-admin)::-webkit-scrollbar-track,
+body.prime-fleet-admin::-webkit-scrollbar-track,
 .prime-fleet-app::-webkit-scrollbar-track,
-.prime-fleet-modal__dialog::-webkit-scrollbar-track,
+.prime-fleet-modal__body::-webkit-scrollbar-track,
 .prime-fleet-app__nav-scroll::-webkit-scrollbar-track,
-.prime-fleet-table-wrap::-webkit-scrollbar-track {
-	background: rgba(11, 29, 57, .06);
-	border-radius: 999px;
+.prime-fleet-table-wrap::-webkit-scrollbar-track,
+.prime-fleet-dt__pop::-webkit-scrollbar-track {
+	background: transparent;
 }
 
-body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb,
+html:has(body.prime-fleet-admin)::-webkit-scrollbar-thumb,
+body.prime-fleet-admin::-webkit-scrollbar-thumb,
 .prime-fleet-app::-webkit-scrollbar-thumb,
-.prime-fleet-modal__dialog::-webkit-scrollbar-thumb,
+.prime-fleet-modal__body::-webkit-scrollbar-thumb,
 .prime-fleet-app__nav-scroll::-webkit-scrollbar-thumb,
-.prime-fleet-table-wrap::-webkit-scrollbar-thumb {
-	background: linear-gradient(180deg, #d7a64a 0%, #b88938 100%);
+.prime-fleet-table-wrap::-webkit-scrollbar-thumb,
+.prime-fleet-dt__pop::-webkit-scrollbar-thumb {
+	background-color: rgba(42, 69, 102, .28);
 	border-radius: 999px;
 	border: 2px solid transparent;
 	background-clip: padding-box;
 }
 
-body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
-.prime-fleet-modal__dialog::-webkit-scrollbar-thumb:hover,
-.prime-fleet-table-wrap::-webkit-scrollbar-thumb:hover {
-	background: linear-gradient(180deg, #c49438 0%, #a6782e 100%);
+html:has(body.prime-fleet-admin)::-webkit-scrollbar-thumb:hover,
+body.prime-fleet-admin::-webkit-scrollbar-thumb:hover,
+.prime-fleet-modal__body::-webkit-scrollbar-thumb:hover,
+.prime-fleet-table-wrap::-webkit-scrollbar-thumb:hover,
+.prime-fleet-dt__pop::-webkit-scrollbar-thumb:hover {
+	background-color: rgba(42, 69, 102, .45);
 	border: 2px solid transparent;
 	background-clip: padding-box;
 }
 
-.prime-fleet-modal__dialog {
+.prime-fleet-modal__body::-webkit-scrollbar-button {
+	display: none;
+	width: 0;
+	height: 0;
+}
+
+.prime-fleet-app,
+.prime-fleet-modal__body,
+.prime-fleet-app__nav-scroll,
+.prime-fleet-table-wrap,
+.prime-fleet-dt__pop {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(42, 69, 102, .35) transparent;
+}
+
+.prime-fleet-modal__body {
 	scrollbar-gutter: stable;
 }
 
-/* Toasts â€” anchored inside console panel (not viewport) */
+/* Toasts — console-anchored, quiet status slips (no AI icon tiles) */
 .prime-fleet-toast-stack {
 	position: absolute;
 	top: 14px;
 	right: 14px;
-	z-index: 60;
+	z-index: 100050;
 	display: flex;
 	flex-direction: column;
 	align-items: stretch;
-	gap: 10px;
-	width: min(320px, calc(100% - 28px));
+	gap: 8px;
+	width: min(340px, calc(100% - 28px));
 	max-width: 100%;
 	pointer-events: none;
 	box-sizing: border-box;
 }
 
 .prime-fleet-toast {
+	position: relative;
 	pointer-events: auto;
 	display: grid;
-	grid-template-columns: 36px minmax(0, 1fr) 28px;
-	align-items: center;
-	column-gap: 12px;
-	padding: 12px 12px 12px 12px;
-	border-radius: 14px;
-	background: #fff;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: start;
+	column-gap: 10px;
+	padding: 12px 12px 14px;
+	border-radius: var(--sle-radius-xs);
+	background: var(--sle-surface);
 	color: var(--sle-ink);
-	border: 1px solid rgba(215, 166, 74, .45);
-	box-shadow: 0 14px 36px rgba(11, 29, 57, .16);
+	border: 1px solid var(--sle-line);
+	box-shadow: var(--sle-shadow-pop);
 	opacity: 0;
-	transform: translateY(-8px);
-	transition: opacity .22s ease, transform .22s ease;
+	transform: translateY(-6px);
+	transition: opacity .18s ease, transform .18s ease;
 	box-sizing: border-box;
 	width: 100%;
 	overflow: hidden;
@@ -2021,52 +4209,33 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 
 .prime-fleet-toast.is-out {
 	opacity: 0;
-	transform: translateY(-6px);
+	transform: translateY(-4px);
+	pointer-events: none;
 }
 
-.prime-fleet-toast__icon {
-	width: 36px;
-	height: 36px;
-	border-radius: 10px;
-	display: grid;
-	place-items: center;
-	flex: 0 0 auto;
-	background: linear-gradient(145deg, var(--sle-navy) 0%, #1a3358 100%);
-	color: var(--sle-gold);
-	position: relative;
-}
-
-.prime-fleet-toast__icon::before {
-	content: "";
-	width: 10px;
-	height: 6px;
-	border-left: 2px solid currentColor;
-	border-bottom: 2px solid currentColor;
-	transform: rotate(-45deg) translateY(-1px);
-}
-
-.prime-fleet-toast__content {
+.prime-fleet-toast__body {
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: 4px;
+	padding-top: 1px;
 }
 
 .prime-fleet-toast__title {
 	margin: 0;
-	font-size: 11px;
-	font-weight: 800;
-	letter-spacing: .08em;
-	text-transform: uppercase;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0;
+	text-transform: none;
 	color: var(--sle-navy);
 	line-height: 1.2;
 }
 
 .prime-fleet-toast__text {
 	margin: 0;
-	font-size: 13.5px;
-	font-weight: 600;
-	line-height: 1.35;
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 1.45;
 	color: var(--sle-ink);
 	word-break: break-word;
 }
@@ -2078,12 +4247,14 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	color: var(--sle-muted);
 	width: 28px;
 	height: 28px;
-	border-radius: 8px;
+	border-radius: var(--sle-radius-xs);
 	font-size: 18px;
 	line-height: 1;
 	cursor: pointer;
 	padding: 0;
-	align-self: start;
+	margin: -2px -2px 0 0;
+	position: relative;
+	z-index: 2;
 }
 
 .prime-fleet-toast__x:hover {
@@ -2091,35 +4262,58 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	color: var(--sle-navy);
 }
 
-.prime-fleet-toast--success .prime-fleet-toast__icon {
-	background: linear-gradient(145deg, #1f6b4a 0%, #154d36 100%);
-	color: #d9f0e4;
+.prime-fleet-toast__x:focus-visible {
+	outline: 2px solid var(--sle-navy);
+	outline-offset: 1px;
+}
+
+.prime-fleet-toast__timer {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 2px;
+	background: rgba(42, 69, 102, .18);
+	transform: scaleX(1);
+	transform-origin: left center;
+	pointer-events: none;
+}
+
+.prime-fleet-toast.is-in .prime-fleet-toast__timer {
+	animation: pfToastTimer var(--pf-toast-ms, 3400ms) linear forwards;
+}
+
+.prime-fleet-toast--success .prime-fleet-toast__timer {
+	background: rgba(0, 112, 23, .35);
 }
 
 .prime-fleet-toast--error {
-	border-color: rgba(155, 44, 44, .35);
+	background: #fffafa;
+	border-color: rgba(179, 45, 46, .22);
 }
 
-.prime-fleet-toast--error .prime-fleet-toast__icon {
-	background: linear-gradient(145deg, #9b2c2c 0%, #7a1f1f 100%);
-	color: #ffd6d6;
+.prime-fleet-toast--error .prime-fleet-toast__title {
+	color: var(--sle-danger);
 }
 
-.prime-fleet-toast--error .prime-fleet-toast__icon::before {
-	width: 12px;
-	height: 12px;
-	border: 0;
-	background:
-		linear-gradient(currentColor, currentColor) center/12px 2px no-repeat,
-		linear-gradient(currentColor, currentColor) center/2px 12px no-repeat;
-	transform: rotate(45deg);
+.prime-fleet-toast--error .prime-fleet-toast__timer {
+	background: rgba(179, 45, 46, .4);
 }
 
-.prime-fleet-toast--error .prime-fleet-toast__title { color: var(--sle-danger); }
+.prime-fleet-toast--info .prime-fleet-toast__timer {
+	background: rgba(30, 90, 130, .35);
+}
 
-.prime-fleet-toast--info .prime-fleet-toast__icon {
-	background: linear-gradient(145deg, #1a3358 0%, #0b1d39 100%);
-	color: #cfe0ff;
+@keyframes pfToastTimer {
+	from { transform: scaleX(1); }
+	to { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.prime-fleet-toast.is-in .prime-fleet-toast__timer {
+		animation: none;
+		transform: scaleX(0.35);
+	}
 }
 
 @media (max-width: 1100px) {
@@ -2133,7 +4327,7 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 		margin: 16px 12px 56px 0 !important;
 	}
 
-	.prime-fleet-app__chrome { padding: 14px 14px 12px; border-radius: 14px; }
+	.prime-fleet-topbar { padding: 12px 14px; }
 	.prime-fleet-app__top h1 { font-size: 1.15rem; }
 	.prime-fleet-panel-head {
 		flex-direction: column;
@@ -2147,7 +4341,7 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 		margin-left: 0;
 		justify-content: flex-start;
 	}
-	.prime-fleet-tabs { width: 100%; border-radius: 14px; }
+	.prime-fleet-tabs { width: 100%; }
 	.prime-fleet-checks { grid-template-columns: 1fr; }
 }
 
@@ -2165,11 +4359,19 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	.prime-fleet-builder-head { display: none; }
 	.prime-fleet-stats { grid-template-columns: 1fr; }
 
-	.prime-fleet-modal { padding: 10px; align-items: end; }
+	.prime-fleet-modal {
+		--pf-modal-inset: 12px;
+		padding: 12px !important;
+		padding-bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important;
+	}
 	.prime-fleet-modal__dialog {
-		width: 100%;
-		max-height: 92vh;
-		border-radius: 16px 16px 10px 10px;
+		width: 560px !important;
+		max-width: 100% !important;
+		max-height: min(560px, 100%) !important;
+		border-radius: var(--sle-radius);
+	}
+	.prime-fleet-modal__footer {
+		padding-bottom: 12px;
 	}
 	.prime-fleet-toast-stack {
 		top: 10px;
@@ -2180,14 +4382,40 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	.prime-fleet-table th,
 	.prime-fleet-table td { padding: 10px 8px; font-size: 13px; }
 	.prime-fleet-table__actions { justify-content: flex-start; }
-	.prime-fleet-table-tools { padding: 10px; }
+	.prime-fleet-table-tools {
+		padding: 0 0 10px;
+		flex-direction: column;
+		align-items: stretch;
+	}
+	.prime-fleet-table-tools__actions.alignleft,
+	.prime-fleet-table-tools__search.search-box {
+		float: none;
+		width: 100%;
+		max-width: 100%;
+		margin-right: 0;
+	}
+	.prime-fleet-table-tools__trailing {
+		margin-left: 0;
+	}
+	.prime-fleet-table-tools__search input[type="search"] {
+		width: 100% !important;
+		max-width: 100%;
+		flex: 1 1 auto;
+	}
 	.prime-fleet-table-tools .prime-fleet-select,
-	.prime-fleet-table-tools .prime-fleet-btn { flex: 1 1 auto; max-width: none; }
+	.prime-fleet-table-tools .prime-fleet-btn {
+		flex: 1 1 auto;
+		max-width: none;
+	}
 	.prime-fleet-table-pager { flex-direction: column; align-items: stretch; }
 	.prime-fleet-table-pager__nav { justify-content: flex-start; }
 }
 
-/* —— Dispatch board —— */
+/* —— Dispatch board ——
+ * WP .tablenav { height:32px; clear:both } + .alignleft { float:left } collapses the
+ * bar and lets Board-date controls paint over “Day board”. Kill those WP list-table
+ * rules here (same idea as .prime-fleet-table-tools). */
+.prime-fleet-dispatch-bar.tablenav,
 .prime-fleet-dispatch-bar {
 	display: flex;
 	flex-wrap: wrap;
@@ -2195,30 +4423,94 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	justify-content: space-between;
 	gap: 14px 20px;
 	margin: 0 0 16px;
-	padding: 14px 16px;
-	border-radius: 12px;
-	background: linear-gradient(180deg, #f7f9fc 0%, #f1f4f9 100%);
+	padding: 12px 14px;
+	border-radius: var(--sle-radius);
+	background: #f6f7f7;
 	border: 1px solid var(--sle-line);
+	box-shadow: none;
+	clear: none !important;
+	float: none !important;
+	height: auto !important;
+	min-height: 0;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
 }
-.prime-fleet-dispatch-bar__day { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.prime-fleet-dispatch-bar::after {
+	display: none;
+}
+.prime-fleet-dispatch-bar__day.alignleft,
+.prime-fleet-dispatch-bar__day {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+	float: none !important;
+	margin: 0;
+	padding: 0;
+}
 .prime-fleet-dispatch-bar__label {
-	font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--sle-muted);
+	font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--sle-muted);
 }
 .prime-fleet-dispatch-bar__controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.prime-fleet-dispatch-bar__input {
-	height: 40px; min-width: 10.5rem; padding: 0 12px; border: 1px solid var(--sle-line);
-	border-radius: 10px; background: #fff; color: var(--sle-ink); font-size: 14px; line-height: 1.2;
+.prime-fleet-dispatch-bar__input,
+.prime-fleet-dispatch-bar .prime-fleet-dt {
+	min-width: 11.5rem;
+	width: 11.5rem;
+	max-width: 100%;
 }
-.prime-fleet-dispatch-bar__input:focus {
-	outline: none; border-color: var(--sle-gold); box-shadow: 0 0 0 3px rgba(215, 166, 74, .2);
+.prime-fleet-dispatch-bar .prime-fleet-dt__trigger {
+	height: 36px;
+	min-height: 36px;
+	padding: 0 10px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
+	background: #fff;
+	color: var(--sle-ink);
+	font-size: 13px;
+	line-height: 1.2;
+}
+.prime-fleet-dispatch-bar .prime-fleet-dt.is-open .prime-fleet-dt__trigger,
+.prime-fleet-dispatch-bar .prime-fleet-dt__trigger:focus-visible {
+	outline: none;
+	border-color: var(--sle-navy);
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12);
+}
+.prime-fleet-dispatch-bar .button {
+	border-radius: var(--sle-radius-xs) !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
 }
 .prime-fleet-dispatch-bar__nav {
-	width: 40px; min-width: 40px; padding-left: 0; padding-right: 0; font-size: 1.25rem; line-height: 1;
+	width: 36px; min-width: 36px; height: 36px; min-height: 36px;
+	padding: 0 !important;
+	font-size: 1.15rem;
+	line-height: 0 !important;
+	border-radius: var(--sle-radius-xs);
 }
 .prime-fleet-dispatch-bar__meta {
-	display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-left: auto; padding-bottom: 2px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 6px 12px;
+	margin-left: auto;
+	padding-bottom: 6px;
+	line-height: 1.3;
 }
-.prime-fleet-dispatch-bar__meta strong { color: var(--sle-navy); font-size: 15px; }
+.prime-fleet-dispatch-bar__meta strong {
+	color: var(--sle-navy);
+	font-size: 15px;
+	font-weight: 700;
+	line-height: 1.3;
+}
+.prime-fleet-dispatch-bar__meta .prime-fleet-muted,
+.prime-fleet-dispatch-bar__meta > span {
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.3;
+	color: var(--sle-muted);
+}
 .prime-fleet-dispatch-pill {
 	display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px;
 	background: rgba(215, 166, 74, .18); color: #8a6418; font-size: 12px; font-weight: 700;
@@ -2235,19 +4527,19 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	gap: 0 14px;
 	padding: 0;
 	border: 1px solid var(--sle-line);
-	border-radius: 14px;
+	border-radius: var(--sle-radius);
 	background: #fff;
 	overflow: hidden;
-	box-shadow: 0 6px 18px rgba(11, 29, 57, .04);
+	box-shadow: var(--sle-shadow);
 }
 .prime-fleet-dispatch-job.has-conflict { border-color: rgba(155, 44, 44, .35); }
 .prime-fleet-dispatch-job__rail {
 	position: relative;
-	background: linear-gradient(180deg, rgba(11,29,57,.06), rgba(215,166,74,.12));
+	background: #eef2f6;
 }
 .prime-fleet-dispatch-job__dot {
-	position: absolute; top: 22px; left: 50%; width: 10px; height: 10px; margin-left: -5px;
-	border-radius: 50%; background: var(--sle-gold); box-shadow: 0 0 0 3px rgba(215,166,74,.25);
+	position: absolute; top: 22px; left: 50%; width: 8px; height: 8px; margin-left: -4px;
+	border-radius: 50%; background: var(--sle-navy); box-shadow: none;
 }
 .prime-fleet-dispatch-job__body { padding: 14px 16px 14px 0; min-width: 0; }
 .prime-fleet-dispatch-job__head {
@@ -2284,7 +4576,7 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 }
 .prime-fleet-dispatch-assign__field { display: grid; gap: 4px; min-width: 0; }
 .prime-fleet-dispatch-assign__field span {
-	font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--sle-muted);
+	font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--sle-muted);
 }
 .prime-fleet-dispatch-assign__field select,
 .prime-fleet-dispatch-assign select {
@@ -2298,82 +4590,111 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 .prime-fleet-app .prime-fleet-bd__back { display: none; }
 .prime-fleet-app .prime-fleet-bd {
 	display: grid;
-	gap: 14px;
+	gap: 10px;
 	width: 100%;
 	max-width: none;
 }
+
+/* Quiet header — not a navy hero */
 .prime-fleet-app .prime-fleet-bd__header {
 	display: flex;
 	flex-wrap: wrap;
-	align-items: flex-end;
-	gap: 16px 24px;
-	padding: 20px 22px;
-	border-radius: 16px;
-	background:
-		radial-gradient(120% 140% at 100% 0%, rgba(215,166,74,.22), transparent 55%),
-		linear-gradient(145deg, #0b1d39 0%, #132a4a 55%, #1a3358 100%);
-	color: #fff;
+	align-items: center;
+	gap: 10px 16px;
+	padding: 12px 14px;
+	border-radius: var(--sle-radius);
+	background: #fff;
+	color: var(--sle-ink);
+	border: 1px solid var(--sle-line);
 	box-shadow: var(--sle-shadow);
 }
-.prime-fleet-app .prime-fleet-bd__header-main { flex: 1 1 220px; min-width: 0; }
+.prime-fleet-app .prime-fleet-bd__header-main { flex: 1 1 200px; min-width: 0; }
 .prime-fleet-app .prime-fleet-bd__badge {
-	display: inline-flex;
-	align-items: center;
-	padding: 4px 10px;
-	border-radius: 999px;
+	display: inline-block;
+	padding: 2px 7px;
+	border-radius: var(--sle-radius-xs);
 	font-size: 11px;
-	font-weight: 700;
-	letter-spacing: .04em;
-	text-transform: uppercase;
-	background: rgba(255,255,255,.12);
-	color: #fff;
+	font-weight: 600;
+	letter-spacing: 0;
+	text-transform: none;
+	background: #f0f0f1;
+	color: #50575e;
+	border: 1px solid #dcdcde;
 }
-.prime-fleet-app .prime-fleet-bd__badge--confirmed { background: rgba(72,187,120,.28); }
-.prime-fleet-app .prime-fleet-bd__badge--pending { background: rgba(215,166,74,.35); color: #fff8e8; }
-.prime-fleet-app .prime-fleet-bd__badge--cancelled { background: rgba(155,44,44,.4); }
+.prime-fleet-app .prime-fleet-bd__badge--confirmed {
+	background: #edfaef;
+	color: var(--sle-ok);
+	border-color: #c3e6cb;
+}
+.prime-fleet-app .prime-fleet-bd__badge--pending {
+	background: #fcf5e5;
+	color: #8a6d1d;
+	border-color: #f0e2b6;
+}
+.prime-fleet-app .prime-fleet-bd__badge--cancelled {
+	background: #fcf0f1;
+	color: var(--sle-danger);
+	border-color: #f1c6c8;
+}
+.prime-fleet-app .prime-fleet-bd__badge--completed {
+	background: #f6f7f7;
+	color: #646970;
+	border-color: #dcdcde;
+}
+.prime-fleet-app .prime-fleet-bd__badge--noshow {
+	background: #fcf0f1;
+	color: var(--sle-danger);
+	border-color: #f1c6c8;
+}
 .prime-fleet-app .prime-fleet-bd__ref {
-	margin: 10px 0 4px;
-	font-size: 1.65rem;
-	line-height: 1.15;
-	letter-spacing: .02em;
-	color: #fff;
+	margin: 6px 0 2px;
+	font-size: 1.25rem;
+	line-height: 1.2;
+	letter-spacing: 0;
+	color: var(--sle-ink);
+	font-weight: 700;
 }
 .prime-fleet-app .prime-fleet-bd__service {
 	margin: 0;
-	font-size: 14px;
-	color: rgba(255,255,255,.72);
+	font-size: 13px;
+	color: var(--sle-muted);
 }
 .prime-fleet-app .prime-fleet-bd__when {
 	display: grid;
 	gap: 2px;
-	padding: 10px 14px;
-	border-radius: 12px;
-	background: rgba(255,255,255,.08);
-	border: 1px solid rgba(255,255,255,.1);
+	padding: 0;
+	border-radius: 0;
+	background: transparent;
+	border: 0;
 	text-align: right;
 }
 .prime-fleet-app .prime-fleet-bd__when-day {
 	font-size: 12px;
 	font-weight: 600;
-	color: rgba(255,255,255,.65);
-	letter-spacing: .02em;
+	color: var(--sle-muted);
+	letter-spacing: 0;
 }
 .prime-fleet-app .prime-fleet-bd__when-time {
-	font-size: 1.35rem;
-	font-weight: 800;
-	line-height: 1.1;
-	color: #f0d59a;
+	font-size: 1.05rem;
+	font-weight: 700;
+	line-height: 1.2;
+	color: var(--sle-ink);
 }
 .prime-fleet-app .prime-fleet-bd__confirm { margin: 0; }
+.prime-fleet-app .prime-fleet-bd__header .prime-fleet-bd__confirm { margin-left: 0; }
+.prime-fleet-app .prime-fleet-bd__header .prime-fleet-btn--ghost {
+	background: #fff;
+	border-color: var(--sle-line-strong);
+}
 
 .prime-fleet-app .prime-fleet-bd__kpis {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	background: #fff;
 	border: 1px solid var(--sle-line);
-	border-radius: 14px;
+	border-radius: var(--sle-radius);
 	overflow: hidden;
-	box-shadow: 0 6px 18px rgba(11,29,57,.04);
+	box-shadow: var(--sle-shadow);
 }
 .prime-fleet-app .prime-fleet-bd__kpis--4 {
 	grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2383,33 +4704,33 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	font-weight: 700;
 }
 .prime-fleet-app .prime-fleet-bd__kpi {
-	padding: 14px 18px;
+	padding: 10px 12px;
 	border-right: 1px solid var(--sle-line);
 }
 .prime-fleet-app .prime-fleet-bd__kpi:last-child { border-right: 0; }
 .prime-fleet-app .prime-fleet-bd__kpi-label {
 	display: block;
-	margin-bottom: 4px;
-	font-size: 11px;
-	font-weight: 700;
-	letter-spacing: .07em;
-	text-transform: uppercase;
+	margin-bottom: 2px;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0;
+	text-transform: none;
 	color: var(--sle-muted);
 }
 .prime-fleet-app .prime-fleet-bd__kpi-value {
 	display: block;
-	font-size: 1.15rem;
-	font-weight: 800;
-	color: var(--sle-navy);
-	line-height: 1.2;
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--sle-ink);
+	line-height: 1.3;
 }
 .prime-fleet-app .prime-fleet-bd__kpi-value--unpaid { color: #9b5b1a; }
 .prime-fleet-app .prime-fleet-bd__kpi-value--paid { color: var(--sle-ok); }
 
 .prime-fleet-app .prime-fleet-bd__alert {
-	margin: 0 0 14px;
-	padding: 12px 14px;
-	border-radius: 12px;
+	margin: 0;
+	padding: 10px 12px;
+	border-radius: 4px;
 	border: 1px solid #e8c48a;
 	background: #fff8eb;
 }
@@ -2429,52 +4750,47 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	display: flex;
 	flex-wrap: wrap;
 	align-items: baseline;
-	gap: 8px 10px;
+	gap: 6px 8px;
 }
 .prime-fleet-app .prime-fleet-bd__alert-pill {
-	display: inline-flex;
-	align-items: center;
-	padding: 3px 9px;
-	border-radius: 999px;
-	font-size: 10px;
-	font-weight: 800;
-	letter-spacing: .06em;
-	text-transform: uppercase;
+	display: inline-block;
+	padding: 2px 6px;
+	border-radius: 3px;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0;
+	text-transform: none;
 	color: #7a4510;
-	background: rgba(215, 166, 74, 0.35);
+	background: #f4e1b5;
 	flex: 0 0 auto;
 }
 .prime-fleet-app .prime-fleet-bd__alert--is-vehicle .prime-fleet-bd__alert-pill {
 	color: #7a2e12;
-	background: rgba(196, 90, 48, 0.18);
+	background: #f5d5c8;
 }
 .prime-fleet-app .prime-fleet-bd__alert--is-quote .prime-fleet-bd__alert-pill {
 	color: #1f3a5f;
-	background: rgba(31, 95, 155, 0.16);
+	background: #dbeafe;
 }
 .prime-fleet-app .prime-fleet-bd__alert-title {
 	margin: 0;
 	flex: 1 1 200px;
-	font-size: 14px;
-	font-weight: 700;
+	font-size: 13px;
+	font-weight: 650;
 	line-height: 1.35;
-	color: var(--sle-navy);
+	color: var(--sle-ink);
 }
 .prime-fleet-app .prime-fleet-bd__alert-copy {
-	margin: 6px 0 0;
+	margin: 4px 0 0;
 	font-size: 12px;
-	line-height: 1.45;
-	color: #5a6a7c;
-}
-.prime-fleet-app .prime-fleet-bd__alert + .prime-fleet-bd__panel--offer {
-	margin-bottom: 14px;
-	border-color: #e8c48a;
+	line-height: 1.4;
+	color: #50575e;
 }
 
 .prime-fleet-app .prime-fleet-bd__layout {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 14px;
+	gap: 10px;
 	align-items: stretch;
 }
 .prime-fleet-app .prime-fleet-bd__panel--guest,
@@ -2486,10 +4802,6 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	flex-direction: column;
 	box-sizing: border-box;
 }
-.prime-fleet-app .prime-fleet-bd__panel--guest .prime-fleet-bd__guest,
-.prime-fleet-app .prime-fleet-bd__panel--trip .prime-fleet-bd__legs {
-	flex: 1 1 auto;
-}
 .prime-fleet-app .prime-fleet-bd__panel--activity,
 .prime-fleet-app .prime-fleet-bd__panel--comms,
 .prime-fleet-app .prime-fleet-bd__panel--ops,
@@ -2497,52 +4809,211 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 .prime-fleet-app .prime-fleet-bd__panel--pay {
 	grid-column: 1 / -1;
 }
-.prime-fleet-app .prime-fleet-bd__panel--ops {
-	display: grid;
-	grid-template-columns: minmax(200px, 0.85fr) minmax(0, 1.5fr);
-	gap: 12px 24px;
-	align-items: end;
-}
-.prime-fleet-app .prime-fleet-bd__header .prime-fleet-bd__confirm {
-	margin-left: auto;
-}
-@media (max-width: 960px) {
-	.prime-fleet-app .prime-fleet-bd__panel--ops { grid-template-columns: 1fr; }
-}
-.prime-fleet-app .prime-fleet-bd__panel--offer {
-	display: grid;
-	grid-template-columns: minmax(200px, 0.85fr) minmax(0, 1.5fr);
-	gap: 12px 24px;
-	align-items: end;
-}
-.prime-fleet-app .prime-fleet-bd__offer-head .prime-fleet-bd__panel-title {
-	margin-bottom: 6px;
-}
-.prime-fleet-app .prime-fleet-bd__offer-help {
-	margin: 0;
-	font-size: 13px;
-	color: var(--sle-muted);
-	line-height: 1.4;
-}
-.prime-fleet-app .prime-fleet-bd__offer-form {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
-	gap: 12px;
-	align-items: end;
-}
-.prime-fleet-app .prime-fleet-bd__offer-action { padding-bottom: 2px; }
 
-/* Booking detail — Payment panel (M4) */
+/* Stacked ops forms — no airy two-column marketing layout */
+.prime-fleet-app .prime-fleet-bd__panel--ops,
+.prime-fleet-app .prime-fleet-bd__panel--offer {
+	display: block;
+}
+.prime-fleet-app .prime-fleet-bd__inline-form {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 8px 10px;
+	margin: 8px 0 0;
+}
+.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-field {
+	margin: 0;
+	min-width: 180px;
+	flex: 1 1 180px;
+}
+.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-field label {
+	display: block;
+	margin-bottom: 4px;
+	font-size: 12px;
+	font-weight: 600;
+}
+.prime-fleet-app .prime-fleet-bd__inline-form input,
+.prime-fleet-app .prime-fleet-bd__inline-form select,
+.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-dt__trigger,
+.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-select__trigger {
+	width: 100%;
+	height: 36px !important;
+	min-height: 36px !important;
+	padding: 0 10px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
+	background: #fff;
+	font-size: 13px;
+	box-sizing: border-box;
+	box-shadow: none;
+}
+.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-dt__trigger:hover,
+.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-select__trigger:hover {
+	border-color: #9ca3af;
+	background: #f8fafc;
+}
+.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-dt.is-open .prime-fleet-dt__trigger,
+.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-dt__trigger:focus-visible,
+.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-select.is-open .prime-fleet-select__trigger,
+.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-select__trigger:focus-visible,
+.prime-fleet-app .prime-fleet-bd__inline-form input:focus,
+.prime-fleet-app .prime-fleet-bd__inline-form select:focus {
+	outline: none;
+	border-color: var(--sle-navy);
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12);
+}
+.prime-fleet-app .prime-fleet-bd__inline-action {
+	flex: 0 0 auto;
+	padding-bottom: 0;
+	display: flex;
+	align-items: flex-end;
+}
+
+/* Staff notes — stacked form; textarea matches themed field chrome. */
+.prime-fleet-app .prime-fleet-bd__panel--notes .prime-fleet-bd__notes-form {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 10px;
+	margin: 8px 0 0;
+}
+.prime-fleet-app .prime-fleet-bd__panel--notes .prime-fleet-field {
+	margin: 0;
+	width: 100%;
+}
+.prime-fleet-app .prime-fleet-bd__panel--notes .prime-fleet-field label {
+	display: block;
+	margin-bottom: 4px;
+	font-size: 12px;
+	font-weight: 600;
+}
+.prime-fleet-app .prime-fleet-bd__panel--notes textarea {
+	display: block;
+	width: 100%;
+	min-height: 96px;
+	padding: 10px 12px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
+	background: #fff;
+	color: var(--sle-ink);
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.45;
+	resize: vertical;
+	box-sizing: border-box;
+	box-shadow: none;
+}
+.prime-fleet-app .prime-fleet-bd__panel--notes textarea:hover {
+	border-color: #9ca3af;
+	background: #f8fafc;
+}
+.prime-fleet-app .prime-fleet-bd__panel--notes textarea:focus {
+	outline: none;
+	border-color: var(--sle-navy);
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12);
+	background: #fff;
+}
+.prime-fleet-app .prime-fleet-bd__panel--notes .prime-fleet-bd__inline-action {
+	align-self: flex-start;
+}
+
+/* Post-job amendments — form grid + existing list. */
+.prime-fleet-app .prime-fleet-bd__panel--amend .prime-fleet-bd__amend-list {
+	margin: 8px 0 12px;
+}
+.prime-fleet-app .prime-fleet-bd__panel--amend .prime-fleet-bd__amend-form {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 10px;
+	margin: 8px 0 0;
+}
+.prime-fleet-app .prime-fleet-bd__panel--amend .prime-fleet-bd__amend-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1fr);
+	gap: 10px;
+}
+@media (max-width: 900px) {
+	.prime-fleet-app .prime-fleet-bd__panel--amend .prime-fleet-bd__amend-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+.prime-fleet-app .prime-fleet-bd__panel--amend .prime-fleet-field {
+	margin: 0;
+	min-width: 0;
+}
+.prime-fleet-app .prime-fleet-bd__panel--amend .prime-fleet-field label {
+	display: block;
+	margin-bottom: 4px;
+	font-size: 12px;
+	font-weight: 600;
+}
+.prime-fleet-app .prime-fleet-bd__panel--amend .prime-fleet-bd__field-hint {
+	margin: 4px 0 0;
+	font-size: 11px;
+	line-height: 1.35;
+	color: var(--sle-muted);
+}
+.prime-fleet-app .prime-fleet-bd__panel--amend textarea {
+	display: block;
+	width: 100%;
+	min-height: 64px;
+	padding: 10px 12px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
+	background: #fff;
+	color: var(--sle-ink);
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.45;
+	resize: vertical;
+	box-sizing: border-box;
+}
+.prime-fleet-app .prime-fleet-bd__panel--amend textarea:focus {
+	outline: none;
+	border-color: var(--sle-navy);
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12);
+}
+.prime-fleet-app .prime-fleet-bd__panel--amend .prime-fleet-bd__check {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--sle-ink);
+	cursor: pointer;
+}
+.prime-fleet-app .prime-fleet-bd__panel--amend .prime-fleet-bd__inline-action {
+	align-self: flex-start;
+}
+.prime-fleet-app .prime-fleet-bd__fare-base {
+	font-weight: 600;
+}
+.prime-fleet-app .prime-fleet-bd__inline-action .prime-fleet-btn,
+.prime-fleet-app .prime-fleet-bd__pay-submit .prime-fleet-btn {
+	height: 36px;
+	min-height: 36px;
+	padding: 0 14px;
+	border-radius: var(--sle-radius-xs);
+	font-size: 13px;
+	font-weight: 650;
+	line-height: 1;
+	box-sizing: border-box;
+}
+
 .prime-fleet-app .prime-fleet-bd__panel--pay {
 	display: flex;
 	flex-direction: column;
-	gap: 14px;
+	gap: 10px;
 }
 .prime-fleet-app .prime-fleet-bd__pay-top {
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
-	gap: 16px;
+	gap: 12px;
 	flex-wrap: wrap;
 }
 .prime-fleet-app .prime-fleet-bd__pay-intro {
@@ -2550,132 +5021,23 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	min-width: 0;
 }
 .prime-fleet-app .prime-fleet-bd__pay-intro .prime-fleet-bd__panel-title {
-	margin-bottom: 6px;
-}
-.prime-fleet-app .prime-fleet-bd__pay-badge {
-	display: inline-flex;
-	flex-direction: column;
-	align-items: flex-end;
-	gap: 2px;
-	padding: 8px 12px;
-	border-radius: 10px;
-	background: #f4f6f9;
-	border: 1px solid var(--sle-line);
-	text-align: right;
-}
-.prime-fleet-app .prime-fleet-bd__pay-badge-label {
-	font-size: 10px;
-	font-weight: 700;
-	letter-spacing: .08em;
-	text-transform: uppercase;
-	color: var(--sle-muted);
-}
-.prime-fleet-app .prime-fleet-bd__pay-badge strong {
-	font-size: 14px;
-	font-weight: 800;
-	color: var(--sle-navy);
-	line-height: 1.2;
-}
-.prime-fleet-app .prime-fleet-bd__pay-badge--unpaid strong { color: #9b5b1a; }
-.prime-fleet-app .prime-fleet-bd__pay-badge--link_sent strong { color: #1f5f9b; }
-.prime-fleet-app .prime-fleet-bd__pay-badge--paid strong { color: var(--sle-ok, #1f7a45); }
-.prime-fleet-app .prime-fleet-bd__pay-badge--refunded strong { color: var(--sle-muted); }
-.prime-fleet-app .prime-fleet-bd__pay-badge--pending_verification strong { color: #8a5a12; }
-.prime-fleet-app .prime-fleet-bd__pay-events {
-	margin-top: 12px;
-	padding-top: 12px;
-	border-top: 1px solid var(--sle-line);
-}
-.prime-fleet-app .prime-fleet-bd__pay-events-title {
-	margin: 0 0 12px;
-	font-size: 12px;
-	font-weight: 700;
-	letter-spacing: .04em;
-	text-transform: uppercase;
-	color: var(--sle-muted);
-}
-.prime-fleet-app .prime-fleet-bd__pay-timeline {
-	display: grid;
-	gap: 0;
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-item {
-	position: relative;
-	display: grid;
-	grid-template-columns: 16px minmax(0, 1fr);
-	gap: 10px;
-	padding: 0 0 14px;
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-item:last-child {
-	padding-bottom: 0;
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-item:not(:last-child)::before {
-	content: "";
-	position: absolute;
-	left: 7px;
-	top: 14px;
-	bottom: 0;
-	width: 2px;
-	background: var(--sle-line);
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-marker {
-	width: 12px;
-	height: 12px;
-	margin-top: 3px;
-	border-radius: 50%;
-	border: 2px solid #8a97a8;
-	background: #fff;
-	box-sizing: border-box;
-	z-index: 1;
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-item.is-issued .prime-fleet-bd__pay-tl-marker {
-	border-color: #1f5f9b;
-	background: #1f5f9b;
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-item.is-paid .prime-fleet-bd__pay-tl-marker {
-	border-color: var(--sle-ok, #1f7a45);
-	background: var(--sle-ok, #1f7a45);
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-item.is-refunded .prime-fleet-bd__pay-tl-marker {
-	border-color: #8a5a12;
-	background: #c48a3a;
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-item.is-expired .prime-fleet-bd__pay-tl-marker {
-	border-color: #9b5b1a;
-	background: #fff;
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-title {
-	margin: 0;
-	font-size: 13px;
-	font-weight: 700;
-	color: var(--sle-navy);
-	line-height: 1.35;
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-detail {
-	margin: 3px 0 0;
-	font-size: 12px;
-	line-height: 1.4;
-	color: #5a6a7c;
-}
-.prime-fleet-app .prime-fleet-bd__pay-tl-meta {
-	margin: 4px 0 0;
-	font-size: 11px;
-	color: var(--sle-muted);
+	margin-bottom: 4px;
 }
 .prime-fleet-app .prime-fleet-bd__pay-link {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	padding: 10px 12px;
-	border-radius: 10px;
-	background: #f7f9fc;
+	display: block;
+	padding: 8px 10px;
+	border-radius: var(--sle-radius-xs);
+	background: #f6f7f7;
 	border: 1px solid var(--sle-line);
 }
 .prime-fleet-app .prime-fleet-bd__pay-link-label {
-	font-size: 10px;
-	font-weight: 700;
-	letter-spacing: .08em;
-	text-transform: uppercase;
+	display: block;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0;
+	text-transform: none;
 	color: var(--sle-muted);
+	margin-bottom: 2px;
 }
 .prime-fleet-app .prime-fleet-bd__pay-link a {
 	font-size: 13px;
@@ -2685,25 +5047,28 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 }
 .prime-fleet-app .prime-fleet-bd__pay-expired {
 	display: block;
-	margin-top: 6px;
+	margin-top: 4px;
 	font-size: 12px;
 	font-weight: 600;
 	color: #9b5b1a;
 }
 .prime-fleet-app .prime-fleet-bd__pay-form {
-	display: grid;
-	grid-template-columns: minmax(160px, 220px) minmax(0, 1fr) auto;
-	gap: 12px 14px;
-	align-items: end;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 8px 10px;
 	margin: 0;
 }
 .prime-fleet-app .prime-fleet-bd__pay-form .prime-fleet-field {
 	margin: 0;
-	min-width: 0;
+	min-width: 160px;
+	flex: 1 1 160px;
 }
 .prime-fleet-app .prime-fleet-bd__pay-form .prime-fleet-field label {
 	display: block;
-	margin-bottom: 6px;
+	margin-bottom: 4px;
+	font-size: 12px;
+	font-weight: 600;
 	white-space: nowrap;
 }
 .prime-fleet-app .prime-fleet-bd__pay-optional {
@@ -2713,15 +5078,21 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	letter-spacing: 0;
 }
 .prime-fleet-app .prime-fleet-bd__pay-form select,
-.prime-fleet-app .prime-fleet-bd__pay-form input[type="url"] {
+.prime-fleet-app .prime-fleet-bd__pay-form input[type="url"],
+.prime-fleet-app .prime-fleet-bd__pay-form .prime-fleet-select__trigger {
 	width: 100%;
-	max-width: none;
+	height: 36px !important;
+	min-height: 36px !important;
+	padding: 0 10px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
 	box-sizing: border-box;
+	font-size: 13px;
+	box-shadow: none;
 }
 .prime-fleet-app .prime-fleet-bd__pay-submit {
 	display: flex;
 	align-items: flex-end;
-	padding-bottom: 1px;
 }
 .prime-fleet-app .prime-fleet-bd__pay-submit .prime-fleet-btn {
 	white-space: nowrap;
@@ -2729,45 +5100,103 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 .prime-fleet-app .prime-fleet-bd__pay-secondary {
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
 	gap: 10px;
-	padding-top: 2px;
+	padding-top: 8px;
 	border-top: 1px solid var(--sle-line);
 	margin: 0;
 }
-.prime-fleet-app .prime-fleet-bd__pay-secondary form {
+.prime-fleet-app .prime-fleet-bd__pay-secondary form { margin: 0; }
+.prime-fleet-app .prime-fleet-bd__pay-events {
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid var(--sle-line);
+}
+.prime-fleet-app .prime-fleet-bd__pay-events-title {
+	margin: 0 0 8px;
+	font-size: 13px;
+	font-weight: 650;
+	letter-spacing: 0;
+	text-transform: none;
+	color: var(--sle-ink);
+}
+.prime-fleet-app .prime-fleet-bd__pay-timeline { display: grid; gap: 0; }
+.prime-fleet-app .prime-fleet-bd__pay-tl-item {
+	display: grid;
+	grid-template-columns: 10px minmax(0, 1fr);
+	gap: 8px;
+	padding: 6px 0;
+	border-bottom: 1px solid #e2e4e7;
+}
+.prime-fleet-app .prime-fleet-bd__pay-tl-item:last-child { border-bottom: 0; }
+.prime-fleet-app .prime-fleet-bd__pay-tl-item:not(:last-child)::before { content: none; }
+.prime-fleet-app .prime-fleet-bd__pay-tl-marker {
+	width: 8px;
+	height: 8px;
+	margin-top: 5px;
+	border-radius: 50%;
+	border: 0;
+	background: #8c8f94;
+}
+.prime-fleet-app .prime-fleet-bd__pay-tl-item.is-issued .prime-fleet-bd__pay-tl-marker { background: #1f5f9b; }
+.prime-fleet-app .prime-fleet-bd__pay-tl-item.is-paid .prime-fleet-bd__pay-tl-marker { background: var(--sle-ok); }
+.prime-fleet-app .prime-fleet-bd__pay-tl-item.is-refunded .prime-fleet-bd__pay-tl-marker { background: #8a5a12; }
+.prime-fleet-app .prime-fleet-bd__pay-tl-item.is-expired .prime-fleet-bd__pay-tl-marker { background: #9b5b1a; }
+.prime-fleet-app .prime-fleet-bd__pay-tl-title {
 	margin: 0;
+	font-size: 13px;
+	font-weight: 650;
+	color: var(--sle-ink);
+	line-height: 1.35;
+}
+.prime-fleet-app .prime-fleet-bd__pay-tl-detail {
+	margin: 2px 0 0;
+	font-size: 12px;
+	line-height: 1.4;
+	color: #50575e;
+}
+.prime-fleet-app .prime-fleet-bd__pay-tl-meta {
+	margin: 2px 0 0;
+	font-size: 11px;
+	color: var(--sle-muted);
 }
 
 @media (max-width: 960px) {
 	.prime-fleet-app .prime-fleet-bd__layout { grid-template-columns: 1fr; }
-	.prime-fleet-app .prime-fleet-bd__panel--offer { grid-template-columns: 1fr; }
-	.prime-fleet-app .prime-fleet-bd__offer-form { grid-template-columns: 1fr; }
-	.prime-fleet-app .prime-fleet-bd__pay-form { grid-template-columns: 1fr; }
+	.prime-fleet-app .prime-fleet-bd__inline-form .prime-fleet-field { flex: 1 1 100%; }
+	.prime-fleet-app .prime-fleet-bd__pay-form .prime-fleet-field { flex: 1 1 100%; }
 	.prime-fleet-app .prime-fleet-bd__pay-submit .prime-fleet-btn { width: 100%; }
-	.prime-fleet-app .prime-fleet-bd__pay-badge { align-items: flex-start; text-align: left; }
 }
 
 .prime-fleet-app .prime-fleet-bd__panel {
 	margin: 0;
-	padding: 18px 18px 16px;
+	padding: 12px 14px;
 	background: #fff;
 	border: 1px solid var(--sle-line);
-	border-radius: 14px;
-	box-shadow: 0 6px 18px rgba(11,29,57,.04);
+	border-radius: var(--sle-radius);
+	box-shadow: var(--sle-shadow);
 }
 .prime-fleet-app .prime-fleet-bd__panel-title {
-	margin: 0 0 14px;
+	margin: 0 0 6px;
+	font-size: 14px;
+	font-weight: 650;
+	letter-spacing: 0;
+	text-transform: none;
+	color: var(--sle-ink);
+}
+.prime-fleet-app .prime-fleet-bd__offer-help {
+	margin: 0;
 	font-size: 12px;
-	font-weight: 800;
-	letter-spacing: .1em;
-	text-transform: uppercase;
-	color: var(--sle-navy);
+	color: var(--sle-muted);
+	line-height: 1.4;
 }
 .prime-fleet-app .prime-fleet-bd__subhead {
-	margin: 0 0 8px;
+	margin: 0 0 6px;
 	font-size: 12px;
-	font-weight: 700;
+	font-weight: 650;
 	color: var(--sle-muted);
+	text-transform: none;
+	letter-spacing: 0;
 }
 .prime-fleet-app .prime-fleet-bd__empty {
 	margin: 0;
@@ -2775,57 +5204,41 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	font-size: 13px;
 }
 
-.prime-fleet-app .prime-fleet-bd__guest {
-	display: grid;
-	grid-template-columns: 48px minmax(0, 1fr);
-	gap: 14px;
-	align-items: start;
-}
-.prime-fleet-app .prime-fleet-bd__avatar {
-	width: 48px;
-	height: 48px;
-	border-radius: 14px;
-	display: grid;
-	place-items: center;
-	font-size: 15px;
-	font-weight: 800;
-	letter-spacing: .04em;
-	color: #fff;
-	background: linear-gradient(145deg, var(--sle-navy), #1f3d6b);
-}
 .prime-fleet-app .prime-fleet-bd__guest-name {
-	margin: 0 0 10px;
-	font-size: 1.05rem;
-	font-weight: 800;
-	color: var(--sle-navy);
+	margin: 0 0 8px;
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--sle-ink);
 }
-.prime-fleet-app .prime-fleet-bd__contact { display: grid; gap: 0; }
-.prime-fleet-app .prime-fleet-bd__contact-row {
-	display: grid;
-	grid-template-columns: 5.5rem minmax(0, 1fr);
-	gap: 10px;
-	align-items: baseline;
-	padding: 7px 0;
-	border-top: 1px solid rgba(11,29,57,.06);
+.prime-fleet-app .prime-fleet-bd__meta {
+	width: 100%;
+	border-collapse: collapse;
 }
-.prime-fleet-app .prime-fleet-bd__contact-row:first-child { border-top: 0; padding-top: 0; }
-.prime-fleet-app .prime-fleet-bd__contact-label {
-	font-size: 12px;
+.prime-fleet-app .prime-fleet-bd__meta th,
+.prime-fleet-app .prime-fleet-bd__meta td {
+	padding: 5px 0;
+	border-top: 1px solid #e2e4e7;
+	font-size: 13px;
+	text-align: left;
+	vertical-align: top;
+}
+.prime-fleet-app .prime-fleet-bd__meta tr:first-child th,
+.prime-fleet-app .prime-fleet-bd__meta tr:first-child td { border-top: 0; }
+.prime-fleet-app .prime-fleet-bd__meta th {
+	width: 7rem;
 	font-weight: 600;
 	color: var(--sle-muted);
 }
-.prime-fleet-app .prime-fleet-bd__contact-value {
-	font-size: 13px;
-	font-weight: 650;
+.prime-fleet-app .prime-fleet-bd__meta td {
 	color: var(--sle-ink);
 	word-break: break-word;
 }
 
-.prime-fleet-app .prime-fleet-bd__legs { display: grid; gap: 10px; }
+.prime-fleet-app .prime-fleet-bd__legs { display: grid; gap: 8px; }
 .prime-fleet-app .prime-fleet-bd__leg {
-	padding: 12px 14px;
-	border-radius: 12px;
-	background: linear-gradient(180deg, #f8fafc 0%, #f3f6fb 100%);
+	padding: 8px 10px;
+	border-radius: var(--sle-radius-xs);
+	background: #f6f7f7;
 	border: 1px solid var(--sle-line);
 }
 .prime-fleet-app .prime-fleet-bd__leg-top {
@@ -2833,49 +5246,54 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: space-between;
-	gap: 8px;
-	margin-bottom: 8px;
+	gap: 6px;
+	margin-bottom: 4px;
 }
 .prime-fleet-app .prime-fleet-bd__leg-chip {
-	display: inline-flex;
-	padding: 3px 8px;
-	border-radius: 999px;
+	display: inline-block;
+	padding: 1px 6px;
+	border-radius: 3px;
 	font-size: 11px;
-	font-weight: 800;
-	letter-spacing: .06em;
-	text-transform: uppercase;
-	background: rgba(215,166,74,.18);
-	color: #8a6418;
+	font-weight: 600;
+	letter-spacing: 0;
+	text-transform: none;
+	background: #f0f0f1;
+	color: #50575e;
+	border: 1px solid #dcdcde;
 }
 .prime-fleet-app .prime-fleet-bd__leg-time {
 	font-size: 12px;
-	font-weight: 700;
+	font-weight: 600;
 	color: var(--sle-muted);
 }
 .prime-fleet-app .prime-fleet-bd__route {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 8px 10px;
-	font-size: 15px;
-	font-weight: 750;
-	color: var(--sle-navy);
+	gap: 6px 8px;
+	font-size: 13px;
+	font-weight: 650;
+	color: var(--sle-ink);
 	line-height: 1.35;
 }
 .prime-fleet-app .prime-fleet-bd__route-arrow {
-	color: var(--sle-gold-hover);
-	font-weight: 800;
+	color: var(--sle-muted);
+	font-weight: 700;
 }
 
 .prime-fleet-app .prime-fleet-bd__addons,
-.prime-fleet-app .prime-fleet-bd__fare-note { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--sle-line); }
+.prime-fleet-app .prime-fleet-bd__fare-note {
+	margin-top: 10px;
+	padding-top: 10px;
+	border-top: 1px solid var(--sle-line);
+}
 .prime-fleet-app .prime-fleet-bd__addon-list,
 .prime-fleet-app .prime-fleet-bd__fare-list {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 	display: grid;
-	gap: 6px;
+	gap: 4px;
 	font-size: 13px;
 }
 .prime-fleet-app .prime-fleet-bd__addon-list li {
@@ -2886,46 +5304,8 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 }
 .prime-fleet-app .prime-fleet-bd__fare-list li { color: var(--sle-muted); }
 
-.prime-fleet-app .prime-fleet-bd__feed { display: grid; gap: 0; }
-.prime-fleet-app .prime-fleet-bd__feed-item {
-	position: relative;
-	display: grid;
-	grid-template-columns: 14px minmax(0, 1fr);
-	gap: 12px;
-	padding: 0 0 18px;
-}
-.prime-fleet-app .prime-fleet-bd__feed-item:last-child { padding-bottom: 0; }
-.prime-fleet-app .prime-fleet-bd__feed-item:not(:last-child)::before {
-	content: "";
-	position: absolute;
-	left: 6px;
-	top: 12px;
-	bottom: 0;
-	width: 2px;
-	background: linear-gradient(180deg, rgba(215,166,74,.55), rgba(11,29,57,.12));
-}
-.prime-fleet-app .prime-fleet-bd__feed-marker {
-	width: 12px;
-	height: 12px;
-	margin-top: 3px;
-	border-radius: 50%;
-	background: var(--sle-gold);
-	box-shadow: 0 0 0 3px rgba(215,166,74,.22);
-	z-index: 1;
-}
-.prime-fleet-app .prime-fleet-bd__feed-title {
-	margin: 0 0 3px;
-	font-size: 13px;
-	font-weight: 750;
-	color: var(--sle-ink);
-	line-height: 1.35;
-}
-.prime-fleet-app .prime-fleet-bd__feed-meta {
-	margin: 0;
-	font-size: 12px;
-	color: var(--sle-muted);
-	line-height: 1.35;
-}
+/* Legacy feed selectors kept inert if any remain */
+.prime-fleet-app .prime-fleet-bd__feed { display: none; }
 
 @media (max-width: 720px) {
 	.prime-fleet-app .prime-fleet-bd__kpis { grid-template-columns: 1fr; }
@@ -2946,4 +5326,1239 @@ body.toplevel_page_prime-fleet::-webkit-scrollbar-thumb:hover,
 	.prime-fleet-dispatch-bar__controls { width: 100%; }
 	.prime-fleet-dispatch-bar__input { flex: 1 1 auto; min-width: 0; }
 	.prime-fleet-dispatch-assign__fields { grid-template-columns: 1fr; }
+}
+
+
+/* —— Bookings calendar —— */
+.prime-fleet-view-switch {
+	display: inline-flex;
+	align-items: stretch;
+	height: 36px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
+	overflow: hidden;
+	background: #fff;
+}
+.prime-fleet-view-switch__btn {
+	appearance: none;
+	margin: 0;
+	padding: 0 14px;
+	border: 0;
+	border-right: 1px solid var(--sle-line-strong);
+	background: #fff;
+	color: var(--sle-ink);
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 34px;
+	cursor: pointer;
+}
+.prime-fleet-view-switch__btn:last-child { border-right: 0; }
+.prime-fleet-view-switch__btn:hover { background: #f6f7f7; }
+.prime-fleet-view-switch__btn.is-active {
+	background: var(--sle-navy);
+	color: #fff;
+}
+.prime-fleet-view-switch__btn:focus-visible {
+	outline: 2px solid var(--sle-navy);
+	outline-offset: -2px;
+	z-index: 1;
+}
+
+.prime-fleet-cal {
+	padding: 14px 16px 16px;
+}
+.prime-fleet-cal__toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px 14px;
+	margin: 0 0 12px;
+	padding: 0 0 12px;
+	border-bottom: 1px solid var(--sle-line);
+}
+.prime-fleet-cal__nav,
+.prime-fleet-cal__jump,
+.prime-fleet-cal__filters {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	margin: 0;
+}
+.prime-fleet-cal__filters {
+	margin-left: auto;
+}
+/* Calendar filter controls — same themed chrome as table-tools / date triggers. */
+.prime-fleet-cal__toolbar .button {
+	margin: 0 !important;
+	min-height: 30px;
+	line-height: 2.15384615;
+	border-radius: var(--sle-radius-xs) !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+}
+.prime-fleet-cal select.prime-fleet-cal__ctrl {
+	box-sizing: border-box !important;
+	height: 30px !important;
+	min-height: 30px !important;
+	max-height: 30px !important;
+	margin: 0;
+	padding: 0 24px 0 8px !important;
+	border: 1px solid var(--sle-line-strong) !important;
+	border-radius: var(--sle-radius-xs) !important;
+	background: #fff !important;
+	color: var(--sle-ink);
+	font-family: inherit;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	line-height: 1.3 !important;
+	-webkit-appearance: none;
+	appearance: none;
+	cursor: pointer;
+	vertical-align: middle;
+	box-shadow: none !important;
+}
+.prime-fleet-cal select.prime-fleet-cal__ctrl:hover {
+	border-color: #9ca3af !important;
+	background: #f8fafc !important;
+}
+.prime-fleet-cal select.prime-fleet-cal__ctrl:focus {
+	border-color: var(--sle-navy) !important;
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12) !important;
+	outline: none;
+}
+.prime-fleet-cal__ctrl--icon.button {
+	width: 30px !important;
+	min-width: 30px !important;
+	height: 30px !important;
+	min-height: 30px !important;
+	padding: 0 !important;
+	font-size: 16px !important;
+	font-weight: 600;
+	line-height: 0 !important;
+}
+.prime-fleet-cal .prime-fleet-select--cal {
+	width: auto;
+	flex: 0 0 auto;
+	min-width: 118px;
+	max-width: 160px;
+}
+.prime-fleet-cal .prime-fleet-select--cal .prime-fleet-select__trigger {
+	height: 36px !important;
+	min-height: 36px !important;
+	padding: 0 10px;
+	border-color: var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
+	background: #fff;
+	color: var(--sle-ink);
+	font-size: 13px;
+	font-weight: 500;
+	box-shadow: none;
+}
+.prime-fleet-cal .prime-fleet-select--cal .prime-fleet-select__trigger:hover {
+	border-color: #9ca3af;
+	background: #f8fafc;
+}
+.prime-fleet-cal .prime-fleet-select--cal.is-open .prime-fleet-select__trigger,
+.prime-fleet-cal .prime-fleet-select--cal .prime-fleet-select__trigger:focus-visible {
+	border-color: var(--sle-navy);
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12);
+	outline: none;
+}
+.prime-fleet-cal .prime-fleet-select--cal .prime-fleet-select__menu {
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius-sm);
+	box-shadow: var(--sle-shadow-pop);
+	padding: 4px 0;
+	min-width: 100%;
+	z-index: 30;
+}
+.prime-fleet-cal .prime-fleet-select--cal .prime-fleet-select__option {
+	padding: 7px 12px;
+	font-size: 13px;
+	border-radius: 0;
+}
+.prime-fleet-cal .prime-fleet-select--cal .prime-fleet-select__option:hover,
+.prime-fleet-cal .prime-fleet-select--cal .prime-fleet-select__option:focus {
+	background: #f0f6fc;
+	color: var(--sle-navy);
+}
+.prime-fleet-cal .prime-fleet-select--cal .prime-fleet-select__option.is-selected {
+	background: var(--sle-navy);
+	color: #fff;
+}
+.prime-fleet-cal .prime-fleet-select--cal .prime-fleet-select__option.is-selected::after {
+	border-color: #fff;
+}
+.prime-fleet-cal #pf-cal-year + .prime-fleet-select__trigger,
+.prime-fleet-cal .prime-fleet-select--cal:has(#pf-cal-year) {
+	min-width: 84px;
+	max-width: 96px;
+}
+.prime-fleet-cal__meta {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 0;
+	flex: 1 1 120px;
+}
+.prime-fleet-cal__title {
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--sle-ink);
+	line-height: 1.25;
+}
+
+.prime-fleet-cal__board {
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius);
+	overflow: hidden;
+	background: #fff;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+}
+
+.prime-fleet-cal__dow {
+	display: grid;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	gap: 0;
+	margin: 0;
+	background: #f8fafc;
+	border-bottom: 1px solid var(--sle-line);
+}
+.prime-fleet-cal__dow span {
+	padding: 8px 4px;
+	background: transparent;
+	text-align: center;
+	font-size: 11px;
+	font-weight: 650;
+	color: var(--sle-muted);
+	letter-spacing: .02em;
+}
+
+.prime-fleet-cal__grid {
+	display: grid;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	grid-auto-rows: minmax(56px, auto);
+	align-items: stretch;
+	gap: 0;
+	background: transparent;
+	border: 0;
+}
+.prime-fleet-cal__cell {
+	min-height: 56px;
+	height: 100%;
+	background: #fff;
+	padding: 5px 4px 4px;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	min-width: 0;
+	border-right: 1px solid var(--sle-line);
+	border-bottom: 1px solid var(--sle-line);
+}
+.prime-fleet-cal__cell:nth-child(7n) {
+	border-right: 0;
+}
+.prime-fleet-cal__cell.has-jobs {
+	min-height: 0;
+}
+.prime-fleet-cal__cell.has-jobs-1 {
+	background: var(--sle-peach);
+}
+.prime-fleet-cal__cell.has-jobs-2 {
+	background: var(--sle-peach-2);
+}
+.prime-fleet-cal__cell.has-jobs-3,
+.prime-fleet-cal__cell.has-jobs-many {
+	background: var(--sle-peach-3);
+}
+.prime-fleet-cal__cell.is-outside {
+	background: #fafbfc;
+}
+.prime-fleet-cal__cell.is-outside.has-jobs-1,
+.prime-fleet-cal__cell.is-outside.has-jobs-2,
+.prime-fleet-cal__cell.is-outside.has-jobs-3,
+.prime-fleet-cal__cell.is-outside.has-jobs-many {
+	background: #f3f4f6;
+}
+.prime-fleet-cal__cell.is-outside .prime-fleet-cal__date {
+	color: #c0c4c8;
+}
+.prime-fleet-cal__cell.is-today {
+	box-shadow: none;
+}
+.prime-fleet-cal__cell.is-today .prime-fleet-cal__date {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: 999px;
+	background: #c2410c;
+	color: #fff;
+}
+.prime-fleet-cal__daynum {
+	appearance: none;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 4px;
+	width: 100%;
+	min-height: 22px;
+	margin: 0;
+	padding: 0 2px;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+}
+button.prime-fleet-cal__daynum {
+	cursor: pointer;
+	border-radius: var(--sle-radius-xs);
+}
+button.prime-fleet-cal__daynum:hover .prime-fleet-cal__date {
+	color: var(--sle-navy);
+}
+.prime-fleet-cal__cell.is-today button.prime-fleet-cal__daynum:hover .prime-fleet-cal__date {
+	color: #fff;
+}
+button.prime-fleet-cal__daynum:focus-visible {
+	outline: 2px solid var(--sle-navy);
+	outline-offset: 1px;
+}
+.prime-fleet-cal__date {
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--sle-ink);
+	line-height: 1.2;
+}
+.prime-fleet-cal__count {
+	display: inline-block;
+	min-width: 16px;
+	padding: 0 5px;
+	border-radius: 999px;
+	background: rgba(30, 90, 130, .9);
+	color: #fff;
+	font-size: 10px;
+	font-weight: 700;
+	line-height: 16px;
+	text-align: center;
+}
+.prime-fleet-cal__chips {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 2px;
+	min-width: 0;
+}
+.prime-fleet-cal__chip {
+	appearance: none;
+	display: block;
+	width: 100%;
+	margin: 0;
+	padding: 2px 5px;
+	border: 0;
+	border-radius: 4px;
+	background: rgba(255, 255, 255, .72);
+	color: var(--sle-ink);
+	font-size: 10px;
+	line-height: 1.3;
+	text-align: left;
+	cursor: pointer;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	box-shadow: inset 0 0 0 1px rgba(16, 24, 40, .06);
+}
+.prime-fleet-cal__chip:hover {
+	background: #fff;
+}
+.prime-fleet-cal__chip--warn {
+	background: rgba(255, 251, 235, .9);
+	color: #92400e;
+}
+.prime-fleet-cal__chip--ok {
+	background: rgba(236, 253, 245, .92);
+	color: var(--sle-ok);
+}
+.prime-fleet-cal__chip--danger {
+	background: rgba(254, 242, 242, .92);
+	color: var(--sle-danger);
+}
+.prime-fleet-cal__chip--off {
+	background: rgba(249, 250, 251, .9);
+	color: #6b7280;
+}
+.prime-fleet-cal__chip-time { font-weight: 700; }
+.prime-fleet-cal__chip-ref { font-weight: 600; }
+.prime-fleet-cal__more {
+	appearance: none;
+	display: block;
+	width: 100%;
+	margin: 0;
+	padding: 1px 4px;
+	border: 0;
+	background: transparent;
+	color: var(--sle-accent);
+	font-size: 10px;
+	font-weight: 650;
+	line-height: 1.3;
+	text-align: left;
+	cursor: pointer;
+}
+.prime-fleet-cal__more:hover { text-decoration: underline; }
+.prime-fleet-cal__more:focus-visible {
+	outline: 2px solid var(--sle-navy);
+	outline-offset: 1px;
+}
+
+.prime-fleet-cal-daylist__meta {
+	margin: 0 0 10px;
+	font-size: 13px;
+	color: #646970;
+}
+.prime-fleet-modal:has(.prime-fleet-cal-daylist) .prime-fleet-modal__dialog {
+	--pf-modal-max-w: 860px;
+	width: var(--pf-modal-max-w);
+	max-width: min(var(--pf-modal-max-w), calc(100vw - (var(--pf-modal-inset) * 2)));
+}
+.prime-fleet-modal:has(.prime-fleet-cal-daylist) .prime-fleet-modal__body {
+	padding-top: 16px;
+}
+
+@media (max-width: 960px) {
+	.prime-fleet-cal__grid { grid-auto-rows: minmax(46px, auto); }
+	.prime-fleet-cal__cell { min-height: 46px; }
+	.prime-fleet-cal__chip-ref { display: none; }
+}
+@media (max-width: 720px) {
+	.prime-fleet-cal__filters { margin-left: 0; width: 100%; }
+	.prime-fleet-cal__grid { grid-auto-rows: minmax(42px, auto); }
+	.prime-fleet-cal__cell { min-height: 42px; }
+	.prime-fleet-cal__ctrl { flex: 0 0 auto; }
+}
+
+/* Field / toolbar themed selects */
+.prime-fleet-field .prime-fleet-select--field {
+	width: 100%;
+}
+.prime-fleet-select--field .prime-fleet-select__trigger {
+	min-height: 36px;
+	height: 36px;
+	border-radius: var(--sle-radius-xs);
+	border-color: var(--sle-line-strong);
+	box-shadow: none;
+}
+.prime-fleet-table-tools .prime-fleet-select--toolbar .prime-fleet-select__trigger,
+.prime-fleet-select--toolbar .prime-fleet-select__trigger {
+	min-height: 30px !important;
+	height: 30px !important;
+	border-radius: var(--sle-radius-xs) !important;
+	border-color: var(--sle-line-strong) !important;
+	font-family: inherit !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	box-shadow: none !important;
+}
+.prime-fleet-table-tools .prime-fleet-select--toolbar {
+	min-width: 132px;
+	max-width: 180px;
+	display: inline-flex;
+	align-items: center;
+}
+.prime-fleet-table-tools .prime-fleet-select.is-open .prime-fleet-select__trigger,
+.prime-fleet-table-tools .prime-fleet-select__trigger:focus-visible {
+	border-color: var(--sle-navy) !important;
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12) !important;
+}
+
+/* Themed datetime picker (replaces native datetime-local chrome) */
+.prime-fleet-dt {
+	position: relative;
+	width: 100%;
+	min-width: 0;
+}
+.prime-fleet-dt__native {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	padding: 0 !important;
+	margin: -1px !important;
+	overflow: hidden !important;
+	clip: rect(0, 0, 0, 0) !important;
+	white-space: nowrap !important;
+	border: 0 !important;
+	opacity: 0 !important;
+	pointer-events: none !important;
+}
+.prime-fleet-dt__trigger {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	width: 100%;
+	min-height: 36px;
+	height: 36px;
+	margin: 0;
+	padding: 0 10px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
+	background: #fff;
+	color: var(--sle-ink);
+	font-size: 13px;
+	font-weight: 500;
+	font-family: inherit;
+	line-height: 1.3;
+	text-align: left;
+	cursor: pointer;
+}
+.prime-fleet-dt.is-empty .prime-fleet-dt__value {
+	color: #6b7280;
+}
+.prime-fleet-dt__trigger:hover {
+	border-color: #9ca3af;
+	background: #f8fafc;
+}
+.prime-fleet-dt.is-open .prime-fleet-dt__trigger,
+.prime-fleet-dt__trigger:focus-visible {
+	outline: none;
+	border-color: var(--sle-navy);
+	box-shadow: 0 0 0 2px rgba(42, 69, 102, .12);
+}
+.prime-fleet-dt.is-disabled .prime-fleet-dt__trigger,
+.prime-fleet-dt__trigger:disabled {
+	opacity: .55;
+	cursor: not-allowed;
+}
+.prime-fleet-dt__value {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.prime-fleet-dt__icon {
+	flex: 0 0 auto;
+	width: 14px;
+	height: 14px;
+	border: 1.5px solid #6b7280;
+	border-radius: 3px;
+	position: relative;
+	opacity: .85;
+}
+.prime-fleet-dt__icon::before {
+	content: '';
+	position: absolute;
+	left: 2px;
+	right: 2px;
+	top: 3px;
+	height: 1.5px;
+	background: #6b7280;
+}
+.prime-fleet-dt__pop {
+	position: fixed;
+	z-index: 100120;
+	box-sizing: border-box;
+	top: auto;
+	left: auto;
+	width: min(400px, calc(100vw - 24px));
+	padding: 14px;
+	background: #fff;
+	border: 1px solid var(--sle-line);
+	border-radius: 18px;
+	box-shadow: var(--sle-shadow-pop);
+	max-height: min(440px, calc(100vh - 24px));
+	overflow: auto;
+}
+.prime-fleet-dt__pop[hidden] { display: none !important; }
+.prime-fleet-dt {
+	overflow: visible;
+}
+.prime-fleet-bd .prime-fleet-field,
+.prime-fleet-bd__inline-form,
+.prime-fleet-bd__panel,
+.prime-fleet-bd__panel--offer,
+.prime-fleet-bd__panel--ops,
+.prime-fleet-bd__panel--pay {
+	overflow: visible;
+}
+.prime-fleet-dt__body {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 118px;
+	gap: 14px;
+	align-items: stretch;
+	margin: 0 0 12px;
+}
+.prime-fleet-dt--date .prime-fleet-dt__body,
+.prime-fleet-dt__body:not(:has(.prime-fleet-dt__time)) {
+	grid-template-columns: 1fr;
+}
+.prime-fleet-dt__cal {
+	min-width: 0;
+}
+.prime-fleet-dt__nav {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 6px;
+	margin: 0 0 10px;
+}
+.prime-fleet-dt__nav-mid {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+}
+.prime-fleet-dt__month-sel,
+.prime-fleet-dt__year-sel {
+	appearance: none;
+	-webkit-appearance: none;
+	height: 30px;
+	margin: 0;
+	padding: 0 22px 0 10px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: 8px;
+	background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%236b7280' d='M1 1l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 8px center;
+	color: var(--sle-ink);
+	font-size: 13px;
+	font-weight: 600;
+	font-family: inherit;
+	line-height: 1;
+	cursor: pointer;
+}
+.prime-fleet-dt__month-sel { min-width: 78px; }
+.prime-fleet-dt__year-sel { min-width: 74px; }
+.prime-fleet-dt__nav-btn {
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 8px;
+	background: transparent;
+	color: #9ca3af;
+	font-size: 18px;
+	line-height: 0;
+	cursor: pointer;
+}
+.prime-fleet-dt__nav-btn:hover {
+	background: #f3f4f6;
+	color: var(--sle-ink);
+}
+.prime-fleet-dt__dow {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 2px;
+	margin: 0 0 6px;
+}
+.prime-fleet-dt__dow span {
+	text-align: center;
+	font-size: 11px;
+	font-weight: 600;
+	color: #9ca3af;
+	padding: 4px 0;
+}
+.prime-fleet-dt__grid {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 4px;
+	margin: 0;
+}
+.prime-fleet-dt__cell {
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	aspect-ratio: 1;
+	min-height: 30px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--sle-ink);
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+}
+.prime-fleet-dt__cell.is-blank {
+	pointer-events: none;
+	visibility: hidden;
+}
+.prime-fleet-dt__cell.is-out {
+	color: #d1d5db;
+}
+.prime-fleet-dt__cell:hover {
+	background: #f3f4f6;
+	color: var(--sle-ink);
+}
+.prime-fleet-dt__cell.is-selected {
+	background: var(--sle-accent);
+	color: #fff;
+	font-weight: 700;
+}
+.prime-fleet-dt__cell.is-today:not(.is-selected) {
+	box-shadow: inset 0 0 0 1.5px var(--sle-accent);
+}
+.prime-fleet-dt__time {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin: 0;
+	padding: 0 0 0 12px;
+	border-left: 1px solid var(--sle-line);
+	border-top: 0;
+	min-width: 0;
+}
+.prime-fleet-dt__time-title {
+	margin: 0;
+	font-size: 11px;
+	font-weight: 700;
+	color: var(--sle-muted);
+	letter-spacing: .04em;
+	text-transform: uppercase;
+}
+.prime-fleet-dt__wheels {
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	gap: 6px;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+.prime-fleet-dt__wheel {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	flex: 1 1 0;
+	min-width: 0;
+	position: relative;
+}
+.prime-fleet-dt__wheel-label {
+	display: block;
+	text-align: center;
+	font-size: 10px;
+	font-weight: 650;
+	color: var(--sle-muted);
+	letter-spacing: .02em;
+}
+.prime-fleet-dt__wheel-sep {
+	align-self: center;
+	margin-top: 18px;
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--sle-muted);
+	line-height: 1;
+}
+.prime-fleet-dt__wheel-track {
+	position: relative;
+	height: 168px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 4px;
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius-xs);
+	background: #f8fafc;
+	scroll-snap-type: y proximity;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+	-webkit-overflow-scrolling: touch;
+	mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+}
+.prime-fleet-dt__wheel-track::-webkit-scrollbar {
+	width: 0 !important;
+	height: 0 !important;
+	display: none !important;
+	background: transparent;
+}
+.prime-fleet-dt__wheel-item {
+	appearance: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 32px;
+	min-height: 32px;
+	margin: 0 0 2px;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: var(--sle-muted);
+	font-size: 13px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	font-family: inherit;
+	line-height: 1;
+	cursor: pointer;
+	scroll-snap-align: center;
+}
+.prime-fleet-dt__wheel-item:hover {
+	background: rgba(42, 69, 102, .06);
+	color: var(--sle-ink);
+}
+.prime-fleet-dt__wheel-item.is-selected {
+	background: var(--sle-accent);
+	color: #fff;
+	font-weight: 700;
+	box-shadow: 0 1px 2px rgba(15, 23, 42, .12);
+}
+.prime-fleet-dt__wheel-item:focus-visible {
+	outline: 2px solid var(--sle-navy);
+	outline-offset: 1px;
+}
+.prime-fleet-dt__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 6px;
+	padding-top: 10px;
+	border-top: 1px solid var(--sle-line);
+}
+@media (max-width: 480px) {
+	.prime-fleet-dt__body {
+		grid-template-columns: 1fr;
+	}
+	.prime-fleet-dt__time {
+		padding: 10px 0 0;
+		border-left: 0;
+		border-top: 1px solid var(--sle-line);
+	}
+	.prime-fleet-dt__wheels {
+		justify-content: stretch;
+	}
+	.prime-fleet-dt__wheel-track {
+		height: 140px;
+	}
+}
+
+.prime-fleet-bd {
+	padding-bottom: 56px;
+}
+.prime-fleet-app .prime-fleet-bd__panel--pay {
+	margin-bottom: 8px;
+}
+
+/* Reports */
+.prime-fleet-reports__tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin: 0 0 14px;
+}
+.prime-fleet-reports__tab {
+	appearance: none;
+	margin: 0;
+	padding: 8px 12px;
+	border: 1px solid var(--sle-line);
+	border-radius: var(--sle-radius-xs);
+	background: #fff;
+	color: var(--sle-muted);
+	font-size: 12px;
+	font-weight: 650;
+	cursor: pointer;
+	line-height: 1.2;
+}
+.prime-fleet-reports__tab:hover {
+	color: var(--sle-navy);
+	border-color: var(--sle-line-strong);
+}
+.prime-fleet-reports__tab.is-active {
+	background: var(--sle-navy);
+	border-color: var(--sle-navy);
+	color: #fff;
+}
+.prime-fleet-reports__filters.prime-fleet-table-tools {
+	/* Inherit WP tablenav toolbar styles — no card chrome. */
+	background: transparent;
+	border: 0;
+	border-bottom: 1px solid var(--sle-line);
+	border-radius: 0;
+	box-shadow: none;
+	padding: 0 0 12px;
+	margin: 0 0 14px;
+}
+/* One flex line: fields + actions share the same wrap; actions stay right. */
+.prime-fleet-reports__filters .prime-fleet-table-tools__actions {
+	width: 100%;
+	max-width: 100%;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 6px;
+}
+/* Children join the parent flex so Filter/Reset can sit on row 1 when space allows. */
+.prime-fleet-reports__filter-fields {
+	display: contents;
+}
+.prime-fleet-reports__actions {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-left: auto;
+	flex: 0 0 auto;
+}
+/*
+ * Compact toolbar widths so dates + 4 selects fit beside actions at ~1280.
+ * Themed date pickers default to width:100% — pin them inline.
+ */
+.prime-fleet-reports__filters .prime-fleet-dt,
+.prime-fleet-table-tools .prime-fleet-dt {
+	width: 8.5rem !important;
+	max-width: min(8.5rem, 100%) !important;
+	min-width: 7.5rem !important;
+	flex: 0 1 auto !important;
+}
+.prime-fleet-reports__filters .prime-fleet-dt__trigger,
+.prime-fleet-table-tools .prime-fleet-dt__trigger {
+	height: 30px;
+	min-height: 30px;
+	padding: 0 8px;
+	font-size: 13px;
+}
+.prime-fleet-reports__filters .prime-fleet-table-tools__actions input[type="date"] {
+	height: 30px;
+	min-height: 30px;
+	width: 8.5rem;
+	max-width: min(8.5rem, 100%);
+	min-width: 7.5rem;
+	flex: 0 1 auto;
+	padding: 0 8px;
+	border: 1px solid var(--sle-line-strong);
+	border-radius: var(--sle-radius-xs);
+	font-size: 13px;
+	box-sizing: border-box;
+}
+.prime-fleet-reports__filters .prime-fleet-table-tools__select {
+	min-width: 6.75rem !important;
+	max-width: 8.5rem !important;
+	flex: 0 1 auto !important;
+}
+.prime-fleet-reports__field {
+	margin: 0;
+	min-width: 140px;
+	flex: 1 1 140px;
+	max-width: 200px;
+}
+.prime-fleet-reports__field label {
+	display: block;
+	margin: 0 0 4px;
+	font-size: 12px;
+	font-weight: 650;
+	color: var(--sle-muted);
+}
+.prime-fleet-reports__kpis {
+	margin-bottom: 14px;
+}
+.prime-fleet-reports__kpis--tight {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	margin-bottom: 12px;
+}
+.prime-fleet-reports__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+	margin-bottom: 14px;
+	/* Equal card heights in the row; pagination keeps content from exploding. */
+	align-items: stretch;
+}
+.prime-fleet-reports__grid--3 {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+/* Kill stacked-card margin in the grid. */
+.prime-fleet-reports__grid > .prime-fleet-card + .prime-fleet-card {
+	margin-top: 0;
+}
+.prime-fleet-reports__grid > .prime-fleet-reports__card {
+	min-height: 0;
+	height: auto;
+	align-self: stretch;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	max-width: 100%;
+	margin-top: 0 !important;
+}
+.prime-fleet-reports__card .prime-fleet-section__head {
+	margin-bottom: 10px;
+	padding-bottom: 8px;
+}
+.prime-fleet-reports__grid > .prime-fleet-reports__card > .prime-fleet-muted,
+.prime-fleet-reports__grid > .prime-fleet-reports__card > .prime-fleet-table,
+.prime-fleet-reports__grid > .prime-fleet-reports__card > .prime-fleet-dash-pager {
+	margin-top: 0;
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+.prime-fleet-reports__grid > .prime-fleet-reports__card > .prime-fleet-muted {
+	margin-bottom: 0;
+}
+.prime-fleet-reports__card .prime-fleet-table-wrap {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+.prime-fleet-reports__card .prime-fleet-dash-pager__bar {
+	margin-top: auto;
+	border-radius: 0 0 var(--sle-radius, 8px) var(--sle-radius, 8px);
+}
+.prime-fleet-reports__card [data-pf-dash-row][hidden] {
+	display: none !important;
+}
+/* Keep numeric columns on one line so row heights stay even across cards. */
+.prime-fleet-reports__card .prime-fleet-table th:nth-child(n+2),
+.prime-fleet-reports__card .prime-fleet-table td:nth-child(n+2) {
+	white-space: nowrap;
+	width: 1%;
+}
+.prime-fleet-reports__note,
+.prime-fleet-muted {
+	margin: 0 0 12px;
+	color: var(--sle-muted);
+	font-size: 13px;
+	line-height: 1.45;
+}
+.prime-fleet-reports__bars {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 10px;
+}
+.prime-fleet-reports__bar-meta {
+	display: flex;
+	justify-content: space-between;
+	gap: 10px;
+	margin-bottom: 4px;
+	font-size: 13px;
+}
+.prime-fleet-reports__bar-meta strong { color: var(--sle-ink); }
+.prime-fleet-reports__bar-meta span { color: var(--sle-muted); font-variant-numeric: tabular-nums; }
+.prime-fleet-reports__bar-track {
+	height: 8px;
+	border-radius: 999px;
+	background: #eef2f6;
+	overflow: hidden;
+}
+.prime-fleet-reports__bar-track > span {
+	display: block;
+	height: 100%;
+	border-radius: inherit;
+	background: var(--sle-navy);
+}
+.prime-fleet-reports__preview { margin-top: 4px; }
+.prime-fleet-reports__preview .prime-fleet-table-pager {
+	margin-top: 12px;
+	padding: 12px 0 0;
+}
+@media (max-width: 1100px) {
+	.prime-fleet-reports__grid,
+	.prime-fleet-reports__grid--3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 720px) {
+	.prime-fleet-reports__grid,
+	.prime-fleet-reports__grid--3,
+	.prime-fleet-reports__kpis--tight { grid-template-columns: 1fr; }
+	.prime-fleet-reports__actions { margin-left: 0; width: 100%; }
+	.prime-fleet-reports__field { max-width: none; }
+}
+
+/* —— Run sheet (screen + print) ——
+ * Day toolbar reuses .prime-fleet-dispatch-bar (flex, no WP tablenav float collapse).
+ * Screen: shell title + day bar. Print: document header only. */
+.prime-fleet-app .prime-fleet-print-only { display: none !important; }
+.prime-fleet-app .prime-fleet-run-sheet__head {
+	display: none;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 12px;
+	margin: 0 0 14px;
+}
+.prime-fleet-app .prime-fleet-run-sheet__eyebrow {
+	margin: 0 0 2px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+	color: var(--sle-muted);
+}
+.prime-fleet-app .prime-fleet-run-sheet__title {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 700;
+	color: var(--sle-ink);
+	line-height: 1.2;
+}
+.prime-fleet-app .prime-fleet-run-sheet__meta {
+	margin: 4px 0 0;
+	font-size: 13px;
+	color: var(--sle-muted);
+}
+.prime-fleet-app .prime-fleet-run-sheet__printed { margin: 0; font-size: 11px; color: #444; }
+.prime-fleet-app .prime-fleet-run-sheet__table td,
+.prime-fleet-app .prime-fleet-run-sheet__table th {
+	vertical-align: top;
+	font-size: 13px;
+}
+.prime-fleet-app .prime-fleet-run-sheet__time {
+	white-space: nowrap;
+}
+.prime-fleet-app .prime-fleet-run-sheet__status {
+	display: block;
+	margin-top: 2px;
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--sle-muted);
+}
+.prime-fleet-app .prime-fleet-run-sheet__svc,
+.prime-fleet-app .prime-fleet-run-sheet__sub {
+	display: block;
+	margin-top: 2px;
+	font-size: 11px;
+	font-weight: 500;
+	color: var(--sle-muted);
+}
+.prime-fleet-app .prime-fleet-run-sheet__route {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+.prime-fleet-app .prime-fleet-run-sheet__arrow {
+	color: var(--sle-muted);
+	font-size: 11px;
+}
+.prime-fleet-app .prime-fleet-run-sheet__notes {
+	max-width: 220px;
+	font-size: 12px;
+	line-height: 1.35;
+	color: var(--sle-ink);
+}
+
+@media print {
+	/*
+	 * Run sheet: print ONLY the document (heading + table).
+	 * Visibility trick hides WP chrome + PF topbar/actions without fighting floats.
+	 */
+	html, body {
+		background: #fff !important;
+		color: #111 !important;
+	}
+	body.prime-fleet-admin * {
+		visibility: hidden !important;
+	}
+	body.prime-fleet-admin .prime-fleet-run-sheet,
+	body.prime-fleet-admin .prime-fleet-run-sheet * {
+		visibility: visible !important;
+	}
+	body.prime-fleet-admin .prime-fleet-run-sheet .prime-fleet-no-print,
+	body.prime-fleet-admin .prime-fleet-run-sheet .prime-fleet-no-print * {
+		visibility: hidden !important;
+		display: none !important;
+	}
+	body.prime-fleet-admin .prime-fleet-run-sheet {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		margin: 0 !important;
+		padding: 0 !important;
+		background: #fff !important;
+	}
+	#wpadminbar,
+	#adminmenumain,
+	#adminmenuback,
+	#adminmenuwrap,
+	#wpfooter,
+	.prime-fleet-topbar,
+	.prime-fleet-notify,
+	.prime-fleet-toast-stack,
+	#prime-fleet-loader,
+	#prime-fleet-modal,
+	#prime-fleet-confirm,
+	.prime-fleet-app::after {
+		display: none !important;
+	}
+	#wpcontent,
+	#wpbody,
+	#wpbody-content,
+	.prime-fleet-app,
+	.prime-fleet-app__layout,
+	.prime-fleet-app__main,
+	.prime-fleet-panel,
+	.prime-fleet-panel-body {
+		margin: 0 !important;
+		padding: 0 !important;
+		width: 100% !important;
+		max-width: none !important;
+		float: none !important;
+		background: #fff !important;
+		box-shadow: none !important;
+		overflow: visible !important;
+	}
+	.prime-fleet-app .prime-fleet-print-only {
+		visibility: visible !important;
+	}
+	.prime-fleet-app .prime-fleet-run-sheet__head.prime-fleet-print-only,
+	.prime-fleet-app .prime-fleet-run-sheet__head {
+		display: flex !important;
+		visibility: visible !important;
+		border-bottom: 1px solid #ccc;
+		padding-bottom: 8px;
+		margin-bottom: 12px;
+	}
+	.prime-fleet-app .prime-fleet-run-sheet__printed {
+		display: block !important;
+		visibility: visible !important;
+	}
+	.prime-fleet-app span.prime-fleet-print-only {
+		display: inline !important;
+		visibility: visible !important;
+	}
+	.prime-fleet-app .prime-fleet-run-sheet__table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+	.prime-fleet-app .prime-fleet-run-sheet__table th,
+	.prime-fleet-app .prime-fleet-run-sheet__table td {
+		border: 1px solid #ccc;
+		padding: 6px 8px;
+		font-size: 11px;
+		color: #111;
+	}
+	.prime-fleet-app .prime-fleet-run-sheet__table th {
+		background: #f3f3f3 !important;
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+	.prime-fleet-app .prime-fleet-run-sheet__notes {
+		max-width: none;
+	}
+	.prime-fleet-app .prime-fleet-run-sheet__empty-print {
+		display: block !important;
+		visibility: visible !important;
+		font-size: 12px;
+	}
+}
+
+/* —— RTL (I6): console chrome only; do not touch overflow/shell width —— */
+.prime-fleet-app[dir="rtl"] {
+	text-align: start;
+}
+.prime-fleet-app[dir="rtl"] .prime-fleet-topbar,
+.prime-fleet-app[dir="rtl"] .prime-fleet-ribbon,
+.prime-fleet-app[dir="rtl"] .prime-fleet-bd__header,
+.prime-fleet-app[dir="rtl"] .prime-fleet-bd__kpis,
+.prime-fleet-app[dir="rtl"] .prime-fleet-table-tools {
+	direction: rtl;
+}
+.prime-fleet-app[dir="rtl"] .prime-fleet-chev {
+	transform: scaleX(-1);
 }

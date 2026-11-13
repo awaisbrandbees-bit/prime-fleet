@@ -16,6 +16,9 @@ final class Coupons {
 	/**
 	 * Validate a coupon against fare/context.
 	 *
+	 * Probing-sensitive failures share one message so attackers cannot enumerate
+	 * codes / email-bound rules / usage limits from distinct errors.
+	 *
 	 * @param string $code Code.
 	 * @param array  $ctx service_id, fare_total, email.
 	 * @return array|\WP_Error
@@ -27,6 +30,8 @@ final class Coupons {
 			return new \WP_Error( 'prime_fleet_coupon', __( 'Enter a coupon code.', 'prime-fleet' ), array( 'status' => 400 ) );
 		}
 
+		$invalid = self::invalid_error();
+
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
 				'SELECT * FROM ' . Schema::table( 'coupons' ) . ' WHERE code = %s AND is_active = 1 LIMIT 1',
@@ -35,33 +40,36 @@ final class Coupons {
 			ARRAY_A
 		);
 		if ( ! $row ) {
-			return new \WP_Error( 'prime_fleet_coupon', __( 'This coupon is not valid.', 'prime-fleet' ), array( 'status' => 400 ) );
+			return $invalid;
 		}
 
 		$now = current_time( 'mysql' );
 		if ( ! empty( $row['starts_at'] ) && $now < $row['starts_at'] ) {
-			return new \WP_Error( 'prime_fleet_coupon', __( 'This coupon is not active yet.', 'prime-fleet' ), array( 'status' => 400 ) );
+			return $invalid;
 		}
 		if ( ! empty( $row['ends_at'] ) && $now > $row['ends_at'] ) {
-			return new \WP_Error( 'prime_fleet_coupon', __( 'This coupon has expired.', 'prime-fleet' ), array( 'status' => 400 ) );
+			return $invalid;
 		}
 
 		$fare = isset( $ctx['fare_total'] ) ? (float) $ctx['fare_total'] : 0;
+		if ( $fare <= 0 ) {
+			return $invalid;
+		}
 		if ( null !== $row['min_fare'] && '' !== $row['min_fare'] && $fare < (float) $row['min_fare'] ) {
-			return new \WP_Error( 'prime_fleet_coupon', __( 'Fare is below the minimum for this coupon.', 'prime-fleet' ), array( 'status' => 400 ) );
+			return $invalid;
 		}
 
 		$service_id = absint( $ctx['service_id'] ?? 0 );
 		$scope      = json_decode( (string) ( $row['applicable_services_json'] ?? '' ), true );
 		if ( is_array( $scope ) && $scope && $service_id && ! in_array( $service_id, array_map( 'intval', $scope ), true ) ) {
-			return new \WP_Error( 'prime_fleet_coupon', __( 'This coupon does not apply to the selected service.', 'prime-fleet' ), array( 'status' => 400 ) );
+			return $invalid;
 		}
 
 		$email = isset( $ctx['email'] ) ? strtolower( sanitize_email( (string) $ctx['email'] ) ) : '';
 		if ( 'email_bound' === $row['use_type'] ) {
 			$bound = strtolower( (string) $row['bound_email'] );
 			if ( ! $email || $bound !== $email ) {
-				return new \WP_Error( 'prime_fleet_coupon', __( 'This coupon is not valid for your email.', 'prime-fleet' ), array( 'status' => 400 ) );
+				return $invalid;
 			}
 		}
 
@@ -73,7 +81,7 @@ final class Coupons {
 				)
 			);
 			if ( $used >= (int) $row['max_uses'] ) {
-				return new \WP_Error( 'prime_fleet_coupon', __( 'This coupon has reached its usage limit.', 'prime-fleet' ), array( 'status' => 400 ) );
+				return $invalid;
 			}
 		}
 
@@ -86,7 +94,7 @@ final class Coupons {
 				)
 			);
 			if ( $used_email >= (int) $row['max_per_email'] ) {
-				return new \WP_Error( 'prime_fleet_coupon', __( 'This coupon has already been used for your email.', 'prime-fleet' ), array( 'status' => 400 ) );
+				return $invalid;
 			}
 		}
 
@@ -110,6 +118,17 @@ final class Coupons {
 				__( 'Coupon applied: −%s', 'prime-fleet' ),
 				number_format( $discount, 2 )
 			),
+		);
+	}
+
+	/**
+	 * @return \WP_Error
+	 */
+	private static function invalid_error() {
+		return new \WP_Error(
+			'prime_fleet_coupon',
+			__( 'This coupon is not valid.', 'prime-fleet' ),
+			array( 'status' => 400 )
 		);
 	}
 }

@@ -26,6 +26,111 @@
 	}
 	applyFormTheme(cfg.formTheme || 'dark');
 
+	var captchaCfg = cfg.captcha || {};
+	var captchaWidgetId = null;
+	var captchaScriptPromise = null;
+
+	function captchaEnabled() {
+		return !!(
+			captchaCfg &&
+			captchaCfg.enabled &&
+			captchaCfg.site_key &&
+			(captchaCfg.provider === 'turnstile' || captchaCfg.provider === 'recaptcha_v2')
+		);
+	}
+
+	function ensureCaptchaScript() {
+		if (!captchaEnabled()) {
+			return Promise.resolve();
+		}
+		if (captchaCfg.provider === 'turnstile' && window.turnstile) {
+			return Promise.resolve();
+		}
+		if (captchaCfg.provider === 'recaptcha_v2' && window.grecaptcha) {
+			return Promise.resolve();
+		}
+		if (captchaScriptPromise) {
+			return captchaScriptPromise;
+		}
+		captchaScriptPromise = new Promise(function (resolve, reject) {
+			var src =
+				captchaCfg.provider === 'turnstile'
+					? 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
+					: 'https://www.google.com/recaptcha/api.js?render=explicit';
+			var existing = document.querySelector('script[data-pf-captcha-src="' + src + '"]');
+			if (existing) {
+				existing.addEventListener('load', function () {
+					resolve();
+				});
+				existing.addEventListener('error', reject);
+				return;
+			}
+			var s = document.createElement('script');
+			s.src = src;
+			s.async = true;
+			s.defer = true;
+			s.setAttribute('data-pf-captcha-src', src);
+			s.onload = function () {
+				resolve();
+			};
+			s.onerror = reject;
+			document.head.appendChild(s);
+		});
+		return captchaScriptPromise;
+	}
+
+	function mountCaptcha() {
+		var el = root.querySelector('[data-pf-captcha]');
+		if (!el || !captchaEnabled()) {
+			return;
+		}
+		captchaWidgetId = null;
+		el.innerHTML = '';
+		ensureCaptchaScript()
+			.then(function () {
+				if (!root.querySelector('[data-pf-captcha]')) {
+					return;
+				}
+				el = root.querySelector('[data-pf-captcha]');
+				if (captchaCfg.provider === 'turnstile' && window.turnstile) {
+					captchaWidgetId = window.turnstile.render(el, {
+						sitekey: captchaCfg.site_key,
+						theme: (cfg.formTheme || 'dark') === 'light' ? 'light' : 'dark',
+					});
+				} else if (captchaCfg.provider === 'recaptcha_v2' && window.grecaptcha) {
+					window.grecaptcha.ready(function () {
+						if (!root.querySelector('[data-pf-captcha]')) {
+							return;
+						}
+						captchaWidgetId = window.grecaptcha.render(el, {
+							sitekey: captchaCfg.site_key,
+							theme: (cfg.formTheme || 'dark') === 'light' ? 'light' : 'dark',
+						});
+					});
+				}
+			})
+			.catch(function () {
+				/* Fail closed on submit via empty token. */
+			});
+	}
+
+	function getCaptchaToken() {
+		if (!captchaEnabled()) {
+			return '';
+		}
+		try {
+			if (captchaCfg.provider === 'turnstile' && window.turnstile && captchaWidgetId != null) {
+				return window.turnstile.getResponse(captchaWidgetId) || '';
+			}
+			if (captchaCfg.provider === 'recaptcha_v2' && window.grecaptcha && captchaWidgetId != null) {
+				return window.grecaptcha.getResponse(captchaWidgetId) || '';
+			}
+		} catch (e) {
+			return '';
+		}
+		return '';
+	}
+
 	function prefersReducedMotion() {
 		return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	}
@@ -57,33 +162,102 @@
 		}, 480);
 	}
 
+	var scrollTopTimers = [];
+	function bookingScrollOffset() {
+		var offset = 16;
+		if (document.body.classList.contains('admin-bar')) {
+			offset += window.innerWidth <= 782 ? 46 : 32;
+		}
+		return offset;
+	}
+	function scrollBookingTop() {
+		scrollTopTimers.forEach(function (id) {
+			window.clearTimeout(id);
+		});
+		scrollTopTimers = [];
+		function pin() {
+			try {
+				var anchor =
+					root.querySelector('.prime-fleet__progress') ||
+					root.querySelector('[data-pf-shell="1"]') ||
+					root;
+				var cur = window.pageYOffset || window.scrollY || 0;
+				var rectTop = anchor.getBoundingClientRect().top;
+				var y = rectTop + cur;
+				var top = Math.max(0, Math.round(y - bookingScrollOffset()));
+				/*
+				 * Only scroll UP when the user was deep in a long step (progress
+				 * above the viewport). Never scroll the page DOWN on Next/timeline —
+				 * that felt like a jump when already near the booking header.
+				 */
+				if (top >= cur - 1) {
+					return;
+				}
+				window.scrollTo(0, top);
+				document.documentElement.scrollTop = top;
+			} catch (e) {
+				String(e);
+			}
+		}
+		pin();
+		scrollTopTimers.push(window.setTimeout(pin, 50));
+		scrollTopTimers.push(window.setTimeout(pin, 220));
+	}
+
 	function swapMain(runPaint) {
 		var mainEl = root.querySelector('[data-pf-main]');
-		if (!mainEl || prefersReducedMotion()) {
+		try {
+			if (document.activeElement && document.activeElement.blur) {
+				document.activeElement.blur();
+			}
+		} catch (e) {
+			String(e);
+		}
+		/* Freeze scroll-anchoring for the swap window. */
+		var html = document.documentElement;
+		var prevAnchor = html.style.overflowAnchor;
+		html.style.overflowAnchor = 'none';
+		function finish() {
 			runPaint();
+			if (mainEl) {
+				mainEl.classList.remove('is-exit');
+				void mainEl.offsetWidth;
+				mainEl.classList.add('is-enter');
+			}
+			scrollBookingTop();
+			window.setTimeout(function () {
+				html.style.overflowAnchor = prevAnchor;
+			}, 450);
+		}
+		if (!mainEl || prefersReducedMotion()) {
+			finish();
 			return;
 		}
 		mainEl.classList.remove('is-enter');
 		mainEl.classList.add('is-exit');
-		window.setTimeout(function () {
-			runPaint();
-			mainEl.classList.remove('is-exit');
-			void mainEl.offsetWidth;
-			mainEl.classList.add('is-enter');
-		}, 200);
+		window.setTimeout(finish, 200);
 	}
 
+	/* Three booking stages — old 8-step keys still map via LEGACY_STEP_KEYS. */
 	var STEPS = [
-		{ key: 'service', label: 'Service' },
 		{ key: 'trip', label: 'Trip' },
-		{ key: 'schedule', label: 'Schedule' },
-		{ key: 'passengers', label: 'Guests' },
-		{ key: 'vehicle', label: 'Vehicle' },
-		{ key: 'addons', label: 'Add-ons' },
-		{ key: 'contact', label: 'Contact' },
-		{ key: 'review', label: 'Review' },
+		{ key: 'fleet', label: 'Fleet' },
+		{ key: 'book', label: 'Book' },
 	];
-	var DRAFT_KEY = 'prime_fleet_booking_draft_v1';
+	var LEGACY_STEP_KEYS = {
+		service: 'trip',
+		trip: 'trip',
+		schedule: 'trip',
+		passengers: 'trip',
+		vehicle: 'fleet',
+		addons: 'fleet',
+		contact: 'book',
+		review: 'book',
+		fleet: 'fleet',
+		book: 'book',
+	};
+	var DRAFT_KEY = 'prime_fleet_booking_draft_v2';
+	var DRAFT_KEY_LEGACY = 'prime_fleet_booking_draft_v1';
 	var URL_STEP = 'pf_step';
 	var URL_REF = 'pf_ref';
 
@@ -133,6 +307,10 @@
 		},
 	];
 
+	/*
+	 * Slug blurbs = seed/catalog fallbacks only (prefer service.description from API).
+	 * Do not move these into GlotPress — operator-editable catalog content.
+	 */
 	var BLURBS = {
 		airport: 'PLS / FBO · meet & greet included',
 		'airport-vip-transfer': 'PLS / FBO · meet & greet included',
@@ -197,6 +375,14 @@
 	};
 
 	var i18n = cfg.i18n || {};
+	STEPS[0].label = i18n.stepTrip || 'Trip';
+	STEPS[1].label = i18n.stepFleet || 'Fleet';
+	STEPS[2].label = i18n.stepBook || 'Book';
+	SERVICE_GROUPS[0].label = i18n.groupAirport || 'Airport & aviation';
+	SERVICE_GROUPS[1].label = i18n.groupTransfer || 'Private transfers';
+	SERVICE_GROUPS[2].label = i18n.groupHourly || 'Hourly chauffeur';
+	SERVICE_GROUPS[3].label = i18n.groupExperience || 'Experiences';
+	SERVICE_GROUPS[4].label = i18n.groupCustom || 'Custom';
 
 	function money(amount, currency) {
 		if (amount === null || typeof amount === 'undefined') {
@@ -268,15 +454,15 @@
 		}
 		var type = String(s.booking_type || '');
 		if (type === 'hourly') {
-			return 'Hourly chauffeur service';
+			return i18n.blurbHourly || 'Hourly chauffeur service';
 		}
 		if (type === 'package') {
-			return 'Fixed package experience';
+			return i18n.blurbPackage || 'Fixed package experience';
 		}
 		if (type === 'quote') {
-			return 'Custom request · quoted after review';
+			return i18n.blurbQuote || 'Custom request · quoted after review';
 		}
-		return 'Private VIP transfer';
+		return i18n.blurbRoute || 'Private VIP transfer';
 	}
 
 	function applicableAddons() {
@@ -538,6 +724,19 @@
 			});
 	}
 
+	function normalizeStageIndex(step, maxStep) {
+		var s = Number(step) || 0;
+		var m = Number(maxStep) || 0;
+		if (s > 2 || m > 2) {
+			/* Migrate pre–3-stage drafts (0–7 micro-steps). */
+			s = s <= 3 ? 0 : s <= 5 ? 1 : 2;
+			m = m <= 3 ? 0 : m <= 5 ? 1 : 2;
+		}
+		s = Math.max(0, Math.min(STEPS.length - 1, s));
+		m = Math.max(s, Math.min(STEPS.length - 1, m));
+		return { step: s, maxStep: m };
+	}
+
 	function saveDraft() {
 		try {
 			localStorage.setItem(
@@ -568,6 +767,11 @@
 	function loadDraft() {
 		try {
 			var raw = localStorage.getItem(DRAFT_KEY);
+			var fromLegacy = false;
+			if (!raw) {
+				raw = localStorage.getItem(DRAFT_KEY_LEGACY);
+				fromLegacy = !!raw;
+			}
 			if (!raw) {
 				return;
 			}
@@ -577,13 +781,34 @@
 					state[k] = d[k];
 				}
 			});
+			var norm = normalizeStageIndex(state.step, state.maxStep);
+			state.step = norm.step;
+			state.maxStep = norm.maxStep;
+			if (fromLegacy) {
+				try {
+					localStorage.removeItem(DRAFT_KEY_LEGACY);
+				} catch (e2) { String(e2); }
+				saveDraft();
+			}
 		} catch (e) { String(e); /* optional browser API / storage */ }
 	}
 
 	function clearDraft() {
 		try {
 			localStorage.removeItem(DRAFT_KEY);
+			localStorage.removeItem(DRAFT_KEY_LEGACY);
 		} catch (e) { String(e); /* optional browser API / storage */ }
+	}
+
+	function zoneNameById(id) {
+		var all = (state.config && state.config.zones) || [];
+		var n = Number(id) || 0;
+		for (var i = 0; i < all.length; i++) {
+			if (Number(all[i].id) === n) {
+				return all[i].name || '';
+			}
+		}
+		return '';
 	}
 
 	function serviceGroupId(s) {
@@ -852,8 +1077,14 @@
 		native.dispatchEvent(new Event('change', { bubbles: true }));
 	}
 
-	var MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-	var DOW_SHORT = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+	var MONTH_SHORT =
+		i18n.months && i18n.months.length === 12
+			? i18n.months
+			: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	var DOW_SHORT =
+		i18n.dowShort && i18n.dowShort.length === 7
+			? i18n.dowShort
+			: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 	function parseYmd(s) {
 		var p = String(s || '').split('-');
@@ -958,11 +1189,15 @@
 			escapeHtml(i18n.pickupDate || 'Pickup date') +
 			'">' +
 			'<div class="prime-fleet__cal-head">' +
-			'<button type="button" class="prime-fleet__cal-nav" data-pf-cal-nav="prev" aria-label="Previous month">‹</button>' +
+			'<button type="button" class="prime-fleet__cal-nav" data-pf-cal-nav="prev" aria-label="' +
+			escapeHtml(i18n.prevMonth || 'Previous month') +
+			'">‹</button>' +
 			'<p class="prime-fleet__cal-title" data-pf-cal-title>' +
 			escapeHtml(MONTH_SHORT[viewM - 1] + ' ' + viewY) +
 			'</p>' +
-			'<button type="button" class="prime-fleet__cal-nav" data-pf-cal-nav="next" aria-label="Next month">›</button>' +
+			'<button type="button" class="prime-fleet__cal-nav" data-pf-cal-nav="next" aria-label="' +
+			escapeHtml(i18n.nextMonth || 'Next month') +
+			'">›</button>' +
 			'</div>' +
 			'<div class="prime-fleet__cal-dow" aria-hidden="true">' +
 			DOW_SHORT.map(function (d) {
@@ -1098,11 +1333,14 @@
 	}
 
 	function stepKeyAt(idx) {
-		return STEPS[idx] ? STEPS[idx].key : 'service';
+		return STEPS[idx] ? STEPS[idx].key : 'trip';
 	}
 
 	function stepIndexFromKey(key) {
 		var k = String(key || '');
+		if (LEGACY_STEP_KEYS[k]) {
+			k = LEGACY_STEP_KEYS[k];
+		}
 		for (var i = 0; i < STEPS.length; i++) {
 			if (STEPS[i].key === k) {
 				return i;
@@ -1154,6 +1392,7 @@
 			state.result = {
 				reference: url.ref,
 				message:
+					i18n.pendingDetail ||
 					i18n.pending ||
 					'Your transfer request is Pending Confirmation. Prime Fleet will verify vehicle availability and contact you shortly.',
 			};
@@ -1184,17 +1423,47 @@
 		syncUrl({ push: changed && opts.push !== false });
 	}
 
-	function railEmpty(status, detail) {
+	function railRows(rows) {
+		var html = '<dl class="prime-fleet__rail-rows">';
+		(rows || []).forEach(function (row) {
+			html +=
+				'<div class="prime-fleet__rail-row' +
+				(row.total ? ' is-total' : '') +
+				'"><dt>' +
+				escapeHtml(row.label) +
+				'</dt><dd>' +
+				escapeHtml(row.value) +
+				'</dd></div>';
+		});
+		html += '</dl>';
+		return html;
+	}
+
+	function railServiceName(svc) {
+		return (svc && svc.name) || '';
+	}
+
+	function railEmpty(detail, svc) {
+		var name = railServiceName(svc);
+		if (!name) {
+			return (
+				'<div class="prime-fleet__rail-empty">' +
+				'<p class="prime-fleet__rail-empty-title">' +
+				escapeHtml(i18n.fareEmpty || 'No service selected') +
+				'</p>' +
+				'<p class="prime-fleet__rail-detail">' +
+				escapeHtml(
+					detail || i18n.fareEmptyDetail || 'Choose a service to begin your quote.'
+				) +
+				'</p></div>'
+			);
+		}
 		return (
-			'<div class="prime-fleet__rail-empty">' +
-			'<p class="prime-fleet__rail-amount is-empty" aria-hidden="true">—</p>' +
-			'<p class="prime-fleet__rail-status">' +
-			escapeHtml(status) +
-			'</p>' +
-			(detail
-				? '<p class="prime-fleet__rail-detail">' + escapeHtml(detail) + '</p>'
-				: '') +
-			'</div>'
+			railRows([
+				{ label: i18n.railService || 'Service', value: name },
+				{ label: i18n.railFare || 'Fare', value: '—', total: true },
+			]) +
+			(detail ? '<p class="prime-fleet__rail-detail">' + escapeHtml(detail) + '</p>' : '')
 		);
 	}
 
@@ -1210,55 +1479,61 @@
 		if (!state.serviceId) {
 			mode = 'empty';
 			body = railEmpty(
-				i18n.fareEmpty || 'No service selected',
-				i18n.fareEmptyDetail || 'Choose a service to begin your quote.'
+				i18n.fareEmptyDetail || 'Choose a service to begin your quote.',
+				null
 			);
 		} else if (!zonesReady) {
 			mode = 'pending';
 			body = railEmpty(
-				i18n.fareBuild || 'Trip details needed',
-				i18n.fareBuildDetail || 'Add pickup and drop-off to unlock an estimate.'
+				i18n.fareBuildDetail || 'Add pickup and drop-off to unlock an estimate.',
+				svc
 			);
 		} else if (!q && state.busy) {
 			mode = 'loading';
 			body =
 				'<div class="prime-fleet__rail-estimating" role="status">' +
 				'<div class="prime-fleet__rail-meter" aria-hidden="true"><span></span></div>' +
-				'<p class="prime-fleet__rail-status">' +
-				escapeHtml(i18n.fareCalc || 'Calculating estimate…') +
-				'</p>' +
+				railRows([
+					{ label: i18n.railService || 'Service', value: railServiceName(svc) },
+					{ label: i18n.railFare || 'Fare', value: '…', total: true },
+				]) +
 				'<p class="prime-fleet__rail-detail">' +
-				escapeHtml(i18n.fareCalcDetail || 'Checking rates for this route.') +
+				escapeHtml(i18n.fareCalc || 'Calculating estimate…') +
 				'</p></div>';
 		} else if (!q) {
 			mode = 'pending';
 			body = railEmpty(
-				i18n.farePending || 'Estimate pending',
-				i18n.farePendingDetail || 'Finish schedule details and your estimate will appear here.'
+				i18n.farePendingDetail ||
+					'Finish schedule details and your estimate will appear here.',
+				svc
 			);
 		} else if (q.quote_error) {
 			mode = 'error';
 			body = railEmpty(
-				i18n.quoteFail || 'Estimate unavailable',
-				q.message || i18n.quoteFailDetail || 'Try adjusting trip details, or continue for a custom quote.'
+				q.message ||
+					i18n.quoteFailDetail ||
+					'Try adjusting trip details, or continue for a custom quote.',
+				svc
 			);
 		} else if (q.manual_quote) {
 			mode = 'custom';
 			var rateNote =
 				q.explanation && q.explanation.length ? String(q.explanation[0]) : '';
 			body = railEmpty(
-				i18n.customQuote || 'Custom quote',
 				/no published rate/i.test(rateNote)
 					? rateNote
 					: q.message ||
 							(state.config && state.config.copy && state.config.copy.custom_quote_message) ||
-							(i18n.customQuoteDetail || 'We’ll review this trip and send a written quotation.')
+							(i18n.customQuoteDetail ||
+								'We’ll review this trip and send a written quotation.'),
+				svc
 			);
 		} else if (q.total === null || typeof q.total === 'undefined') {
 			mode = 'pending';
 			body = railEmpty(
-				i18n.farePending || 'Estimate pending',
-				i18n.farePendingDetail || 'Finish schedule details and your estimate will appear here.'
+				i18n.farePendingDetail ||
+					'Finish schedule details and your estimate will appear here.',
+				svc
 			);
 		} else {
 			mode = 'priced';
@@ -1266,41 +1541,48 @@
 			if (state.coupon && typeof state.coupon.fare_after !== 'undefined') {
 				displayTotal = state.coupon.fare_after;
 			}
-			body =
-				'<p class="prime-fleet__rail-total">' +
-				escapeHtml(money(displayTotal, q.currency || (state.config && state.config.currency))) +
-				'</p>';
+			var fareStr = money(
+				displayTotal,
+				q.currency || (state.config && state.config.currency)
+			);
 			if (state.busy) {
 				body =
 					'<div class="prime-fleet__rail-estimating is-refresh" role="status">' +
 					'<div class="prime-fleet__rail-meter" aria-hidden="true"><span></span></div>' +
-					'<p class="prime-fleet__rail-status">' +
-					escapeHtml(money(displayTotal, q.currency || (state.config && state.config.currency))) +
-					'</p>' +
+					railRows([
+						{ label: i18n.railService || 'Service', value: railServiceName(svc) },
+						{ label: i18n.railFare || 'Fare', value: fareStr, total: true },
+					]) +
 					'<p class="prime-fleet__rail-detail">' +
 					escapeHtml(i18n.fareUpdating || 'Updating estimate…') +
 					'</p></div>';
-			} else if (state.couponBusy) {
-				body +=
-					'<p class="prime-fleet__rail-msg">' +
-					escapeHtml(i18n.couponApplying || 'Applying coupon…') +
-					'</p>';
-			} else if (state.coupon && (state.coupon.code || state.coupon.message)) {
-				var couponLabel =
-					state.coupon.message ||
-					(i18n.couponApplied || 'Coupon applied.') +
-						(typeof state.coupon.discount !== 'undefined'
-							? ' −' + Number(state.coupon.discount).toFixed(2)
-							: '');
-				body +=
-					'<div class="prime-fleet__rail-coupon">' +
-					'<p class="prime-fleet__rail-msg">' +
-					escapeHtml(couponLabel) +
-					(state.coupon.code ? ' (' + escapeHtml(state.coupon.code) + ')' : '') +
-					'</p>' +
-					'<button type="button" class="prime-fleet__rail-coupon-remove" data-action="remove-coupon" aria-label="' +
-					escapeHtml(i18n.removeCoupon || 'Remove coupon') +
-					'">×</button></div>';
+			} else {
+				body = railRows([
+					{ label: i18n.railService || 'Service', value: railServiceName(svc) },
+					{ label: i18n.railFare || 'Fare', value: fareStr, total: true },
+				]);
+				if (state.couponBusy) {
+					body +=
+						'<p class="prime-fleet__rail-msg">' +
+						escapeHtml(i18n.couponApplying || 'Applying coupon…') +
+						'</p>';
+				} else if (state.coupon && (state.coupon.code || state.coupon.message)) {
+					var couponLabel =
+						state.coupon.message ||
+						(i18n.couponApplied || 'Coupon applied.') +
+							(typeof state.coupon.discount !== 'undefined'
+								? ' −' + Number(state.coupon.discount).toFixed(2)
+								: '');
+					body +=
+						'<div class="prime-fleet__rail-coupon">' +
+						'<p class="prime-fleet__rail-msg">' +
+						escapeHtml(couponLabel) +
+						(state.coupon.code ? ' (' + escapeHtml(state.coupon.code) + ')' : '') +
+						'</p>' +
+						'<button type="button" class="prime-fleet__rail-coupon-remove" data-action="remove-coupon" aria-label="' +
+						escapeHtml(i18n.removeCouponLabel || i18n.removeCoupon || 'Remove coupon') +
+						'">×</button></div>';
+				}
 			}
 		}
 
@@ -1412,11 +1694,11 @@
 				  escapeHtml(i18n.back || 'Back') +
 				  '</button>'
 				: '';
-		var onReview = STEPS[state.step] && STEPS[state.step].key === 'review';
-		var submitting = state.submitting && onReview;
+		var onBook = STEPS[state.step] && STEPS[state.step].key === 'book';
+		var submitting = state.submitting && onBook;
 		var label = submitting
 			? i18n.submitting || 'Submitting…'
-			: nextLabel || i18n.continue || 'Continue';
+			: nextLabel || (onBook ? i18n.submit || 'Submit request' : i18n.continue || 'Continue');
 		var spin = submitting
 			? '<span class="prime-fleet__spinner" aria-hidden="true"></span>'
 			: '';
@@ -1435,6 +1717,13 @@
 			escapeHtml(label) +
 			'</button></div>'
 		);
+	}
+
+	function maybeActions(opts, canNext, nextLabel) {
+		if (opts && opts.embedded) {
+			return '';
+		}
+		return actions(canNext, nextLabel);
 	}
 
 	function renderServiceListItems() {
@@ -1467,7 +1756,8 @@
 			.join('');
 	}
 
-	function renderServiceStep() {
+	function renderServiceStep(opts) {
+		opts = opts || {};
 		var services = (state.config && state.config.services) || [];
 		ensureServiceGroup();
 		var groups = activeGroups();
@@ -1505,19 +1795,23 @@
 			'</div><ul class="prime-fleet__services prime-fleet__services--stack" data-pf-service-list>' +
 			renderServiceListItems() +
 			'</ul>' +
-			actions(!!state.serviceId) +
+			maybeActions(opts, !!state.serviceId) +
 			'</div>'
 		);
 	}
 
-	function renderTripStep() {
+	function renderTripStep(opts) {
+		opts = opts || {};
 		var svc = selectedService();
 		var needsZones = !svc || svc.booking_type === 'route';
 		var allowOw = !svc || !svc.settings || Number(svc.settings.allow_one_way) === 1;
 		var allowRt = svc && svc.settings && Number(svc.settings.allow_round_trip) === 1;
 		var tripChoices = '';
 		if (needsZones && (allowOw || allowRt)) {
-			tripChoices = '<div class="prime-fleet__segment" role="tablist" aria-label="Trip type">';
+			tripChoices =
+				'<div class="prime-fleet__segment" role="tablist" aria-label="' +
+				escapeHtml(i18n.tripType || 'Trip type') +
+				'">';
 			if (allowOw) {
 				tripChoices +=
 					'<button type="button" role="tab" class="prime-fleet__segment-btn' +
@@ -1548,10 +1842,12 @@
 						? i18n.tripPackageHint || 'Fixed package — continue to set your schedule.'
 						: i18n.tripQuoteHint || 'Custom request — continue to share schedule and contact details.';
 			return (
-				'<div class="prime-fleet__panel prime-fleet__panel--trip"><h2>Trip details</h2><p class="prime-fleet__hint">' +
+				'<div class="prime-fleet__panel prime-fleet__panel--trip"><h2>' +
+				escapeHtml(i18n.tripDetails || 'Trip details') +
+				'</h2><p class="prime-fleet__hint">' +
 				escapeHtml(typeHint) +
 				'</p>' +
-				actions(true) +
+				maybeActions(opts, true) +
 				'</div>'
 			);
 		}
@@ -1571,9 +1867,15 @@
 				'</p>';
 		}
 		return (
-			'<div class="prime-fleet__panel prime-fleet__panel--trip"><h2>Trip details</h2><p class="prime-fleet__hint">Pickup and destination zones for this transfer.</p>' +
+			'<div class="prime-fleet__panel prime-fleet__panel--trip"><h2>' +
+			escapeHtml(i18n.tripDetails || 'Trip details') +
+			'</h2><p class="prime-fleet__hint">' +
+			escapeHtml(i18n.tripZonesHint || 'Pickup and destination zones for this transfer.') +
+			'</p>' +
 			(tripChoices ? '<div class="prime-fleet__field prime-fleet__field--trip-type">' + tripChoices + '</div>' : '') +
-			'<div class="prime-fleet__grid is-2"><div class="prime-fleet__field"><label for="pf-origin">Pickup zone</label>' +
+			'<div class="prime-fleet__grid is-2"><div class="prime-fleet__field"><label for="pf-origin">' +
+			escapeHtml(i18n.pickupZone || 'Pickup zone') +
+			'</label>' +
 			renderFancySelect({
 				id: 'pf-origin',
 				name: 'origin_zone_id',
@@ -1581,7 +1883,9 @@
 				options: zoneOptionList(state.originZoneId, 'pickup', state.destZoneId),
 				searchable: true,
 			}) +
-			'</div><div class="prime-fleet__field"><label for="pf-dest">Destination zone</label>' +
+			'</div><div class="prime-fleet__field"><label for="pf-dest">' +
+			escapeHtml(i18n.destZone || 'Destination zone') +
+			'</label>' +
 			renderFancySelect({
 				id: 'pf-dest',
 				name: 'dest_zone_id',
@@ -1591,12 +1895,13 @@
 			}) +
 			'</div></div>' +
 			zoneWarn +
-			actions(!!can) +
+			maybeActions(opts, !!can) +
 			'</div>'
 		);
 	}
 
-	function renderScheduleStep() {
+	function renderScheduleStep(opts) {
+		opts = opts || {};
 		var alts = '';
 		if (
 			state.quote &&
@@ -1663,24 +1968,32 @@
 			});
 		}
 		var hint =
-			'<p class="prime-fleet__hint">When should we meet you?</p>' +
+			'<p class="prime-fleet__hint">' +
+			escapeHtml(i18n.scheduleHint || 'When should we meet you?') +
+			'</p>' +
 			earliestHint +
 			(schedErr ? '<p class="prime-fleet__field-error" role="alert">' + escapeHtml(schedErr) + '</p>' : '');
 		return (
-			'<div class="prime-fleet__panel"><h2>Schedule</h2>' +
+			'<div class="prime-fleet__panel"><h2>' +
+			escapeHtml(i18n.scheduleTitle || 'Schedule') +
+			'</h2>' +
 			hint +
-			'<div class="prime-fleet__grid is-2"><div class="prime-fleet__field"><label for="pf-date">Pickup date</label>' +
+			'<div class="prime-fleet__grid is-2"><div class="prime-fleet__field"><label for="pf-date">' +
+			escapeHtml(i18n.pickupDate || 'Pickup date') +
+			'</label>' +
 			renderFancyDate({
 				id: 'pf-date',
 				name: 'pickup_date',
 				value: state.pickupDate || '',
 				min: minDate || '',
 			}) +
-			'</div><div class="prime-fleet__field"><label for="pf-time">Pickup time</label>' +
+			'</div><div class="prime-fleet__field"><label for="pf-time">' +
+			escapeHtml(i18n.pickupTime || 'Pickup time') +
+			'</label>' +
 			timeField +
 			'</div></div>' +
 			alts +
-			actions(scheduleReady()) +
+			maybeActions(opts, scheduleReady()) +
 			'</div>'
 		);
 	}
@@ -1689,24 +2002,24 @@
 		return [
 			{
 				key: 'passengers',
-				name: 'Passengers',
-				hint: 'Guests in the vehicle',
+				name: i18n.passengers || 'Passengers',
+				hint: i18n.passengersHint || 'Guests in the vehicle',
 				min: 1,
 				max: maxPax,
 				value: state.passengers || 1,
 			},
 			{
 				key: 'checked_bags',
-				name: 'Checked bags',
-				hint: 'Suitcases in the hold',
+				name: i18n.checkedBags || 'Checked bags',
+				hint: i18n.checkedBagsHint || 'Suitcases in the hold',
 				min: 0,
 				max: 50,
 				value: state.checkedBags || 0,
 			},
 			{
 				key: 'carry_on_bags',
-				name: 'Carry-on bags',
-				hint: 'Bags in the cabin',
+				name: i18n.carryOnBags || 'Carry-on bags',
+				hint: i18n.carryOnBagsHint || 'Bags in the cabin',
 				min: 0,
 				max: 50,
 				value: state.carryOnBags || 0,
@@ -1736,7 +2049,9 @@
 			'">' +
 			'<button type="button" class="prime-fleet__qty-btn" data-guest-dec="' +
 			escapeHtml(item.key) +
-			'" aria-label="Decrease"' +
+			'" aria-label="' +
+			escapeHtml(i18n.decrease || 'Decrease') +
+			'"' +
 			(qty <= item.min ? ' disabled' : '') +
 			'>−</button>' +
 			'<span class="prime-fleet__qty-val" data-guest-val="' +
@@ -1750,14 +2065,17 @@
 			escapeHtml(String(item.min)) +
 			'" data-guest-max="' +
 			escapeHtml(String(item.max)) +
-			'" aria-label="Increase"' +
+			'" aria-label="' +
+			escapeHtml(i18n.increase || 'Increase') +
+			'"' +
 			(qty >= item.max ? ' disabled' : '') +
 			'>+</button>' +
 			'</div></div>'
 		);
 	}
 
-	function renderPassengersStep() {
+	function renderPassengersStep(opts) {
+		opts = opts || {};
 		var svc = selectedService();
 		var maxPax = 50;
 		if (svc && svc.slug === 'airport-vip-transfer') {
@@ -1772,7 +2090,9 @@
 			})
 			.join('');
 		return (
-			'<div class="prime-fleet__panel prime-fleet__panel--guests"><h2>Guests & luggage</h2><p class="prime-fleet__hint">' +
+			'<div class="prime-fleet__panel prime-fleet__panel--guests"><h2>' +
+			escapeHtml(i18n.guestsTitle || 'Guests & luggage') +
+			'</h2><p class="prime-fleet__hint">' +
 			escapeHtml(
 				maxPax === 13
 					? i18n.paxHintSprinter ||
@@ -1782,7 +2102,7 @@
 			'</p><div class="prime-fleet__addons prime-fleet__addons--guests">' +
 			rows +
 			'</div>' +
-			actions(state.passengers >= 1) +
+			maybeActions(opts, state.passengers >= 1) +
 			'</div>'
 		);
 	}
@@ -1832,7 +2152,8 @@
 		saveDraft();
 	}
 
-	function renderVehicleStep() {
+	function renderVehicleStep(opts) {
+		opts = opts || {};
 		var vehicles = (state.quote && state.quote.vehicles) || [];
 		var svc = selectedService();
 		var choice = svc && svc.settings ? svc.settings.customer_vehicle_choice : 'recommend';
@@ -1890,16 +2211,19 @@
 				? escapeHtml(i18n.pickVehicleHint || 'Choose a vehicle that fits your party (Escalade or Sprinter).')
 				: escapeHtml(i18n.vehicleHint || 'Suitable options for your party size.');
 		return (
-			'<div class="prime-fleet__panel"><h2>Vehicle</h2><p class="prime-fleet__hint">' +
+			'<div class="prime-fleet__panel"><h2>' +
+			escapeHtml(i18n.vehicleTitle || 'Vehicle') +
+			'</h2><p class="prime-fleet__hint">' +
 			hint +
 			'</p>' +
 			html +
-			actions(can) +
+			maybeActions(opts, can) +
 			'</div>'
 		);
 	}
 
-	function renderAddonsStep() {
+	function renderAddonsStep(opts) {
+		opts = opts || {};
 		var list = applicableAddons();
 		var html = '';
 		if (!list.length) {
@@ -1934,7 +2258,9 @@
 					' quantity">' +
 					'<button type="button" class="prime-fleet__qty-btn" data-addon-dec="' +
 					escapeHtml(String(a.id)) +
-					'" aria-label="Decrease"' +
+					'" aria-label="' +
+					escapeHtml(i18n.decrease || 'Decrease') +
+					'"' +
 					(qty <= 0 ? ' disabled' : '') +
 					'>−</button>' +
 					'<span class="prime-fleet__qty-val" data-addon-val="' +
@@ -1946,7 +2272,9 @@
 					escapeHtml(String(a.id)) +
 					'" data-addon-max="' +
 					escapeHtml(String(max)) +
-					'" aria-label="Increase"' +
+					'" aria-label="' +
+					escapeHtml(i18n.increase || 'Increase') +
+					'"' +
 					(qty >= max ? ' disabled' : '') +
 					'>+</button>' +
 					'</div></div>';
@@ -1954,9 +2282,13 @@
 			html += '</div>';
 		}
 		return (
-			'<div class="prime-fleet__panel prime-fleet__panel--addons"><h2>Add-ons</h2><p class="prime-fleet__hint">Optional extras. Meet &amp; Greet stays included on Airport VIP.</p>' +
+			'<div class="prime-fleet__panel prime-fleet__panel--addons"><h2>' +
+			escapeHtml(i18n.addonsTitle || 'Add-ons') +
+			'</h2><p class="prime-fleet__hint">' +
+			escapeHtml(i18n.addonsHint || 'Optional extras. Meet & Greet stays included on Airport VIP.') +
+			'</p>' +
 			html +
-			actions(true) +
+			maybeActions(opts, true) +
 			'</div>'
 		);
 	}
@@ -1999,7 +2331,8 @@
 		return (hasPlus ? '+' : '') + digits;
 	}
 
-	function renderContactStep() {
+	function renderContactStep(opts) {
+		opts = opts || {};
 		var attempted = !!(state.stepAttempted && state.stepAttempted.contact);
 		var phoneOk = phoneDigits(state.customerPhone).length >= 7;
 		var phoneHint = '';
@@ -2015,18 +2348,30 @@
 				'</p>';
 		}
 		return (
-			'<div class="prime-fleet__panel prime-fleet__panel--contact"><h2>Contact</h2><p class="prime-fleet__hint">We use this to confirm your transfer.</p><div class="prime-fleet__grid is-2"><div class="prime-fleet__field"><label for="pf-name">Full name</label><input type="text" id="pf-name" name="customer_name" autocomplete="name" value="' +
+			'<div class="prime-fleet__panel prime-fleet__panel--contact"><h2>' +
+			escapeHtml(i18n.contactTitle || 'Contact') +
+			'</h2><p class="prime-fleet__hint">' +
+			escapeHtml(i18n.contactHint || 'We use this to confirm your transfer.') +
+			'</p><div class="prime-fleet__grid is-2"><div class="prime-fleet__field"><label for="pf-name">' +
+			escapeHtml(i18n.fullName || 'Full name') +
+			'</label><input type="text" id="pf-name" name="customer_name" autocomplete="name" value="' +
 			escapeHtml(state.customerName) +
-			'" /></div><div class="prime-fleet__field"><label for="pf-email">Email</label><input type="email" id="pf-email" name="customer_email" autocomplete="email" value="' +
+			'" /></div><div class="prime-fleet__field"><label for="pf-email">' +
+			escapeHtml(i18n.email || 'Email') +
+			'</label><input type="email" id="pf-email" name="customer_email" autocomplete="email" value="' +
 			escapeHtml(state.customerEmail) +
-			'" /></div><div class="prime-fleet__field"><label for="pf-phone">Phone</label><input type="tel" id="pf-phone" name="customer_phone" inputmode="numeric" autocomplete="tel" pattern="[0-9+]*" maxlength="20" value="' +
+			'" /></div><div class="prime-fleet__field"><label for="pf-phone">' +
+			escapeHtml(i18n.phone || 'Phone') +
+			'</label><input type="tel" id="pf-phone" name="customer_phone" inputmode="numeric" autocomplete="tel" pattern="[0-9+]*" maxlength="20" value="' +
 			escapeHtml(state.customerPhone) +
 			'" />' +
 			phoneHint +
-			'</div><div class="prime-fleet__field"><label for="pf-wa">WhatsApp</label><input type="tel" id="pf-wa" name="customer_whatsapp" inputmode="numeric" pattern="[0-9+]*" maxlength="20" value="' +
+			'</div><div class="prime-fleet__field"><label for="pf-wa">' +
+			escapeHtml(i18n.whatsapp || 'WhatsApp') +
+			'</label><input type="tel" id="pf-wa" name="customer_whatsapp" inputmode="numeric" pattern="[0-9+]*" maxlength="20" value="' +
 			escapeHtml(state.customerWhatsapp) +
 			'" /></div></div><div class="prime-fleet__hp" aria-hidden="true"><label>Company website<input type="text" name="company_website" tabindex="-1" autocomplete="off" value="" /></label></div>' +
-			actions(contactReady()) +
+			maybeActions(opts, contactReady()) +
 			'</div>'
 		);
 	}
@@ -2055,11 +2400,21 @@
 			(applyDisabled ? ' is-disabled' : '') +
 			(state.couponBusy ? ' is-loading' : '');
 		return (
-			'<div class="prime-fleet__panel"><h2>Review &amp; submit</h2><p class="prime-fleet__hint">Requests default to Pending Confirmation.</p><ul class="prime-fleet__review"><li><strong>Service</strong>' +
+			'<div class="prime-fleet__panel"><h2>' +
+			escapeHtml(i18n.reviewTitle || 'Review & submit') +
+			'</h2><p class="prime-fleet__hint">' +
+			escapeHtml(i18n.reviewHint || 'Requests default to Pending Confirmation.') +
+			'</p><ul class="prime-fleet__review"><li><strong>' +
+			escapeHtml(i18n.railService || 'Service') +
+			'</strong>' +
 			escapeHtml(svc ? svc.name : '') +
-			'</li><li><strong>When</strong>' +
+			'</li><li><strong>' +
+			escapeHtml(i18n.when || 'When') +
+			'</strong>' +
 			escapeHtml(state.pickupDate + ' · ' + state.pickupTime) +
-			'</li><li><strong>Contact</strong>' +
+			'</li><li><strong>' +
+			escapeHtml(i18n.contactTitle || 'Contact') +
+			'</strong>' +
 			escapeHtml(state.customerName + ' · ' + state.customerEmail) +
 			'</li></ul>' +
 			'<div class="prime-fleet__coupon"><div class="prime-fleet__field"><label for="pf-coupon">' +
@@ -2085,6 +2440,11 @@
 			couponErr +
 			couponOk +
 			'</div>' +
+			(captchaEnabled()
+				? '<div class="prime-fleet__captcha" data-pf-captcha="1" aria-label="' +
+				  escapeHtml(i18n.captcha || 'Security check') +
+				  '"></div>'
+				: '') +
 			'<label class="prime-fleet__terms"><input type="checkbox" name="terms_accepted"' +
 			(state.termsAccepted ? ' checked' : '') +
 			'> ' +
@@ -2094,39 +2454,75 @@
 			) +
 			'</label>' +
 			err +
-			actions(state.termsAccepted && !state.submitting, i18n.submit || 'Submit request') +
+			'</div>'
+		);
+	}
+
+	function renderTripStage() {
+		var html = '<div class="prime-fleet__stage" data-pf-stage="trip">';
+		html += renderServiceStep({ embedded: true });
+		if (state.serviceId) {
+			html += renderTripStep({ embedded: true });
+			html += renderScheduleStep({ embedded: true });
+			html += renderPassengersStep({ embedded: true });
+		}
+		html += actions(stepReadyAt(0));
+		html += '</div>';
+		return html;
+	}
+
+	function renderFleetStage() {
+		return (
+			'<div class="prime-fleet__stage" data-pf-stage="fleet">' +
+			renderVehicleStep({ embedded: true }) +
+			renderAddonsStep({ embedded: true }) +
+			actions(stepReadyAt(1)) +
+			'</div>'
+		);
+	}
+
+	function renderBookStage() {
+		return (
+			'<div class="prime-fleet__stage" data-pf-stage="book">' +
+			renderContactStep({ embedded: true }) +
+			renderReviewStep() +
+			actions(stepReadyAt(2), i18n.submit || 'Submit request') +
 			'</div>'
 		);
 	}
 
 	function panelBody() {
-		switch (STEPS[state.step].key) {
-			case 'service':
-				return renderServiceStep();
-			case 'trip':
-				return renderTripStep();
-			case 'schedule':
-				return renderScheduleStep();
-			case 'passengers':
-				return renderPassengersStep();
-			case 'vehicle':
-				return renderVehicleStep();
-			case 'addons':
-				return renderAddonsStep();
-			case 'contact':
-				return renderContactStep();
-			default:
-				return renderReviewStep();
+		var key = STEPS[state.step] && STEPS[state.step].key;
+		if (key === 'fleet') {
+			return renderFleetStage();
 		}
+		if (key === 'book') {
+			return renderBookStage();
+		}
+		return renderTripStage();
 	}
 
 	function renderSteps() {
-		var pct = STEPS.length > 1 ? Math.round((state.step / (STEPS.length - 1)) * 100) : 0;
+		var tl = STEPS.length > 1 ? state.step / (STEPS.length - 1) : 0;
+		var canBack = state.step > 0;
+		var canNext = canAdvance() && !state.submitting;
+		var nextLabel =
+			STEPS[state.step] && STEPS[state.step].key === 'book'
+				? i18n.submit || 'Submit'
+				: i18n.continue || 'Continue';
 		var html =
-			'<div class="prime-fleet__progress-bar" aria-hidden="true"><span style="width:' +
-			pct +
+			'<div class="prime-fleet__tl">' +
+			'<button type="button" class="prime-fleet__tl-arrow" data-action="back" aria-label="' +
+			escapeHtml(i18n.back || 'Back') +
+			'"' +
+			(canBack && !state.submitting ? '' : ' disabled aria-disabled="true"') +
+			'><span aria-hidden="true">‹</span></button>' +
+			'<div class="prime-fleet__tl-body">' +
+			'<div class="prime-fleet__tl-track" aria-hidden="true">' +
+			'<span class="prime-fleet__tl-fill" style="width:' +
+			Math.round(tl * 100) +
 			'%"></span></div>' +
-			'<ol class="prime-fleet__steps">';
+			'<ol class="prime-fleet__steps prime-fleet__steps--stages prime-fleet__steps--timeline">';
 		STEPS.forEach(function (step, i) {
 			var cls = 'prime-fleet__step';
 			var locked = i > state.maxStep;
@@ -2137,9 +2533,10 @@
 			} else {
 				cls += ' is-locked';
 			}
-			var num = i + 1 < 10 ? '0' + (i + 1) : String(i + 1);
+			var num = String(i + 1);
 			html +=
-				'<li class="prime-fleet__step-item"><span role="button" tabindex="' +
+				'<li class="prime-fleet__step-item">' +
+				'<span role="button" tabindex="' +
 				(locked ? '-1' : '0') +
 				'" class="' +
 				cls +
@@ -2154,15 +2551,132 @@
 				escapeHtml(step.label) +
 				'</span></span></li>';
 		});
-		html += '</ol>';
+		html +=
+			'</ol></div>' +
+			'<button type="button" class="prime-fleet__tl-arrow" data-action="next" aria-label="' +
+			escapeHtml(nextLabel) +
+			'"' +
+			(canNext ? '' : ' disabled aria-disabled="true"') +
+			'><span aria-hidden="true">›</span></button>' +
+			'</div>';
+		return html;
+	}
+
+	function renderSummary() {
+		if (!state.serviceId) {
+			return '';
+		}
+		var svc = selectedService();
+		var items = [];
+		if (svc) {
+			items.push({
+				label: i18n.railService || 'Service',
+				value: svc.name,
+			});
+		}
+		var origin = zoneNameById(state.originZoneId);
+		var dest = zoneNameById(state.destZoneId);
+		if (origin || dest) {
+			items.push({
+				label: i18n.summaryRoute || 'Route',
+				value: [origin || '—', dest || '—'].join(' → '),
+			});
+		}
+		if (state.pickupDate) {
+			var when = formatDateLabel(state.pickupDate) || state.pickupDate;
+			if (state.pickupTime) {
+				when += ' · ' + formatTimeLabel(state.pickupTime);
+			}
+			items.push({
+				label: i18n.summaryWhen || 'Pickup',
+				value: when,
+			});
+		}
+		if (state.passengers >= 1) {
+			var guestN = Number(state.passengers) || 1;
+			items.push({
+				label: i18n.summaryGuests || 'Guests',
+				value:
+					guestN === 1
+						? i18n.summaryGuestOne || '1 guest'
+						: String(guestN) + ' ' + (i18n.summaryGuestsUnit || 'guests'),
+			});
+		}
+		var vehName = '';
+		if (state.vehicleId && state.quote && state.quote.vehicles) {
+			state.quote.vehicles.forEach(function (v) {
+				if (Number(v.id) === Number(state.vehicleId)) {
+					vehName = v.name || '';
+				}
+			});
+		}
+		if (vehName && state.step >= 1) {
+			items.push({
+				label: i18n.summaryFleet || 'Fleet',
+				value: vehName,
+			});
+		}
+		if (!items.length) {
+			return '';
+		}
+		var html = '<div class="prime-fleet__summary" role="region" aria-label="' +
+			escapeHtml(i18n.summaryLabel || 'Trip summary') +
+			'"><div class="prime-fleet__summary-items">';
+		items.forEach(function (it) {
+			html +=
+				'<div class="prime-fleet__summary-item" title="' +
+				escapeHtml(it.label) +
+				'"><span class="prime-fleet__summary-value">' +
+				escapeHtml(it.value) +
+				'</span></div>';
+		});
+		html += '</div><div class="prime-fleet__summary-actions">';
+		if (state.step >= 1) {
+			html +=
+				'<button type="button" class="prime-fleet__summary-change" data-action="change-trip">' +
+				escapeHtml(i18n.changeTrip || 'Edit trip') +
+				'</button>';
+		}
+		if (state.step >= 2) {
+			html +=
+				'<button type="button" class="prime-fleet__summary-change" data-action="change-fleet">' +
+				escapeHtml(i18n.changeFleet || 'Edit fleet') +
+				'</button>';
+		}
+		html += '</div></div>';
 		return html;
 	}
 
 	function renderBoot() {
 		return (
-			'<div class="prime-fleet__boot prime-fleet__boot--simple" role="status" aria-label="Loading">' +
-			'<span class="prime-fleet__loader" aria-hidden="true"><span class="prime-fleet__loader-core"></span></span>' +
-			'</div>'
+			'<div class="prime-fleet__boot" role="status" aria-live="polite" aria-busy="true">' +
+			'<div class="prime-fleet__boot-desk">' +
+			'<div class="prime-fleet__boot-brand" aria-hidden="true">' +
+			'<span class="prime-fleet__boot-mark"><span class="prime-fleet__boot-mark-ring"></span>PF</span>' +
+			'<span class="prime-fleet__boot-brand-name">Prime Fleet</span>' +
+			'</div>' +
+			'<div class="prime-fleet__boot-meter" aria-hidden="true"><span></span></div>' +
+			'<p class="prime-fleet__boot-text">' +
+			escapeHtml(i18n.loading || 'Loading booking options…') +
+			'</p>' +
+			'<div class="prime-fleet__boot-skel" aria-hidden="true">' +
+			'<div class="prime-fleet__boot-stages">' +
+			'<span></span><span></span><span></span>' +
+			'</div>' +
+			'<div class="prime-fleet__boot-layout">' +
+			'<div class="prime-fleet__boot-main">' +
+			'<span class="prime-fleet__boot-line is-lg"></span>' +
+			'<span class="prime-fleet__boot-line"></span>' +
+			'<span class="prime-fleet__boot-tile"></span>' +
+			'<span class="prime-fleet__boot-tile"></span>' +
+			'<span class="prime-fleet__boot-tile"></span>' +
+			'</div>' +
+			'<div class="prime-fleet__boot-rail">' +
+			'<span class="prime-fleet__boot-line is-sm"></span>' +
+			'<span class="prime-fleet__boot-line is-lg"></span>' +
+			'<span class="prime-fleet__boot-line"></span>' +
+			'</div>' +
+			'</div></div></div></div>'
 		);
 	}
 
@@ -2214,6 +2728,7 @@
 			escapeHtml(i18n.subtitle || 'Pick a service, confirm details, and we’ll take it from there.') +
 			'</p></header>' +
 			'<nav class="prime-fleet__progress" data-pf-steps aria-label="Booking progress"></nav>' +
+			'<div class="prime-fleet__summary-slot" data-pf-summary></div>' +
 			'<div class="prime-fleet__layout">' +
 			'<div class="prime-fleet__main" data-pf-main></div>' +
 			'<div class="prime-fleet__rail-slot" data-pf-rail-wrap></div>' +
@@ -2233,13 +2748,15 @@
 			escapeHtml(theme) +
 			'" role="alertdialog" aria-modal="true" aria-busy="true" aria-live="assertive" aria-labelledby="pf-submit-title" aria-describedby="pf-submit-detail">' +
 			'<div class="prime-fleet__submit-card">' +
-			'<div class="prime-fleet__loader prime-fleet__loader--submit" aria-hidden="true"><span class="prime-fleet__loader-core"></span></div>' +
+			'<div class="prime-fleet__submit-mark" aria-hidden="true">' +
+			'<span class="prime-fleet__boot-mark-ring"></span>PF' +
+			'</div>' +
 			'<p class="prime-fleet__submit-title" id="pf-submit-title">' +
 			escapeHtml(i18n.submittingTitle || 'Sending your request') +
 			'</p>' +
 			'<p class="prime-fleet__submit-detail" id="pf-submit-detail">' +
 			escapeHtml(
-				i18n.submittingDetail || 'Hang tight — we’re confirming details with dispatch.'
+				i18n.submittingDetail || 'Please wait while we confirm details with dispatch.'
 			) +
 			'</p>' +
 			'<div class="prime-fleet__submit-meter" aria-hidden="true"><span></span></div>' +
@@ -2267,7 +2784,7 @@
 	}
 
 	function paint(parts) {
-		parts = parts || { shell: true, steps: true, main: true, rail: true };
+		parts = parts || { shell: true, steps: true, main: true, rail: true, summary: true };
 		if (state.result) {
 			state.submitting = false;
 			root.classList.remove('is-submitting');
@@ -2286,6 +2803,12 @@
 				stepsEl.innerHTML = renderSteps();
 			}
 		}
+		if (parts.summary !== false && (parts.summary || parts.steps || parts.main || parts.rail)) {
+			var sumEl = root.querySelector('[data-pf-summary]');
+			if (sumEl) {
+				sumEl.innerHTML = renderSummary();
+			}
+		}
 		if (parts.main) {
 			var mainEl = root.querySelector('[data-pf-main]');
 			if (mainEl) {
@@ -2300,6 +2823,9 @@
 			}
 		}
 		syncSubmitOverlay();
+		if (parts.main) {
+			mountCaptcha();
+		}
 	}
 
 	/** In-step updates: refresh service list + cat active state without remounting the panel chrome. */
@@ -2356,6 +2882,7 @@
 			'<p class="prime-fleet__success-copy">' +
 			escapeHtml(
 				r.message ||
+					i18n.pendingDetail ||
 					i18n.pending ||
 					'Your transfer request is Pending Confirmation. Prime Fleet will verify vehicle availability and contact you shortly.'
 			) +
@@ -2629,8 +3156,59 @@
 		return changed;
 	}
 
+	function microReady(key) {
+		if (key === 'service') {
+			return !!state.serviceId;
+		}
+		if (key === 'trip') {
+			var svc = selectedService();
+			if (svc && svc.booking_type === 'route') {
+				return !!(state.originZoneId && state.destZoneId && state.originZoneId !== state.destZoneId);
+			}
+			return true;
+		}
+		if (key === 'schedule') {
+			return scheduleReady();
+		}
+		if (key === 'passengers') {
+			return state.passengers >= 1;
+		}
+		if (key === 'vehicle') {
+			var vehicles = (state.quote && state.quote.vehicles) || [];
+			var s = selectedService();
+			var choice = s && s.settings ? s.settings.customer_vehicle_choice : 'recommend';
+			return choice !== 'required' || !!state.vehicleId || !vehicles.length;
+		}
+		if (key === 'addons') {
+			return true;
+		}
+		if (key === 'contact') {
+			return contactReady();
+		}
+		if (key === 'review') {
+			return !!state.termsAccepted;
+		}
+		return true;
+	}
+
+	function failingMicro(stageKey) {
+		var order =
+			stageKey === 'fleet'
+				? ['vehicle', 'addons']
+				: stageKey === 'book'
+					? ['contact', 'review']
+					: ['service', 'trip', 'schedule', 'passengers'];
+		for (var i = 0; i < order.length; i++) {
+			if (!microReady(order[i])) {
+				return order[i];
+			}
+		}
+		return '';
+	}
+
 	function markStepAttempted() {
-		var key = STEPS[state.step] && STEPS[state.step].key;
+		var stage = STEPS[state.step] && STEPS[state.step].key;
+		var key = failingMicro(stage) || stage;
 		if (!key) {
 			return;
 		}
@@ -2638,6 +3216,9 @@
 			state.stepAttempted = {};
 		}
 		state.stepAttempted[key] = true;
+		if (stage) {
+			state.stepAttempted[stage] = true;
+		}
 	}
 
 	/**
@@ -2647,11 +3228,12 @@
 	function notifyStepBlocked(message) {
 		markStepAttempted();
 		var msg = message || advanceBlockedMessage();
+		var stage = STEPS[state.step] && STEPS[state.step].key;
+		var fail = failingMicro(stage);
 		var panel = root.querySelector('.prime-fleet__panel');
 		if (panel) {
-			var key = STEPS[state.step] && STEPS[state.step].key;
 			var inline = null;
-			if (key === 'service' && !state.serviceId) {
+			if (fail === 'service' && !state.serviceId) {
 				inline = i18n.pickService || 'Please choose a service first.';
 			}
 			if (inline) {
@@ -2686,36 +3268,19 @@
 		if (!key) {
 			return true;
 		}
-		if (key === 'service') {
-			return !!state.serviceId;
-		}
 		if (key === 'trip') {
-			var svc = selectedService();
-			if (svc && svc.booking_type === 'route') {
-				return !!(state.originZoneId && state.destZoneId && state.originZoneId !== state.destZoneId);
-			}
-			return true;
+			return (
+				microReady('service') &&
+				microReady('trip') &&
+				microReady('schedule') &&
+				microReady('passengers')
+			);
 		}
-		if (key === 'schedule') {
-			return scheduleReady();
+		if (key === 'fleet') {
+			return microReady('vehicle') && microReady('addons');
 		}
-		if (key === 'passengers') {
-			return state.passengers >= 1;
-		}
-		if (key === 'vehicle') {
-			var vehicles = (state.quote && state.quote.vehicles) || [];
-			var s = selectedService();
-			var choice = s && s.settings ? s.settings.customer_vehicle_choice : 'recommend';
-			return choice !== 'required' || !!state.vehicleId || !vehicles.length;
-		}
-		if (key === 'addons') {
-			return true;
-		}
-		if (key === 'contact') {
-			return contactReady();
-		}
-		if (key === 'review') {
-			return !!state.termsAccepted;
+		if (key === 'book') {
+			return microReady('contact') && microReady('review');
 		}
 		return true;
 	}
@@ -2773,7 +3338,8 @@
 	}
 
 	function advanceBlockedMessage() {
-		var key = STEPS[state.step].key;
+		var stage = STEPS[state.step] && STEPS[state.step].key;
+		var key = failingMicro(stage) || stage;
 		if (key === 'service') {
 			return i18n.pickService || 'Please choose a service first.';
 		}
@@ -2785,6 +3351,9 @@
 		}
 		if (key === 'schedule') {
 			return scheduleError() || i18n.pickSchedule || 'Choose a pickup date and time first.';
+		}
+		if (key === 'passengers') {
+			return i18n.pickPassengers || 'Add at least one passenger to continue.';
 		}
 		if (key === 'contact') {
 			if (phoneDigits(state.customerPhone).length > 0 && phoneDigits(state.customerPhone).length < 7) {
@@ -2833,10 +3402,18 @@
 			terms_accepted: true,
 			company_website: '',
 			coupon_code: state.couponCode || '',
+			captcha_token: getCaptchaToken(),
 		});
 		var hp = root.querySelector('[name="company_website"]');
 		if (hp) {
 			body.company_website = hp.value;
+		}
+		if (captchaEnabled() && !body.captcha_token) {
+			state.submitting = false;
+			state.error = i18n.captchaRequired || 'Please complete the security check and try again.';
+			syncSubmitOverlay();
+			paint({ main: true, rail: true });
+			return;
 		}
 
 		api('/bookings', {
@@ -3038,8 +3615,7 @@
 			} else {
 				state.serviceId = nextId;
 			}
-			paintSelection('data-service-id', state.serviceId);
-			paint({ steps: true, rail: true });
+			paint({ steps: true, main: true, rail: true, summary: true });
 			saveDraft();
 			return;
 		}
@@ -3048,7 +3624,7 @@
 		if (vehBtn) {
 			state.vehicleId = Number(vehBtn.getAttribute('data-vehicle-id'));
 			paintSelection('data-vehicle-id', state.vehicleId);
-			paint({ steps: true, rail: true });
+			paint({ steps: true, rail: true, summary: true });
 			saveDraft();
 			return;
 		}
@@ -3077,16 +3653,36 @@
 			copyReference();
 			return;
 		}
+		if (action === 'change-trip') {
+			goToStep(0);
+			swapMain(function () {
+				paint({ steps: true, main: true, rail: true, summary: true });
+			});
+			saveDraft();
+			return;
+		}
+		if (action === 'change-fleet') {
+			goToStep(1);
+			swapMain(function () {
+				paint({ steps: true, main: true, rail: true, summary: true });
+			});
+			saveDraft();
+			return;
+		}
 		if (action === 'back' && state.step > 0) {
 			goToStep(state.step - 1);
 			swapMain(function () {
-				paint({ steps: true, main: true, rail: true });
+				paint({ steps: true, main: true, rail: true, summary: true });
 			});
 			saveDraft();
 			return;
 		}
 		if (action === 'next') {
-			if (actionBtn.classList.contains('is-disabled') || actionBtn.getAttribute('aria-disabled') === 'true') {
+			if (
+				actionBtn.disabled ||
+				actionBtn.classList.contains('is-disabled') ||
+				actionBtn.getAttribute('aria-disabled') === 'true'
+			) {
 				notifyStepBlocked();
 				return;
 			}
@@ -3095,19 +3691,19 @@
 				return;
 			}
 			clearStepAttempted(STEPS[state.step].key);
-			if (STEPS[state.step].key === 'review') {
+			if (STEPS[state.step].key === 'book') {
 				submitBooking();
 				return;
 			}
 			if (state.step < STEPS.length - 1) {
 				goToStep(state.step + 1);
 				swapMain(function () {
-					paint({ steps: true, main: true, rail: true });
+					paint({ steps: true, main: true, rail: true, summary: true });
 				});
 				saveDraft();
 				var key = STEPS[state.step].key;
-				// Recalc only when inputs are ready — never estimate a route with empty zones.
-				if (key === 'trip' || key === 'passengers' || key === 'addons') {
+				/* Recalc when entering Fleet/Book — never estimate a route with empty zones. */
+				if (key === 'fleet' || key === 'book') {
 					if (quoteInputsReady()) {
 						scheduleQuote({ quiet: hasPricedQuote() });
 					} else {
@@ -3140,12 +3736,10 @@
 		paint({ main: true, rail: true });
 		api('/coupons/validate', {
 			method: 'POST',
-			body: {
+			body: Object.assign(quotePayload(), {
 				code: state.couponCode,
-				service_id: state.serviceId,
-				fare_total: state.quote.total,
 				email: state.customerEmail,
-			},
+			}),
 		})
 			.then(function (data) {
 				state.coupon = data;
@@ -3154,7 +3748,7 @@
 			})
 			.catch(function (err) {
 				state.coupon = null;
-				state.couponError = (err && err.message) || 'Invalid coupon.';
+				state.couponError = (err && err.message) || i18n.couponInvalid || 'Invalid coupon.';
 			})
 			.finally(function () {
 				state.couponBusy = false;
@@ -3298,13 +3892,19 @@
 	}
 
 	function syncNextButton() {
-		var btn = root.querySelector('[data-action="next"]');
-		if (!btn) {
-			return;
-		}
 		var ok = canAdvance() && !state.submitting;
-		btn.classList.toggle('is-disabled', !ok);
-		btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+		root.querySelectorAll('[data-action="next"]').forEach(function (btn) {
+			btn.classList.toggle('is-disabled', !ok);
+			btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+			if (btn.classList.contains('prime-fleet__tl-arrow')) {
+				btn.disabled = !ok;
+			}
+		});
+		var canBack = state.step > 0 && !state.submitting;
+		root.querySelectorAll('.prime-fleet__tl-arrow[data-action="back"]').forEach(function (btn) {
+			btn.disabled = !canBack;
+			btn.setAttribute('aria-disabled', canBack ? 'false' : 'true');
+		});
 	}
 
 	root.addEventListener(
@@ -3381,6 +3981,7 @@
 			state.result = {
 				reference: url.ref,
 				message:
+					i18n.pendingDetail ||
 					i18n.pending ||
 					'Your transfer request is Pending Confirmation. Prime Fleet will verify vehicle availability and contact you shortly.',
 			};

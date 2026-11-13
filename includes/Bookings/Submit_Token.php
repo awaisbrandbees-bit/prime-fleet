@@ -69,6 +69,21 @@ final class Submit_Token {
 			return new \WP_Error( 'prime_fleet_too_fast', __( 'Please wait a moment and try again.', 'prime-fleet' ), array( 'status' => 429, 'retry_after' => self::MIN_AGE ) );
 		}
 
+		/*
+		 * Bind to issue IP (REMOTE_ADDR only — same as Rate_Limiter).
+		 * Stolen tokens from another host fail; guest must reload for a fresh token
+		 * if their network IP genuinely changed mid-flow (Wi‑Fi → cellular).
+		 */
+		$issued_ip = isset( $data['ip'] ) ? (string) $data['ip'] : '';
+		$now_ip    = Rate_Limiter::client_ip();
+		if ( '' !== $issued_ip && $issued_ip !== $now_ip ) {
+			return new \WP_Error(
+				'prime_fleet_token_ip',
+				__( 'Your booking session could not be verified. Please reload and try again.', 'prime-fleet' ),
+				array( 'status' => 403 )
+			);
+		}
+
 		// Mark used before returning success (one-shot).
 		$data['used'] = true;
 		set_transient( $key, $data, 5 * MINUTE_IN_SECONDS );

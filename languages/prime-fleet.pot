@@ -1,0 +1,5709 @@
+# Copyright (C) 2026 Prime Fleet
+# This file is distributed under the same license as the Prime Fleet plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Prime Fleet 1.0.0-beta.26\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/prime-fleet\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-13T10:29:44+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: prime-fleet\n"
+
+#. Plugin Name of the plugin
+#. Author of the plugin
+#: prime-fleet.php
+#: includes/Admin/App.php:164
+#: includes/Admin/App.php:212
+#: includes/Admin/Menu.php:28
+#: includes/Admin/Menu.php:29
+#: includes/Admin/Pages/Run_Sheet.php:137
+#: includes/Admin/View.php:42
+#: includes/Frontend/Home_Landing.php:104
+#: includes/Frontend/Pay_Page.php:100
+#: includes/Frontend/Pay_Page.php:126
+#: includes/I18n/Script_Strings.php:286
+msgid "Prime Fleet"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: prime-fleet.php
+msgid "https://primefleet.app"
+msgstr ""
+
+#. Description of the plugin
+#: prime-fleet.php
+msgid "VIP ground transportation booking, dispatch, and payments for WordPress — white-label ready."
+msgstr ""
+
+#: includes/Admin/Ajax.php:51
+#: includes/Admin/Ajax.php:64
+msgid "Invalid session. Refresh and try again."
+msgstr ""
+
+#: includes/Admin/Ajax.php:54
+#: includes/Admin/Ajax.php:75
+#: includes/Admin/Pages/Bookings.php:40
+#: includes/Admin/Pages/Reports.php:44
+#: includes/Security/Self_Test.php:43
+msgid "Forbidden."
+msgstr ""
+
+#: includes/Admin/Ajax.php:71
+msgid "Unknown panel."
+msgstr ""
+
+#: includes/Admin/Ajax.php:181
+#: includes/Admin/Pages/Payments.php:232
+#: includes/Admin/Pages/Payments.php:233
+#: includes/I18n/Script_Strings.php:253
+msgid "Coming soon"
+msgstr ""
+
+#: includes/Admin/App.php:24
+#: includes/Admin/App.php:157
+#: includes/Admin/Pages/Dashboard.php:56
+#: includes/Admin/Pages/Reports.php:1162
+msgid "Overview"
+msgstr ""
+
+#: includes/Admin/App.php:25
+#: includes/Admin/Pages/Bookings.php:246
+#: includes/Admin/Pages/Bookings.php:826
+#: includes/Admin/Pages/Dashboard.php:393
+#: includes/Admin/Pages/Placeholder.php:19
+#: includes/Admin/Pages/Reports.php:1312
+msgid "Bookings"
+msgstr ""
+
+#: includes/Admin/App.php:26
+#: includes/Admin/Pages/Dispatch.php:206
+#: includes/Admin/Pages/Placeholder.php:27
+msgid "Dispatch"
+msgstr ""
+
+#: includes/Admin/App.php:27
+#: includes/Admin/Pages/Dispatch.php:102
+#: includes/Admin/Pages/Run_Sheet.php:138
+#: includes/Admin/Pages/Run_Sheet.php:226
+msgid "Run sheet"
+msgstr ""
+
+#: includes/Admin/App.php:28
+#: includes/Admin/Pages/Addons.php:92
+#: includes/Admin/Pages/Dashboard.php:593
+msgid "Services"
+msgstr ""
+
+#: includes/Admin/App.php:29
+msgid "Locations"
+msgstr ""
+
+#: includes/Admin/App.php:30
+#: includes/Admin/Pages/Pricing.php:133
+#: includes/Admin/Pages/Pricing.php:174
+#: includes/Admin/Pages/Pricing.php:249
+#: includes/Admin/Pages/Settings.php:32
+msgid "Pricing"
+msgstr ""
+
+#: includes/Admin/App.php:31
+#: includes/Admin/Pages/Availability.php:141
+#: includes/Admin/Pages/Dashboard.php:462
+#: includes/Admin/Pages/Vehicles.php:134
+msgid "Vehicles"
+msgstr ""
+
+#: includes/Admin/App.php:32
+#: includes/Admin/Pages/Availability.php:145
+#: includes/Admin/Pages/Chauffeurs.php:135
+#: includes/Admin/Pages/Reports.php:1165
+msgid "Chauffeurs"
+msgstr ""
+
+#: includes/Admin/App.php:33
+#: includes/Admin/Pages/Addons.php:166
+#: includes/Admin/Pages/Bookings.php:1017
+#: includes/Admin/Pages/Service_Edit.php:53
+#: includes/I18n/Script_Strings.php:150
+msgid "Add-ons"
+msgstr ""
+
+#: includes/Admin/App.php:34
+#: includes/Admin/Pages/Dashboard.php:596
+#: includes/Admin/Pages/Payments.php:101
+msgid "Payments"
+msgstr ""
+
+#: includes/Admin/App.php:35
+#: includes/Admin/Pages/Settings.php:70
+#: includes/Admin/Pages/Settings.php:116
+msgid "Settings"
+msgstr ""
+
+#: includes/Admin/App.php:36
+#: includes/Admin/Pages/Fields.php:155
+msgid "Field library"
+msgstr ""
+
+#: includes/Admin/App.php:37
+#: includes/Admin/Pages/Coupons.php:160
+#: includes/Admin/Pages/Reports.php:1167
+msgid "Coupons"
+msgstr ""
+
+#: includes/Admin/App.php:38
+#: includes/Admin/Pages/Surcharges.php:129
+msgid "Surcharges"
+msgstr ""
+
+#: includes/Admin/App.php:39
+#: includes/Admin/Pages/Availability.php:156
+msgid "Availability"
+msgstr ""
+
+#: includes/Admin/App.php:40
+#: includes/Admin/Pages/Placeholder.php:35
+#: includes/Admin/Pages/Slot_Offers_Page.php:89
+msgid "Slot Offers"
+msgstr ""
+
+#: includes/Admin/App.php:41
+#: includes/Admin/Pages/Messages.php:46
+#: includes/Admin/Pages/Placeholder.php:43
+msgid "Messages"
+msgstr ""
+
+#: includes/Admin/App.php:42
+#: includes/Admin/Pages/Reports.php:92
+msgid "Reports"
+msgstr ""
+
+#: includes/Admin/App.php:43
+#: includes/Admin/Pages/Logs.php:73
+msgid "Logs"
+msgstr ""
+
+#: includes/Admin/App.php:44
+msgid "Service editor"
+msgstr ""
+
+#: includes/Admin/App.php:147
+#: includes/Admin/Pages/Addons.php:24
+#: includes/Admin/Pages/Availability.php:24
+#: includes/Admin/Pages/Bookings.php:54
+#: includes/Admin/Pages/Chauffeurs.php:24
+#: includes/Admin/Pages/Coupons.php:23
+#: includes/Admin/Pages/Dashboard.php:20
+#: includes/Admin/Pages/Dispatch.php:27
+#: includes/Admin/Pages/Fields.php:46
+#: includes/Admin/Pages/Logs.php:20
+#: includes/Admin/Pages/Messages.php:24
+#: includes/Admin/Pages/Payments.php:33
+#: includes/Admin/Pages/Placeholder.php:58
+#: includes/Admin/Pages/Pricing.php:24
+#: includes/Admin/Pages/Reports.php:58
+#: includes/Admin/Pages/Run_Sheet.php:23
+#: includes/Admin/Pages/Services.php:24
+#: includes/Admin/Pages/Service_Edit.php:22
+#: includes/Admin/Pages/Settings.php:41
+#: includes/Admin/Pages/Slot_Offers_Page.php:24
+#: includes/Admin/Pages/Surcharges.php:23
+#: includes/Admin/Pages/Vehicles.php:23
+#: includes/Admin/Pages/Zones.php:23
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: includes/Admin/App.php:162
+msgid "Page header"
+msgstr ""
+
+#. translators: %s: localized current date
+#: includes/Admin/App.php:171
+#, php-format
+msgid "%s · Operations console"
+msgstr ""
+
+#: includes/Admin/App.php:203
+#: includes/Frontend/Shortcodes.php:230
+#: includes/I18n/Script_Strings.php:213
+msgid "Loading…"
+msgstr ""
+
+#: includes/Admin/App.php:213
+#: includes/Admin/Pages/Addons.php:124
+#: includes/Admin/Pages/Availability.php:123
+#: includes/Admin/Pages/Chauffeurs.php:108
+#: includes/Admin/Pages/Coupons.php:125
+#: includes/Admin/Pages/Fields.php:113
+#: includes/Admin/Pages/Messages.php:132
+#: includes/Admin/Pages/Pricing.php:225
+#: includes/Admin/Pages/Pricing.php:278
+#: includes/Admin/Pages/Service_Edit.php:266
+#: includes/Admin/Pages/Surcharges.php:102
+#: includes/Admin/Pages/Vehicles.php:106
+#: includes/Admin/Pages/Zones.php:103
+msgid "Edit"
+msgstr ""
+
+#: includes/Admin/App.php:215
+#: includes/Admin/Pages/Bookings.php:526
+#: includes/I18n/Script_Strings.php:222
+msgid "Close"
+msgstr ""
+
+#: includes/Admin/App.php:226
+msgid "Confirm action"
+msgstr ""
+
+#: includes/Admin/App.php:227
+#: includes/I18n/Script_Strings.php:226
+msgid "Please confirm"
+msgstr ""
+
+#: includes/Admin/App.php:231
+#: includes/Admin/Pages/Addons.php:164
+#: includes/Admin/Pages/Availability.php:154
+#: includes/Admin/Pages/Chauffeurs.php:133
+#: includes/Admin/Pages/Coupons.php:158
+#: includes/Admin/Pages/Fields.php:150
+#: includes/Admin/Pages/Pricing.php:451
+#: includes/Admin/Pages/Services.php:130
+#: includes/Admin/Pages/Service_Edit.php:372
+#: includes/Admin/Pages/Surcharges.php:127
+#: includes/Admin/Pages/Vehicles.php:132
+#: includes/Admin/Pages/Zones.php:125
+msgid "Cancel"
+msgstr ""
+
+#: includes/Admin/App.php:232
+#: includes/Admin/Pages/Addons.php:125
+#: includes/Admin/Pages/Availability.php:124
+#: includes/Admin/Pages/Chauffeurs.php:109
+#: includes/Admin/Pages/Coupons.php:126
+#: includes/Admin/Pages/Fields.php:122
+#: includes/Admin/Pages/Pricing.php:298
+#: includes/Admin/Pages/Services.php:114
+#: includes/Admin/Pages/Surcharges.php:103
+#: includes/Admin/Pages/Vehicles.php:107
+#: includes/Admin/Pages/Zones.php:104
+#: includes/I18n/Script_Strings.php:228
+msgid "Delete"
+msgstr ""
+
+#. translators: %d: notification count
+#: includes/Admin/App.php:253
+#: includes/I18n/Script_Strings.php:258
+#, php-format
+msgid "%d notification"
+msgid_plural "%d notifications"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/App.php:256
+#: includes/I18n/Script_Strings.php:256
+msgid "No notifications"
+msgstr ""
+
+#: includes/Admin/App.php:279
+#: includes/Admin/App.php:281
+msgid "Notifications"
+msgstr ""
+
+#: includes/Admin/App.php:282
+msgid "Refresh notifications"
+msgstr ""
+
+#: includes/Admin/App.php:283
+msgid "Refresh"
+msgstr ""
+
+#: includes/Admin/App.php:289
+#: includes/I18n/Script_Strings.php:224
+msgid "All clear — no pending bookings or payment alerts."
+msgstr ""
+
+#: includes/Admin/App.php:316
+msgid "Open pending"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:23
+msgid "Is"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:24
+msgid "Is not"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:25
+msgid "Is one of"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:26
+msgid "Greater than"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:27
+msgid "Less than"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:28
+msgid "Has value"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:29
+msgid "Is empty"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:30
+msgid "Between (dates)"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:31
+msgid "Between times (cross midnight)"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:43
+msgid "Service slug"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:44
+#: includes/I18n/Script_Strings.php:99
+msgid "Pickup date"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:45
+#: includes/I18n/Script_Strings.php:136
+msgid "Pickup time"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:215
+msgid "Match"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:217
+#: includes/Admin/Pages/Pricing.php:422
+msgid "All rules (AND)"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:218
+#: includes/Admin/Pages/Pricing.php:422
+msgid "Any rule (OR)"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:222
+msgid "Show / require this field when the rules below are met. Leave empty for always."
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:224
+#: includes/Admin/Pages/Pricing.php:122
+msgid "Add rule"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:229
+#: includes/Admin/Pages/Service_Edit.php:223
+#: includes/Admin/Pages/Service_Edit.php:278
+msgid "Field"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:230
+msgid "Select field…"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:235
+msgid "Operator"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:240
+msgid "Value (comma-separated for one of / between)"
+msgstr ""
+
+#: includes/Admin/Condition_Builder.php:241
+msgid "Remove rule"
+msgstr ""
+
+#: includes/Admin/Crud.php:30
+#: includes/Admin/Pages/Fields.php:197
+msgid "You do not have permission to save."
+msgstr ""
+
+#: includes/Admin/Crud.php:92
+#: includes/Admin/Pages/Service_Edit.php:610
+msgid "Saved."
+msgstr ""
+
+#: includes/Admin/Crud.php:106
+#: includes/Admin/Pages/Fields.php:171
+msgid "You do not have permission to delete."
+msgstr ""
+
+#: includes/Admin/Crud.php:109
+#: includes/Admin/Pages/Fields.php:174
+#: includes/Admin/Pages/Services.php:151
+msgid "Invalid request."
+msgstr ""
+
+#: includes/Admin/Crud.php:114
+msgid "Deleted."
+msgstr ""
+
+#: includes/Admin/Menu.php:52
+#: includes/Admin/Menu.php:53
+#: includes/Admin/Pages/Service_Edit.php:39
+msgid "Edit Service"
+msgstr ""
+
+#: includes/Admin/Notifications.php:58
+msgid "Needs confirmation"
+msgstr ""
+
+#: includes/Admin/Notifications.php:59
+msgid "Payment attention"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:47
+#: includes/Admin/Pages/Coupons.php:140
+#: includes/Admin/Pages/Surcharges.php:68
+#: includes/Admin/Pages/Surcharges.php:117
+msgid "Fixed"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:48
+msgid "Per quantity"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:49
+msgid "Per interval"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:50
+msgid "Free"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:79
+msgid "Search add-ons…"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:88
+msgid "No matching add-ons"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:88
+#: includes/Admin/Pages/Service_Edit.php:317
+msgid "No add-ons"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:89
+#: includes/Admin/Pages/Availability.php:95
+#: includes/Admin/Pages/Bookings.php:213
+#: includes/Admin/Pages/Chauffeurs.php:80
+#: includes/Admin/Pages/Coupons.php:94
+#: includes/Admin/Pages/Fields.php:85
+#: includes/Admin/Pages/Logs.php:54
+#: includes/Admin/Pages/Services.php:93
+#: includes/Admin/Pages/Surcharges.php:77
+#: includes/Admin/Pages/Vehicles.php:76
+#: includes/Admin/Pages/Zones.php:71
+msgid "Try another search or reset filters."
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:89
+msgid "Create extras like child seats and grocery stops."
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:92
+msgid "Add-on"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:92
+#: includes/Admin/Pages/Bookings.php:1139
+#: includes/Admin/Pages/Bookings.php:1165
+#: includes/Admin/Pages/Fields.php:91
+#: includes/Admin/Pages/Reports.php:1664
+#: includes/Admin/Pages/Services.php:97
+#: includes/Admin/Pages/Surcharges.php:80
+#: includes/Admin/Pages/Surcharges.php:116
+msgid "Type"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:92
+#: includes/Admin/Pages/Addons.php:145
+msgid "Price"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:92
+#: includes/Admin/Pages/Addons.php:162
+#: includes/Admin/Pages/Chauffeurs.php:83
+#: includes/Admin/Pages/Chauffeurs.php:132
+#: includes/Admin/Pages/Coupons.php:97
+#: includes/Admin/Pages/Coupons.php:157
+#: includes/Admin/Pages/Pricing.php:378
+#: includes/Admin/Pages/Pricing.php:394
+#: includes/Admin/Pages/Pricing.php:409
+#: includes/Admin/Pages/Pricing.php:437
+#: includes/Admin/Pages/Services.php:97
+#: includes/Admin/Pages/Service_Edit.php:143
+#: includes/Admin/Pages/Surcharges.php:126
+#: includes/Admin/Pages/Vehicles.php:129
+#: includes/Admin/Pages/Zones.php:75
+#: includes/Admin/Pages/Zones.php:123
+#: includes/Admin/Table_List.php:189
+msgid "Active"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:117
+msgid "Included"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:124
+msgid "Edit add-on"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:125
+msgid "Delete this add-on?"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:136
+msgid "Meet & Greet must be included info, not a paid airport add-on. Tick services this add-on applies to (e.g. Airport VIP for Child Seat + Grocery)."
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:138
+#: includes/Admin/Pages/Chauffeurs.php:83
+#: includes/Admin/Pages/Chauffeurs.php:121
+#: includes/Admin/Pages/Pricing.php:402
+#: includes/Admin/Pages/Pricing.php:419
+#: includes/Admin/Pages/Surcharges.php:80
+#: includes/Admin/Pages/Surcharges.php:115
+#: includes/Admin/Pages/Vehicles.php:120
+#: includes/Admin/Pages/Zones.php:117
+msgid "Name"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:139
+#: includes/Admin/Pages/Pricing.php:403
+msgid "Customer description"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:140
+msgid "Pricing type"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:146
+msgid "Unit label"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:147
+msgid "Min qty"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:148
+msgid "Max qty"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:149
+#: includes/Admin/Pages/Pricing.php:407
+#: includes/Admin/Pages/Service_Edit.php:140
+#: includes/Admin/Pages/Vehicles.php:127
+#: includes/Admin/Pages/Zones.php:121
+msgid "Display order"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:151
+msgid "Applies to services"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:160
+msgid "Leave all unchecked only if you will assign services from the Service → Add-ons tab."
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:163
+msgid "Included info (not charged)"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:164
+msgid "Save add-on"
+msgstr ""
+
+#: includes/Admin/Pages/Addons.php:166
+msgid "Add add-on"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:87
+msgid "Search availability…"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:94
+msgid "No matching blocks"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:94
+msgid "No blocks"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:95
+msgid "Block vehicles or chauffeurs when they are unavailable."
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:98
+#: includes/Admin/Pages/Availability.php:140
+msgid "Resource"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:98
+#: includes/Admin/Pages/Surcharges.php:80
+msgid "Window"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:98
+#: includes/Admin/Pages/Availability.php:152
+#: includes/Admin/Pages/Bookings.php:1142
+#: includes/Admin/Pages/Bookings.php:1178
+#: includes/Admin/Pages/Reports.php:1667
+msgid "Reason"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:123
+msgid "Edit block"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:124
+msgid "Delete this block?"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:136
+msgid "Resource type"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:137
+#: includes/Admin/Pages/Bookings.php:1536
+#: includes/Admin/Pages/Chauffeurs.php:83
+#: includes/Admin/Pages/Dashboard.php:358
+#: includes/Admin/Pages/Dispatch.php:168
+#: includes/Admin/Pages/Dispatch.php:169
+#: includes/Admin/Pages/Reports.php:1563
+#: includes/Admin/Pages/Run_Sheet.php:174
+#: includes/Admin/Pages/Vehicles.php:79
+#: includes/I18n/Script_Strings.php:137
+msgid "Vehicle"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:138
+#: includes/Admin/Pages/Dispatch.php:180
+#: includes/Admin/Pages/Dispatch.php:181
+#: includes/Admin/Pages/Reports.php:1463
+#: includes/Admin/Pages/Run_Sheet.php:175
+msgid "Chauffeur"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:150
+msgid "Start"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:151
+msgid "End"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:153
+#: includes/Admin/Pages/Bookings.php:1122
+#: includes/Admin/Pages/Pricing.php:375
+#: includes/Admin/Pages/Pricing.php:432
+#: includes/Admin/Pages/Run_Sheet.php:176
+#: includes/Admin/Pages/Surcharges.php:124
+msgid "Notes"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:154
+msgid "Save block"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:156
+msgid "Add block"
+msgstr ""
+
+#: includes/Admin/Pages/Availability.php:156
+msgid "Add availability block"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:44
+msgid "Invalid security token. Re-open Bookings and export again."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:83
+msgid "Bookings view"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:84
+msgid "List"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:85
+msgid "Calendar"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:182
+#: includes/Admin/Pages/Reports.php:66
+#: includes/Admin/Pages/Reports.php:1300
+msgid "Export CSV"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:190
+msgid "Search reference, name, email…"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:193
+#: includes/Admin/Pages/Bookings.php:383
+#: includes/Admin/Pages/Bookings.php:1420
+#: includes/Admin/Pages/Dashboard.php:637
+#: includes/Admin/Pages/Reports.php:1227
+#: includes/Admin/Pages/Reports.php:1315
+#: includes/Admin/Pages/Reports.php:1809
+#: includes/Admin/Pages/Run_Sheet.php:238
+msgid "Pending"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:194
+#: includes/Admin/Pages/Bookings.php:384
+#: includes/Admin/Pages/Bookings.php:1421
+#: includes/Admin/Pages/Dashboard.php:545
+#: includes/Admin/Pages/Dashboard.php:638
+#: includes/Admin/Pages/Dispatch.php:324
+#: includes/Admin/Pages/Reports.php:1228
+#: includes/Admin/Pages/Reports.php:1810
+#: includes/Admin/Pages/Run_Sheet.php:239
+#: includes/Admin/Pages/Settings.php:254
+#: includes/Frontend/Pay_Page.php:129
+msgid "Confirmed"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:195
+#: includes/Admin/Pages/Bookings.php:385
+#: includes/Admin/Pages/Bookings.php:1422
+#: includes/Admin/Pages/Dashboard.php:639
+#: includes/Admin/Pages/Dispatch.php:325
+#: includes/Admin/Pages/Reports.php:1812
+msgid "Cancelled"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:196
+#: includes/Admin/Pages/Bookings.php:386
+#: includes/Admin/Pages/Bookings.php:1423
+#: includes/Admin/Pages/Dashboard.php:640
+#: includes/Admin/Pages/Dispatch.php:326
+#: includes/Admin/Pages/Reports.php:1229
+#: includes/Admin/Pages/Reports.php:1811
+#: includes/Admin/Pages/Run_Sheet.php:240
+msgid "Completed"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:200
+#: includes/Admin/Pages/Bookings.php:395
+#: includes/Admin/Pages/Bookings.php:1643
+#: includes/Admin/Pages/Dashboard.php:652
+#: includes/Admin/Pages/Reports.php:1234
+#: includes/Admin/Pages/Reports.php:1314
+#: includes/Admin/Pages/Reports.php:1814
+msgid "Unpaid"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:201
+#: includes/Admin/Pages/Bookings.php:396
+#: includes/Admin/Pages/Bookings.php:1644
+#: includes/Admin/Pages/Dashboard.php:653
+#: includes/Admin/Pages/Reports.php:1235
+#: includes/Admin/Pages/Reports.php:1815
+msgid "Link sent"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:202
+#: includes/Admin/Pages/Bookings.php:397
+#: includes/Admin/Pages/Bookings.php:1645
+#: includes/Admin/Pages/Dashboard.php:655
+#: includes/Admin/Pages/Reports.php:1237
+#: includes/Admin/Pages/Reports.php:1817
+msgid "Paid"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:203
+#: includes/Admin/Pages/Bookings.php:398
+#: includes/Admin/Pages/Bookings.php:1646
+#: includes/Admin/Pages/Dashboard.php:656
+#: includes/Frontend/Pay_Page.php:138
+msgid "Refunded"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:212
+msgid "No matching bookings"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:212
+msgid "No bookings yet"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:213
+msgid "Guest submissions will appear here with PF- references."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:217
+#: includes/Admin/Pages/Bookings.php:508
+#: includes/Admin/Pages/Reports.php:1560
+#: includes/Admin/Pages/Reports.php:1663
+#: includes/Admin/Pages/Reports.php:1777
+#: includes/Frontend/Pay_Page.php:192
+#: includes/Frontend/Shortcodes.php:275
+#: includes/I18n/Script_Strings.php:291
+msgid "Reference"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:218
+#: includes/Admin/Pages/Bookings.php:509
+#: includes/Admin/Pages/Reports.php:1564
+msgid "Customer"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:219
+#: includes/Admin/Pages/Bookings.php:1205
+#: includes/Admin/Pages/Dashboard.php:403
+#: includes/Admin/Pages/Reports.php:1561
+#: includes/Admin/Pages/Reports.php:1778
+#: includes/I18n/Script_Strings.php:168
+#: includes/I18n/Script_Strings.php:293
+msgid "Pickup"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:220
+#: includes/Admin/Pages/Bookings.php:512
+#: includes/Admin/Pages/Bookings.php:944
+#: includes/Admin/Pages/Reports.php:1565
+#: includes/Admin/Pages/Reports.php:1780
+#: includes/I18n/Script_Strings.php:121
+#: includes/I18n/Script_Strings.php:295
+msgid "Fare"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:221
+#: includes/Admin/Pages/Bookings.php:510
+#: includes/Admin/Pages/Bookings.php:1070
+#: includes/Admin/Pages/Dashboard.php:359
+#: includes/Admin/Pages/Messages.php:114
+#: includes/Admin/Pages/Messages.php:277
+#: includes/Admin/Pages/Reports.php:1715
+#: includes/Admin/Pages/Slot_Offers_Page.php:64
+#: includes/Admin/Pages/Vehicles.php:79
+#: includes/I18n/Script_Strings.php:292
+msgid "Status"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:222
+#: includes/Admin/Pages/Bookings.php:511
+#: includes/Admin/Pages/Bookings.php:945
+#: includes/Admin/Pages/Bookings.php:1231
+#: includes/Admin/Pages/Dashboard.php:405
+#: includes/Admin/Pages/Reports.php:1566
+#: includes/Admin/Pages/Reports.php:1781
+#: includes/Frontend/Pay_Page.php:101
+#: includes/Frontend/Pay_Page.php:117
+#: includes/Frontend/Pay_Page.php:165
+#: includes/I18n/Script_Strings.php:294
+msgid "Payment"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:232
+msgid "View"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:334
+#: includes/I18n/Script_Strings.php:100
+#: includes/I18n/Script_Strings.php:240
+msgid "Previous month"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:343
+#: includes/Admin/Pages/Bookings.php:344
+#: includes/I18n/Script_Strings.php:242
+msgid "Month"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:354
+#: includes/Admin/Pages/Bookings.php:355
+#: includes/I18n/Script_Strings.php:243
+msgid "Year"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:361
+msgid "Go"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:363
+#: includes/I18n/Script_Strings.php:101
+#: includes/I18n/Script_Strings.php:241
+msgid "Next month"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:364
+#: includes/Admin/Pages/Dispatch.php:100
+#: includes/Admin/Pages/Run_Sheet.php:120
+#: includes/I18n/Script_Strings.php:248
+msgid "Today"
+msgstr ""
+
+#. translators: %d booking count
+#: includes/Admin/Pages/Bookings.php:371
+#, php-format
+msgid "%d booking"
+msgid_plural "%d bookings"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Pages/Bookings.php:379
+#: includes/Admin/Pages/Reports.php:1253
+#: includes/Admin/Table_List.php:192
+msgid "Filter by status"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:381
+#: includes/Admin/Pages/Reports.php:1226
+#: includes/Admin/Table_List.php:194
+msgid "All statuses"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:391
+#: includes/Admin/Pages/Reports.php:1260
+#: includes/Admin/Table_List.php:213
+msgid "Filter by payment"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:393
+#: includes/Admin/Pages/Reports.php:1233
+#: includes/Admin/Table_List.php:215
+msgid "All payments"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:403
+#: includes/Admin/Pages/Reports.php:1298
+#: includes/Admin/Table_List.php:222
+msgid "Filter"
+msgstr ""
+
+#. translators: 1: date label, 2: booking count
+#: includes/Admin/Pages/Bookings.php:447
+#, php-format
+msgid "%1$s, %2$d booking"
+msgid_plural "%1$s, %2$d bookings"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d remaining bookings
+#: includes/Admin/Pages/Bookings.php:479
+#, php-format
+msgid "+%d more"
+msgstr ""
+
+#. translators: %d booking count
+#: includes/Admin/Pages/Bookings.php:502
+#, php-format
+msgid "%d booking this day"
+msgid_plural "%d bookings this day"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Pages/Bookings.php:507
+#: includes/Admin/Pages/Dashboard.php:355
+#: includes/Admin/Pages/Fields.php:35
+#: includes/Admin/Pages/Run_Sheet.php:170
+#: includes/I18n/Script_Strings.php:244
+msgid "Time"
+msgstr ""
+
+#. translators: %s month label
+#: includes/Admin/Pages/Bookings.php:535
+#, php-format
+msgid "Bookings · %s"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:578
+msgid "Booking confirmed. Reminders scheduled."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:600
+msgid "Booking cancelled. Guest notified."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:622
+msgid "Booking marked completed."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:630
+msgid "Invalid pickup datetime."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:661
+msgid "Pickup updated. Guest notified."
+msgstr ""
+
+#. translators: %s guest pay URL
+#: includes/Admin/Pages/Bookings.php:680
+#, php-format
+msgid "Payment link issued and queued. Guest link: %s"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:697
+msgid "Booking was already marked paid."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:699
+msgid "Marked paid. Payment confirmed message queued."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:712
+msgid "Booking was already marked refunded."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:714
+msgid "Marked refunded."
+msgstr ""
+
+#. translators: %s guest pay URL
+#: includes/Admin/Pages/Bookings.php:733
+#, php-format
+msgid "New payment link generated and queued. Guest link: %s"
+msgstr ""
+
+#. translators: %s accept URL
+#: includes/Admin/Pages/Bookings.php:753
+#, php-format
+msgid "Slot offer created. Guest link: %s"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:789
+msgid "Staff notes saved."
+msgstr ""
+
+#. translators: 1: currency amount added, 2: new fare total
+#: includes/Admin/Pages/Bookings.php:809
+#, php-format
+msgid "Amendment saved (+%1$s). Fare now %2$s."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:814
+msgid "Guest notified."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:826
+#: includes/Admin/Pages/Dispatch.php:225
+#: includes/Bookings/Amendments.php:103
+#: includes/Bookings/Amendments.php:111
+#: includes/Bookings/Slot_Offers.php:42
+#: includes/Messaging/Merge_Vars.php:29
+#: includes/Payments/Payment_Service.php:148
+#: includes/Payments/Payment_Service.php:323
+#: includes/Payments/Payment_Service.php:411
+#: includes/Payments/Payment_Service.php:714
+msgid "Booking not found."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:915
+msgid "Confirm booking"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:922
+msgid "Mark completed"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:922
+msgid "Mark this trip completed? Pending reminders will be cleared. You can still add post-job amendments after."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:929
+msgid "Cancel booking"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:929
+msgid "Cancel this booking and notify the guest?"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:943
+msgid "Booking summary"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:946
+#: includes/I18n/Script_Strings.php:122
+msgid "Passengers"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:948
+#: includes/Messaging/Merge_Vars.php:54
+#: includes/Messaging/Merge_Vars.php:58
+msgid "Coupon"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:978
+#: includes/Admin/Pages/Dashboard.php:356
+#: includes/Admin/Pages/Dashboard.php:402
+#: includes/Admin/Pages/Run_Sheet.php:172
+msgid "Guest"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:981
+#: includes/Admin/Pages/Chauffeurs.php:124
+#: includes/Admin/Pages/Fields.php:32
+#: includes/Admin/Pages/Messages.php:112
+#: includes/I18n/Script_Strings.php:144
+msgid "Email"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:982
+#: includes/Admin/Pages/Chauffeurs.php:122
+#: includes/Admin/Pages/Fields.php:33
+#: includes/I18n/Script_Strings.php:145
+msgid "Phone"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:983
+#: includes/Admin/Pages/Chauffeurs.php:123
+#: includes/Admin/Pages/Messages.php:113
+#: includes/Admin/Pages/Settings.php:33
+#: includes/Frontend/Home_Landing.php:133
+#: includes/Frontend/Sticky_Cta.php:119
+#: includes/I18n/Script_Strings.php:146
+msgid "WhatsApp"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:988
+#: includes/I18n/Script_Strings.php:117
+msgid "Trip"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1012
+msgid "No legs on this booking."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1031
+msgid "Fare breakdown"
+msgstr ""
+
+#. translators: 1: currency code, 2: original fare
+#: includes/Admin/Pages/Bookings.php:1037
+#, php-format
+msgid "Original fare: %1$s %2$s"
+msgstr ""
+
+#. translators: 1: coupon code, 2: discount amount
+#: includes/Admin/Pages/Bookings.php:1051
+#, php-format
+msgid "Coupon %1$s applied%2$s"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1063
+msgid "Communications"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1066
+#: includes/Admin/Pages/Bookings.php:1094
+#: includes/Admin/Pages/Bookings.php:1138
+#: includes/Admin/Pages/Logs.php:58
+#: includes/Admin/Pages/Messages.php:273
+#: includes/Admin/Pages/Reports.php:1662
+#: includes/I18n/Script_Strings.php:149
+msgid "When"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1067
+#: includes/Admin/Pages/Reports.php:1715
+msgid "Channel"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1068
+#: includes/Admin/Pages/Messages.php:110
+#: includes/Admin/Pages/Messages.php:275
+msgid "Template"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1069
+#: includes/Admin/Pages/Messages.php:276
+#: includes/Admin/Pages/Reports.php:1250
+msgid "To"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1071
+#: includes/Admin/Pages/Messages.php:278
+msgid "Preview"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1085
+msgid "No emails or WhatsApp messages logged yet."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1091
+msgid "Activity"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1095
+msgid "Event"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1096
+msgid "Detail"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1109
+msgid "No activity yet."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1116
+#: includes/Admin/Pages/Dashboard.php:290
+msgid "Staff notes"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1117
+msgid "Internal only — guests never see this. Notes also appear on the Overview staff-notes feed."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1123
+msgid "e.g. VIP meet at door 3, prefers quiet vehicle…"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1125
+msgid "Save notes"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1133
+#: includes/Admin/Pages/Reports.php:1169
+#: includes/Admin/Pages/Reports.php:1629
+msgid "Amendments"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1134
+msgid "Extra hours, wait, or stops after the job. Original fare stays visible; total updates for reports and lookup."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1140
+#: includes/Admin/Pages/Bookings.php:1171
+#: includes/Admin/Pages/Reports.php:1665
+msgid "Qty"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1141
+#: includes/Admin/Pages/Bookings.php:1174
+#: includes/Admin/Pages/Reports.php:1666
+#: includes/Frontend/Pay_Page.php:145
+msgid "Amount"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1156
+msgid "No amendments yet."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1173
+msgid "Hours, 30-min wait intervals, or stop count."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1175
+msgid "Auto or enter"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1176
+msgid "Leave blank to auto-price from rates; or override."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1179
+msgid "e.g. Guest held 45 min at curb + 1 grocery stop"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1180
+msgid "Notify guest of updated fare"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1181
+msgid "Add amendment"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1184
+msgid "Confirm or complete this booking before adding amendments."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1200
+msgid "Update pickup"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1201
+msgid "Changes notify the guest and reschedule reminders if confirmed."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1206
+msgid "Save & notify"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1232
+msgid "Issue or re-send a tracked guest pay link (instructions, custom link, or Stripe). Regenerate invalidates the old token."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1238
+msgid "Gateway ref:"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1240
+msgid "Note:"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1247
+#: includes/Admin/Pages/Slot_Offers_Page.php:66
+msgid "Guest link"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1250
+msgid "This link is expired — regenerate to send a fresh one."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1259
+#: includes/Frontend/Pay_Page.php:193
+msgid "Method"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1264
+msgid "Override URL"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1264
+msgid "(custom link)"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1265
+msgid "Re-send payment link"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1265
+msgid "Send payment link"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1268
+msgid "Enable Bank/instructions or Custom payment link under Prime Fleet → Payments."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1276
+msgid "Mark this booking as paid and notify the guest?"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1276
+msgid "Mark paid"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1290
+msgid "Invalidate the current guest link and email/WhatsApp a new one?"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1290
+msgid "Regenerate link"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1290
+msgid "Regenerate"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1297
+msgid "Mark this payment as refunded?"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1297
+msgid "Mark refunded"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1306
+msgid "Payment timeline"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1332
+msgid "← Back to bookings"
+msgstr ""
+
+#. translators: %s booking reference
+#: includes/Admin/Pages/Bookings.php:1336
+#, php-format
+msgid "Booking · %s"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1384
+msgid "Outbound"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1385
+msgid "Return"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1386
+#: includes/I18n/Script_Strings.php:51
+msgid "One way"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1397
+msgid "Booking created"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1398
+msgid "Status updated"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1399
+msgid "Slot offer sent"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1400
+msgid "Slot offer accepted"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1401
+msgid "Assignment updated"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1402
+msgid "Booking updated"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1403
+#: includes/Admin/Pages/Bookings.php:1552
+msgid "Payment link issued"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1404
+msgid "Payment confirmed"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1405
+#: includes/Frontend/Pay_Page.php:139
+msgid "Payment refunded"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1406
+msgid "Refund notice sent"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1407
+msgid "Guest payment notice"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1408
+msgid "Note"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1409
+msgid "Amendment"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1476
+#: includes/Admin/Pages/Bookings.php:1632
+#: includes/Admin/Pages/Services.php:84
+#: includes/I18n/Script_Strings.php:81
+#: includes/I18n/Script_Strings.php:296
+#: includes/Messaging/Merge_Vars.php:38
+msgid "Custom quote"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1477
+msgid "No published fare — agree a price, then Mark paid or send a payment link."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1484
+msgid "Vehicle busy"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1484
+msgid "Slot full"
+msgstr ""
+
+#. translators: %s vehicle name
+#: includes/Admin/Pages/Bookings.php:1489
+#, php-format
+msgid "%s is already booked for this pickup time."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1492
+msgid "The selected vehicle is already booked for this pickup time."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1493
+msgid "Assign another vehicle in Dispatch, or send a slot offer below."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1495
+msgid "No vehicles are free at this pickup time."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1496
+msgid "Send a slot offer below, or change the pickup time."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1499
+msgid "Confirm once the schedule is clear."
+msgstr ""
+
+#. translators: %s suggested datetime label
+#: includes/Admin/Pages/Bookings.php:1512
+#, php-format
+msgid "Suggested free window: %s."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1530
+msgid "Send slot offer"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1531
+msgid "Propose an alternative pickup when the requested window is full. Guest receives a secure accept link."
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1535
+#: includes/Frontend/Shortcodes.php:277
+msgid "Proposed pickup"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1536
+msgid "Any free vehicle"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1542
+msgid "Send offer"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1553
+msgid "Marked paid"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1554
+msgid "Marked refunded"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1555
+msgid "Link expired / regenerated"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1556
+msgid "Guest reported payment sent"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1557
+msgid "Stripe refund webhook"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1558
+msgid "Stripe Checkout paid"
+msgstr ""
+
+#. translators: %s source key
+#: includes/Admin/Pages/Bookings.php:1593
+#, php-format
+msgid "Source: %s"
+msgstr ""
+
+#. translators: %s method key
+#: includes/Admin/Pages/Bookings.php:1600
+#, php-format
+msgid "Method: %s"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1605
+msgid "Existing link re-sent"
+msgstr ""
+
+#: includes/Admin/Pages/Bookings.php:1647
+#: includes/Admin/Pages/Reports.php:1236
+#: includes/Admin/Pages/Reports.php:1816
+msgid "Pending verification"
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:71
+msgid "Search chauffeurs…"
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:79
+msgid "No matching chauffeurs"
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:79
+msgid "No chauffeurs"
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:80
+msgid "Add drivers with Add chauffeur."
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:83
+#: includes/I18n/Script_Strings.php:141
+msgid "Contact"
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:108
+msgid "Edit chauffeur"
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:109
+msgid "Delete this chauffeur?"
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:125
+msgid "Default vehicle"
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:130
+msgid "Internal notes"
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:133
+msgid "Save chauffeur"
+msgstr ""
+
+#: includes/Admin/Pages/Chauffeurs.php:135
+msgid "Add chauffeur"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:80
+msgid "Search coupons…"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:83
+#: includes/Admin/Pages/Coupons.php:146
+msgid "Multi-use"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:84
+#: includes/Admin/Pages/Coupons.php:146
+msgid "One-time"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:85
+#: includes/Admin/Pages/Coupons.php:146
+msgid "Email-bound"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:93
+msgid "No matching coupons"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:93
+msgid "No coupons"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:94
+msgid "Create promo codes with Add coupon."
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:97
+#: includes/Admin/Pages/Coupons.php:138
+#: includes/Admin/Pages/Reports.php:1605
+msgid "Code"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:97
+#: includes/Messaging/Merge_Vars.php:56
+msgid "Discount"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:97
+msgid "Use"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:125
+msgid "Edit coupon"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:126
+msgid "Delete this coupon?"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:139
+msgid "Discount type"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:140
+#: includes/Admin/Pages/Surcharges.php:67
+#: includes/Admin/Pages/Surcharges.php:117
+msgid "Percent"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:144
+msgid "Discount value"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:145
+msgid "Use type"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:150
+msgid "Max uses"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:151
+msgid "Max per email"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:152
+msgid "Bound email"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:153
+msgid "Min fare"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:154
+msgid "Starts at"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:155
+msgid "Ends at"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:158
+msgid "Save coupon"
+msgstr ""
+
+#: includes/Admin/Pages/Coupons.php:160
+msgid "Add coupon"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:38
+msgid "Overview side panels"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:59
+msgid "Dispatch board"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:60
+msgid "All bookings"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:265
+#: includes/Admin/Pages/Settings.php:253
+#: includes/I18n/Script_Strings.php:61
+msgid "Pending confirmation"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:265
+msgid "Awaiting staff review"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:266
+msgid "Today's pickups"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:267
+msgid "Unpaid / awaiting"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:267
+msgid "Payment follow-up"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:268
+msgid "Failed messages"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:268
+msgid "Email / WhatsApp queue"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:291
+msgid "From booking internal notes"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:296
+msgid "No staff notes yet. Add internal notes on a booking — they surface here for the team."
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:319
+msgid "Previous notes"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:320
+msgid "Next notes"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:345
+msgid "Pickups today"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:347
+msgid "Open dispatch"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:350
+msgid "No pickups scheduled for today."
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:357
+#: includes/Admin/Pages/Pricing.php:208
+#: includes/Admin/Pages/Pricing.php:370
+#: includes/Admin/Pages/Pricing.php:386
+#: includes/Admin/Pages/Reports.php:1562
+#: includes/Admin/Pages/Reports.php:1779
+#: includes/Admin/Pages/Services.php:97
+#: includes/Admin/Pages/Service_Edit.php:62
+#: includes/I18n/Script_Strings.php:120
+msgid "Service"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:373
+#: includes/Admin/Pages/Dashboard.php:610
+msgid "Open"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:391
+msgid "Needs attention"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:396
+msgid "Queue is clear — nothing pending confirmation or payment."
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:401
+#: includes/Admin/Pages/Run_Sheet.php:171
+msgid "Ref"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:404
+#: includes/Admin/Pages/Messages.php:274
+#: includes/Admin/Pages/Slot_Offers_Page.php:62
+msgid "Booking"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:417
+#: includes/Admin/Pages/Dashboard.php:596
+msgid "Review"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:434
+msgid "This week's jobs"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:435
+msgid "Jobs vs active fleet"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:461
+msgid "Today's fleet load"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:465
+msgid "No vehicles assigned to jobs today."
+msgstr ""
+
+#. translators: %d job count
+#. translators: %d count
+#: includes/Admin/Pages/Dashboard.php:476
+#: includes/Admin/Pages/Dispatch.php:106
+#, php-format
+msgid "%d job"
+msgid_plural "%d jobs"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Pages/Dashboard.php:491
+msgid "Latest messages"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:493
+msgid "Outbox"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:496
+msgid "No recent email / WhatsApp activity."
+msgstr ""
+
+#. translators: %s human time
+#: includes/Admin/Pages/Dashboard.php:518
+#, php-format
+msgid "%s ago"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:537
+msgid "Today utilization"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:538
+msgid "Fleet capacity for today"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:542
+msgid "Load"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:543
+#: includes/Admin/Pages/Dashboard.php:577
+msgid "Jobs today"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:544
+#: includes/Admin/Pages/Dashboard.php:595
+msgid "Active fleet"
+msgstr ""
+
+#. translators: %d percent
+#: includes/Admin/Pages/Dashboard.php:548
+#, php-format
+msgid "%d percent fleet utilized today"
+msgstr ""
+
+#. translators: %d percent
+#: includes/Admin/Pages/Dashboard.php:549
+msgid "utilized"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:552
+msgid "Jobs assigned capacity"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:553
+msgid "Remaining headroom"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:574
+msgid "Ops counters"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:578
+msgid "This month"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:579
+msgid "Last month"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:580
+msgid "MoM"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:590
+msgid "Catalog health"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:594
+msgid "Zones"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:621
+msgid "Jump to"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:624
+msgid "Airport VIP form"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:625
+msgid "Global settings"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:626
+msgid "Pricing routes"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:627
+msgid "WhatsApp templates"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:654
+msgid "Verify"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:668
+#: includes/Admin/Pages/Slot_Offers_Page.php:47
+msgid "Sent"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:669
+msgid "Queued"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:670
+#: includes/Admin/Pages/Reports.php:1703
+msgid "Failed"
+msgstr ""
+
+#: includes/Admin/Pages/Dashboard.php:671
+msgid "Skipped"
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:93
+msgid "Board date"
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:95
+#: includes/Admin/Pages/Run_Sheet.php:115
+msgid "Previous day"
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:97
+#: includes/Admin/Pages/Run_Sheet.php:117
+msgid "Next day"
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:98
+#: includes/Admin/Pages/Run_Sheet.php:118
+msgid "Load day"
+msgstr ""
+
+#. translators: %d count
+#: includes/Admin/Pages/Dispatch.php:108
+#, php-format
+msgid "%d pending"
+msgid_plural "%d pending"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Pages/Dispatch.php:114
+msgid "Day board"
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:115
+msgid "Assign fleet and confirm pending pickups for this day."
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:120
+msgid "No jobs this day"
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:121
+msgid "Pending and confirmed bookings with a pickup on this date will appear here."
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:158
+msgid "Vehicle conflict in this window"
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:170
+#: includes/Admin/Pages/Dispatch.php:182
+#: includes/Admin/Pages/Reports.php:546
+msgid "Unassigned"
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:194
+msgid "Save assign"
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:196
+#: includes/Frontend/Home_Landing.php:154
+msgid "Confirm"
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:217
+msgid "Missing booking."
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:241
+msgid "Warning: vehicle may conflict in this window."
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:274
+msgid "Assignment saved."
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:311
+msgid "Booking confirmed."
+msgstr ""
+
+#: includes/Admin/Pages/Dispatch.php:323
+msgid "Pending Confirmation"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:29
+msgid "Text"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:30
+msgid "Textarea"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:31
+msgid "Number"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:34
+msgid "Date"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:36
+msgid "Dropdown"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:37
+msgid "Radio"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:38
+msgid "Checkbox"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:39
+#: includes/Admin/Pages/Zones.php:75
+msgid "Zone"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:40
+#: includes/Admin/Pages/Logs.php:44
+msgid "Info"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:76
+msgid "Search fields…"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:84
+msgid "No matching fields"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:84
+msgid "No fields yet"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:85
+msgid "Add reusable fields for service forms."
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:89
+#: includes/Admin/Pages/Fields.php:138
+#: includes/Admin/Pages/Messages.php:165
+#: includes/Admin/Pages/Pricing.php:387
+#: includes/Admin/Pages/Reports.php:1738
+msgid "Label"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:90
+#: includes/Admin/Pages/Messages.php:111
+msgid "Key"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:92
+#: includes/Admin/Pages/Fields.php:111
+msgid "System"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:113
+msgid "Edit field"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:122
+msgid "Delete field"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:122
+msgid "Delete this field? Services using it may break until updated."
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:136
+msgid "System field keys cannot be changed or deleted. Options JSON is used for dropdown/radio choices."
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:139
+msgid "Field key"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:140
+msgid "Field type"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:145
+msgid "Placeholder"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:146
+msgid "Help text"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:147
+msgid "Options JSON"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:149
+msgid "JSON options for dropdown/radio, e.g. {\"options\":[\"One Way\",\"Round Trip\"]}."
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:151
+msgid "Save field"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:158
+msgid "Add field"
+msgstr ""
+
+#: includes/Admin/Pages/Fields.php:183
+msgid "System fields cannot be deleted."
+msgstr ""
+
+#: includes/Admin/Pages/Logs.php:40
+msgid "Search logs…"
+msgstr ""
+
+#: includes/Admin/Pages/Logs.php:42
+msgid "Error"
+msgstr ""
+
+#: includes/Admin/Pages/Logs.php:43
+msgid "Warning"
+msgstr ""
+
+#: includes/Admin/Pages/Logs.php:45
+msgid "Debug"
+msgstr ""
+
+#: includes/Admin/Pages/Logs.php:53
+msgid "No matching logs"
+msgstr ""
+
+#: includes/Admin/Pages/Logs.php:53
+msgid "No logs yet"
+msgstr ""
+
+#: includes/Admin/Pages/Logs.php:54
+msgid "System errors and operational events will appear here."
+msgstr ""
+
+#: includes/Admin/Pages/Logs.php:58
+msgid "Level"
+msgstr ""
+
+#: includes/Admin/Pages/Logs.php:58
+msgid "Context"
+msgstr ""
+
+#: includes/Admin/Pages/Logs.php:58
+msgid "Message"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:45
+msgid "Messages pages"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:55
+msgid "Templates"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:64
+#: includes/Admin/Pages/Messages.php:81
+#: includes/Admin/Pages/Messages.php:251
+msgid "WhatsApp outbox"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:81
+#: includes/Admin/Pages/Messages.php:96
+msgid "Message templates"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:83
+msgid "Edit template"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:97
+msgid "Edit wording and channel flags without a developer. Changes apply to the next send."
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:102
+msgid "No templates"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:103
+msgid "Templates will appear after the plugin seeds the message catalog."
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:119
+#: includes/Admin/Pages/Messages.php:120
+#: includes/Admin/Pages/Messages.php:259
+#: includes/Admin/Pages/Service_Edit.php:256
+msgid "On"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:119
+#: includes/Admin/Pages/Messages.php:120
+#: includes/Admin/Pages/Messages.php:259
+msgid "Off"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:131
+#: includes/Admin/Pages/Payments.php:143
+#: includes/Admin/Pages/Service_Edit.php:224
+msgid "Enabled"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:131
+#: includes/Admin/Pages/Payments.php:143
+msgid "Disabled"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:144
+#: includes/Messaging/Templates.php:213
+msgid "Template not found."
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:150
+msgid "← Back to templates"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:161
+msgid "Edits apply to the next queued send."
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:166
+msgid "Email subject"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:167
+msgid "Email heading"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:168
+msgid "Meta WhatsApp template name / ID"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:172
+msgid "Reminder offset (minutes before pickup; 0 = use Settings)"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:179
+msgid "Email body (HTML)"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:180
+msgid "WhatsApp stub sends a plain-text version of the heading + body. Meta Cloud API will use the mapped template name above."
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:184
+msgid "Template enabled"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:185
+msgid "Send email"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:186
+msgid "Send WhatsApp"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:191
+msgid "Save template"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:197
+msgid "Merge tags"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:198
+msgid "Click to copy. Paste into subject, heading, or body."
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:252
+msgid "Stub / Meta messages logged for the booking lifecycle."
+msgstr ""
+
+#. translators: 1: on/off, 2: driver
+#: includes/Admin/Pages/Messages.php:258
+#, php-format
+msgid "Channel: %1$s · Driver: %2$s"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:263
+msgid "WhatsApp settings"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:268
+msgid "No WhatsApp messages yet"
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:269
+msgid "Submit or confirm a booking with WhatsApp enabled on the template. Stub rows appear here instead of a real Meta send."
+msgstr ""
+
+#: includes/Admin/Pages/Messages.php:338
+msgid "Template saved."
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:72
+msgid "Configured methods"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:73
+msgid "Enable gateways and copy shown at checkout."
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:83
+msgid "More payment methods"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:84
+msgid "Additional gateways appear here when registered."
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:88
+msgid "No additional gateways"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:88
+msgid "Register more methods via the payment registry."
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:98
+msgid "Save payment methods"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:123
+msgid "Hosted checkout"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:126
+msgid "Payment link"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:129
+#: includes/Admin/Pages/Payments.php:218
+msgid "Instructions"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:140
+msgid "Hosted Checkout when secret key is set"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:148
+msgid "Prefer secrets in wp-config:"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:149
+msgid "Webhook endpoint:"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:157
+msgid "Enable for customers"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:165
+#: includes/Admin/Pages/Zones.php:118
+msgid "Customer label"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:188
+msgid "••••••••  (leave blank to keep)"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:212
+msgid "Hosted"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:215
+msgid "Link"
+msgstr ""
+
+#. translators: %s: gateway name
+#: includes/Admin/Pages/Payments.php:223
+#, php-format
+msgid "%s is registered in the multi-gateway layer, but this integration is not live yet. Enable will be available when credentials and charge flow are wired."
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:233
+#: includes/I18n/Script_Strings.php:255
+msgid "Got it"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:233
+msgid "Enable"
+msgstr ""
+
+#: includes/Admin/Pages/Payments.php:291
+msgid "Payment methods saved."
+msgstr ""
+
+#: includes/Admin/Pages/Placeholder.php:20
+msgid "Bookings coming soon. The queue and booking detail screens will appear here."
+msgstr ""
+
+#: includes/Admin/Pages/Placeholder.php:28
+msgid "Dispatch coming soon. Assignments, conflicts, and the day board will appear here."
+msgstr ""
+
+#: includes/Admin/Pages/Placeholder.php:36
+msgid "Slot offers coming soon."
+msgstr ""
+
+#: includes/Admin/Pages/Placeholder.php:44
+msgid "Message editor coming soon. Templates are already seeded in the database."
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:112
+#: includes/Admin/Pages/Pricing.php:168
+#: includes/Admin/Pages/Pricing.php:200
+msgid "Routes"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:113
+#: includes/Admin/Pages/Services.php:82
+msgid "Hourly"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:114
+#: includes/Admin/Pages/Pricing.php:170
+#: includes/Admin/Pages/Pricing.php:246
+msgid "Packages"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:115
+#: includes/Admin/Pages/Pricing.php:171
+#: includes/Admin/Pages/Pricing.php:247
+msgid "Rules"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:119
+msgid "Add route"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:120
+msgid "Add hourly rate"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:121
+msgid "Add package"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:132
+msgid "Pricing pages"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:169
+#: includes/Admin/Pages/Pricing.php:245
+msgid "Hourly rates"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:201
+msgid "Fixed fares between zones for each service."
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:204
+msgid "No routes"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:204
+msgid "Add origin → destination fares."
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:208
+#: includes/Admin/Pages/Run_Sheet.php:173
+#: includes/Admin/Pages/Services.php:81
+#: includes/I18n/Script_Strings.php:167
+msgid "Route"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:208
+msgid "One-way"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:208
+#: includes/I18n/Script_Strings.php:52
+msgid "Round trip"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:225
+#: includes/Admin/Pages/Pricing.php:261
+msgid "Edit route"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:245
+msgid "Time-based rates with minimum hours."
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:246
+msgid "Fixed-price packages guests can choose."
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:247
+msgid "Conditional adjustments on top of base fares."
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:249
+msgid "Manage pricing rows for this page."
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:256
+msgid "Nothing yet"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:256
+msgid "Use Add to create a row."
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:262
+msgid "Edit hourly rate"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:263
+msgid "Edit package"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:264
+msgid "Edit rule"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:298
+msgid "Delete this row?"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:371
+msgid "Origin zone"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:372
+#: includes/I18n/Script_Strings.php:133
+msgid "Destination zone"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:373
+msgid "One-way price"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:374
+msgid "Round-trip price"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:377
+msgid "Applies both directions"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:379
+msgid "Save route"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:388
+msgid "Hourly rate"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:389
+msgid "Minimum hours"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:390
+msgid "Maximum hours"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:391
+msgid "Billing increment"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:393
+msgid "Customer can choose"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:395
+msgid "Save hourly rate"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:404
+msgid "Minimum duration"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:405
+msgid "Maximum duration"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:406
+msgid "Fixed price"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:410
+msgid "Save package"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:417
+msgid "IF/THEN rules (e.g. nightlife across midnight). Use Match All / Any with visual rules — no JSON required."
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:420
+msgid "Priority"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:421
+msgid "Match mode"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:426
+msgid "Action type"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:431
+msgid "Action value"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:435
+msgid "When…"
+msgstr ""
+
+#: includes/Admin/Pages/Pricing.php:438
+msgid "Save rule"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:48
+msgid "Invalid security token. Re-open Reports and export again."
+msgstr ""
+
+#. translators: %d chauffeur id
+#: includes/Admin/Pages/Reports.php:695
+#, php-format
+msgid "Chauffeur #%d"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1163
+#: includes/Admin/Pages/Reports.php:1313
+#: includes/Admin/Pages/Reports.php:1468
+msgid "Revenue"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1164
+#: includes/Frontend/Home_Landing.php:168
+#: includes/I18n/Script_Strings.php:118
+#: includes/I18n/Script_Strings.php:171
+msgid "Fleet"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1166
+#: includes/Admin/Pages/Reports.php:1507
+msgid "No-shows"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1168
+msgid "Comms"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1174
+msgid "Report views"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1230
+#: includes/Admin/Pages/Reports.php:1813
+msgid "No-show"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1247
+msgid "From"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1267
+msgid "Filter by service"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1269
+#: includes/Admin/Pages/Service_Edit.php:112
+msgid "All services"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1281
+msgid "Filter by vehicle"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1283
+msgid "All vehicles"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1299
+#: includes/Admin/Table_List.php:223
+msgid "Reset"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1312
+#: includes/Admin/Pages/Reports.php:1631
+msgid "In selected range"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1313
+msgid "Sum of fare totals"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1315
+msgid "Awaiting confirmation"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1336
+msgid "By status"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1337
+msgid "By payment"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1338
+#: includes/Admin/Pages/Reports.php:1539
+msgid "By service"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1348
+msgid "Revenue by service"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1349
+msgid "Revenue by payment status"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1351
+msgid "Totals use recorded fare_total on each booking (includes coupons already applied, plus post-job amendments). See the Amendments tab for extra hours / wait / stops."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1365
+msgid "Fleet load"
+msgstr ""
+
+#. translators: %d: active vehicle count
+#: includes/Admin/Pages/Reports.php:1369
+#, php-format
+msgid "%d active vehicles · jobs assigned in range"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1375
+msgid "No fleet activity in this range."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1396
+msgid "Vehicle job counts only. See the Chauffeurs tab for hours committed vs available."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1417
+msgid "Hours committed"
+msgstr ""
+
+#. translators: %d job count
+#. translators: %d: assigned job count
+#: includes/Admin/Pages/Reports.php:1422
+#: includes/Admin/Pages/Run_Sheet.php:128
+#: includes/Admin/Pages/Run_Sheet.php:143
+#, php-format
+msgid "%d assigned job"
+msgid_plural "%d assigned jobs"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Pages/Reports.php:1429
+msgid "Hours available"
+msgstr ""
+
+#. translators: 1: active chauffeurs, 2: days, 3: shift hours
+#: includes/Admin/Pages/Reports.php:1434
+#, php-format
+msgid "%1$d chauffeurs × %2$d days × %3$sh"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1443
+msgid "Utilization"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1445
+msgid "Committed ÷ available"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1450
+msgid "By chauffeur"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1451
+msgid "Assigned jobs in the selected pickup range."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1454
+msgid "No active chauffeurs configured."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1464
+msgid "Jobs"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1465
+msgid "Committed"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1466
+msgid "Available"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1467
+msgid "Util."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1488
+msgid "Committed hours: booking hours meta → fare snapshot → 2h default, plus Extra hours amendments. Available: 8h/day per active chauffeur minus overlapping chauffeur availability blocks."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1509
+msgid "Status = no-show in range"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1513
+msgid "Lost fare"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1515
+msgid "Sum of no-show fare totals"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1519
+msgid "No-show rate"
+msgstr ""
+
+#. translators: 1: no-shows, 2: bookings in pool
+#: includes/Admin/Pages/Reports.php:1524
+#, php-format
+msgid "%1$d of %2$d bookings (excl. cancelled)"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1532
+msgid "Still unpaid"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1540
+msgid "By vehicle"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1547
+msgid "No-show bookings"
+msgstr ""
+
+#. translators: %d: no-show count
+#: includes/Admin/Pages/Reports.php:1551
+#, php-format
+msgid "%d no-show in range"
+msgid_plural "%d no-shows in range"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Pages/Reports.php:1557
+msgid "No no-show bookings in this range."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1589
+msgid "This tab always filters to status = no-show (the Status dropdown is ignored here). Rate uses all non-cancelled bookings in the same date / payment / service / vehicle filters."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1598
+msgid "Coupon redemptions"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1599
+msgid "By used_at in the selected range."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1601
+msgid "No redemptions in this range."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1605
+msgid "Uses"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1635
+msgid "Extra revenue"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1637
+msgid "Sum of amendment amounts"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1642
+msgid "By type"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1649
+msgid "Amendment log"
+msgstr ""
+
+#. translators: %d: amendment count
+#: includes/Admin/Pages/Reports.php:1653
+#, php-format
+msgid "%d amendment in range"
+msgid_plural "%d amendments in range"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Pages/Reports.php:1659
+msgid "No amendments in this range."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1697
+msgid "Sent / queued"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1699
+msgid "Email & WhatsApp"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1705
+msgid "Needs retry"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1711
+msgid "By channel & status"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1713
+msgid "No communication rows in this range."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1715
+#: includes/Admin/Pages/Reports.php:1738
+msgid "Count"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1735
+msgid "Nothing in this range."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1738
+msgid "Total"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1764
+msgid "Matching bookings"
+msgstr ""
+
+#. translators: %d: booking count
+#: includes/Admin/Pages/Reports.php:1768
+#, php-format
+msgid "%d booking in range"
+msgid_plural "%d bookings in range"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Pages/Reports.php:1774
+msgid "No bookings match these filters."
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1818
+#: includes/Bookings/Amendments.php:29
+msgid "Extra hours"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1819
+#: includes/Bookings/Amendments.php:30
+msgid "Waiting time"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1820
+#: includes/Bookings/Amendments.php:31
+msgid "Extra stop"
+msgstr ""
+
+#: includes/Admin/Pages/Reports.php:1821
+#: includes/Bookings/Amendments.php:32
+msgid "Manual adjustment"
+msgstr ""
+
+#: includes/Admin/Pages/Run_Sheet.php:103
+msgid "Print"
+msgstr ""
+
+#: includes/Admin/Pages/Run_Sheet.php:104
+msgid "← Dispatch"
+msgstr ""
+
+#: includes/Admin/Pages/Run_Sheet.php:113
+msgid "Run sheet date"
+msgstr ""
+
+#. translators: %s: print timestamp
+#: includes/Admin/Pages/Run_Sheet.php:151
+#, php-format
+msgid "Printed %s"
+msgstr ""
+
+#: includes/Admin/Pages/Run_Sheet.php:160
+msgid "No assigned jobs"
+msgstr ""
+
+#: includes/Admin/Pages/Run_Sheet.php:161
+msgid "Assigned vehicle or chauffeur jobs for this date will appear here. Open Dispatch to assign fleet first."
+msgstr ""
+
+#: includes/Admin/Pages/Run_Sheet.php:162
+msgid "Open Dispatch"
+msgstr ""
+
+#: includes/Admin/Pages/Run_Sheet.php:165
+msgid "No assigned jobs for this date."
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:50
+msgid "Service created."
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:78
+msgid "Search services…"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:83
+msgid "Package"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:92
+msgid "No matching services"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:92
+msgid "No services yet"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:93
+msgid "Add your first service to get started."
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:97
+msgid "Visible"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:113
+msgid "Configure"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:114
+msgid "Delete service"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:114
+msgid "This removes the service and its attached booking fields. This cannot be undone."
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:127
+#: includes/Admin/Pages/Service_Edit.php:122
+#: includes/Admin/Pages/Service_Edit.php:137
+#: includes/Messaging/Templates.php:182
+msgid "Service name"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:128
+#: includes/Admin/Pages/Service_Edit.php:123
+#: includes/Admin/Pages/Service_Edit.php:156
+msgid "Booking type"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:131
+#: includes/Admin/Pages/Service_Edit.php:125
+msgid "Create service"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:135
+msgid "Services & Booking Forms"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:138
+msgid "Add service"
+msgstr ""
+
+#: includes/Admin/Pages/Services.php:158
+msgid "Service deleted."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:38
+msgid "Not found"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:38
+msgid "Service does not exist."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:45
+msgid "Add Service"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:45
+#: includes/I18n/Script_Strings.php:28
+msgid "Back"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:50
+#: includes/Admin/Pages/Service_Edit.php:134
+#: includes/Admin/Pages/Settings.php:29
+#: includes/Admin/Pages/Settings.php:230
+msgid "General"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:51
+#: includes/Admin/Pages/Service_Edit.php:153
+msgid "Trip settings"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:52
+msgid "Booking form"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:54
+#: includes/Admin/Pages/Service_Edit.php:178
+msgid "Vehicle behavior"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:61
+msgid "Service pages"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:94
+msgid "Save changes"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:95
+msgid "Back to list"
+msgstr ""
+
+#. translators: 1: service name, 2: section label
+#: includes/Admin/Pages/Service_Edit.php:106
+#, php-format
+msgid "%1$s · %2$s"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:135
+msgid "Name, slug, and visibility for this service."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:138
+msgid "Internal name"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:139
+msgid "Slug"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:141
+#: includes/Admin/Pages/Zones.php:119
+msgid "Short description"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:144
+#: includes/Admin/Pages/Vehicles.php:131
+msgid "Customer visible"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:154
+msgid "Booking type and what guests must complete on the trip step."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:162
+msgid "Allow one-way"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:163
+msgid "Allow round trip"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:164
+msgid "Allow multiple stops"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:165
+msgid "Require pickup"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:166
+msgid "Require destination"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:167
+msgid "Require passenger count"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:168
+msgid "Require luggage"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:169
+msgid "Requires manual confirmation"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:179
+msgid "How vehicles are matched and offered on this service."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:181
+msgid "Enable vehicle matching"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:183
+msgid "Customer vehicle choice"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:213
+msgid "Attached fields"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:214
+msgid "Quick controls stay in the list. Use Edit for labels, help text, validation, and show/require rules."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:218
+msgid "No fields attached yet"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:219
+msgid "Pick a field from the library below and click Attach field."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:225
+msgid "Required"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:226
+#: includes/Admin/Pages/Service_Edit.php:288
+msgid "Step"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:227
+#: includes/Admin/Pages/Zones.php:75
+msgid "Order"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:228
+msgid "Width"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:253
+msgid "Conditional"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:257
+msgid "Req"
+msgstr ""
+
+#. translators: %s field label
+#: includes/Admin/Pages/Service_Edit.php:266
+#, php-format
+msgid "Edit: %s"
+msgstr ""
+
+#. translators: %s field label
+#: includes/Admin/Pages/Service_Edit.php:267
+msgid "Detach field"
+msgstr ""
+
+#. translators: %s field label
+#: includes/Admin/Pages/Service_Edit.php:267
+msgid "Detach"
+msgstr ""
+
+#. translators: %s field label
+#: includes/Admin/Pages/Service_Edit.php:267
+msgid "Remove this field from the booking form?"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:275
+msgid "Attach from library"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:276
+msgid "Choose a field and step. Fine-tune labels and conditions with Edit after attaching."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:295
+msgid "All library fields are already attached to this service."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:297
+msgid "Attach field"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:313
+msgid "Add-ons for this service"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:314
+msgid "Enable extras for this service. Unchecked items stay hidden from guests here."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:317
+msgid "Create add-ons first, then attach them here."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:332
+msgid "included"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:358
+msgid "Label override"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:359
+msgid "Placeholder override"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:360
+msgid "Help text override"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:361
+msgid "Validation (optional)"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:363
+#: includes/I18n/Script_Strings.php:247
+msgid "Min"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:364
+msgid "Max"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:367
+msgid "Leave blank to use library defaults. Used for number/quantity fields."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:370
+msgid "Show this field if…"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:371
+msgid "Require this field if…"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:372
+msgid "Save field details"
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:409
+msgid "Service created. Configure the booking form below."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:424
+msgid "Field detached."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:456
+msgid "Field details saved."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:486
+msgid "Field already attached."
+msgstr ""
+
+#: includes/Admin/Pages/Service_Edit.php:486
+msgid "Field attached."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:30
+#: includes/Admin/Pages/Settings.php:279
+msgid "Booking rules"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:31
+#: includes/Admin/Pages/Settings.php:321
+msgid "Guest copy"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:34
+msgid "Security"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:35
+msgid "Website"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:69
+msgid "Settings pages"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:109
+msgid "Save settings"
+msgstr ""
+
+#. translators: %s: settings section label
+#: includes/Admin/Pages/Settings.php:120
+#, php-format
+msgid "Settings · %s"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:231
+msgid "Currency, timezone, references, and public contact details."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:235
+msgid "Currency"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:246
+msgid "Timezone"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:247
+msgid "Reference prefix"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:250
+msgid "Default booking status"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:255
+msgid "Manual review"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:260
+msgid "Slot increment"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:263
+msgid "15 minutes"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:264
+msgid "30 minutes"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:265
+msgid "60 minutes"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:268
+msgid "Submit button label"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:269
+msgid "Public phone"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:270
+msgid "Public WhatsApp"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:280
+msgid "Advance booking window, same-day rules, waiting time, and reminder offsets."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:282
+msgid "Min advance hours (default 2)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:285
+msgid "Waiting complimentary minutes"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:290
+msgid "First reminder offset"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:293
+msgid "24 hours before (1440 min)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:294
+msgid "12 hours before (720 min)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:295
+msgid "6 hours before (360 min)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:300
+msgid "Second reminder offset"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:303
+msgid "2 hours before (120 min)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:304
+msgid "1 hour before (60 min)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:305
+msgid "30 minutes before"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:310
+msgid "Same-day bookings allowed"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:312
+msgid "Waiting Time add-on bills after the complimentary window (default 30 minutes). Interval price stays on the add-on ($50 / 30 min)."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:322
+msgid "Messages shown after submit and on custom-quote paths."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:324
+msgid "Pending confirmation message"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:325
+msgid "Custom quote message"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:335
+msgid "Seasonal discount"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:336
+msgid "Optional percent off published fares for selected services. Does not change stored route prices. Set % to 0 to turn off."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:340
+msgid "Discount % (0 = off)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:352
+#: includes/I18n/Script_Strings.php:239
+msgid "Select services…"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:354
+msgid "Apply to services"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:372
+msgid "No active services found."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:382
+msgid "Guest anti-bot"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:383
+msgid "Optional CAPTCHA on booking submit. Keeps existing honeypot + rate limits; use Cloudflare Turnstile or Google reCAPTCHA v2."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:387
+msgid "Require CAPTCHA on booking submit"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:390
+msgid "Provider"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:393
+msgid "None"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:394
+msgid "Cloudflare Turnstile"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:395
+msgid "Google reCAPTCHA v2 (checkbox)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:398
+msgid "Site key (public)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:400
+msgid "•••••••• (leave blank to keep)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:402
+msgid "Secret key (prefer wp-config PRIME_FLEET_CAPTCHA_SECRET)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:408
+msgid "When enabled, submit fails closed without a valid token. Incomplete CAPTCHA settings also block bookings (fail closed). Prefer PRIME_FLEET_CAPTCHA_SECRET in wp-config."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:412
+msgid "Public REST rate limits"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:413
+msgid "Per-IP buckets (REMOTE_ADDR). Lower values under spam pressure; raise carefully for shared NAT offices."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:415
+msgid "Bookings / minute / IP"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:416
+msgid "Bookings / hour / email"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:417
+msgid "Coupon validate / minute / IP"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:418
+msgid "Quote / minute / IP"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:419
+msgid "Lookup / minute / IP"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:428
+msgid "WhatsApp channel"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:429
+msgid "Production path is Meta Cloud API (client Business WhatsApp). Stub / OpenWA are for development only."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:433
+msgid "Enable WhatsApp channel"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:436
+msgid "Driver"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:439
+msgid "Stub (outbox only)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:440
+msgid "OpenWA — TEMPORARY local test only"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:441
+msgid "Meta Cloud API (client Business WhatsApp)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:446
+msgid "Meta phone number ID (optional)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:451
+msgid "Meta Graph API version"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:455
+msgid "Meta: put the access token in wp-config as PRIME_FLEET_WA_ACCESS_TOKEN — never store tokens in the database."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:458
+msgid "OpenWA is temporary for local testing only. Unofficial / ban risk — use a throwaway number. Never use the client Business WhatsApp number. Switch back to Stub or Meta before staging/client demos."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:463
+msgid "OpenWA base URL"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:468
+msgid "OpenWA session ID"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:473
+msgid "OpenWA API key (prefer wp-config PRIME_FLEET_OPENWA_API_KEY)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:477
+msgid "Run OpenWA locally (Docker → http://127.0.0.1:2785). Base URL must be localhost / 127.0.0.1 only (SSRF guard). Driver works only with WP_DEBUG or PRIME_FLEET_ALLOW_OPENWA in wp-config — otherwise settings fall back to Stub."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:489
+msgid "Booking form theme"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:490
+msgid "Guest-facing wizard appearance. Dark is the current navy look; light uses a white section."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:494
+msgid "Form theme"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:497
+msgid "Dark (navy)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:498
+msgid "Light (white)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:503
+msgid "Sticky Book + WhatsApp"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:504
+msgid "Mobile bottom bar (plugin-owned). Reserves page space to avoid layout jump. Desktop header is unchanged."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:508
+msgid "Enable sticky CTA bar"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:511
+msgid "Book URL (blank = /book-now/)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:516
+msgid "WhatsApp E.164 (blank = Public WhatsApp)"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:521
+msgid "Book button label"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:526
+msgid "WhatsApp button label"
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:530
+msgid "Uses https://wa.me/ deep links until Meta Cloud API is live. Empty labels fall back to “Book Now” / “WhatsApp”."
+msgstr ""
+
+#: includes/Admin/Pages/Settings.php:695
+msgid "Settings saved."
+msgstr ""
+
+#: includes/Admin/Pages/Slot_Offers_Page.php:44
+msgid "Search offers…"
+msgstr ""
+
+#: includes/Admin/Pages/Slot_Offers_Page.php:48
+msgid "Accepted"
+msgstr ""
+
+#: includes/Admin/Pages/Slot_Offers_Page.php:49
+msgid "Draft"
+msgstr ""
+
+#: includes/Admin/Pages/Slot_Offers_Page.php:50
+#: includes/Frontend/Pay_Page.php:156
+msgid "Expired"
+msgstr ""
+
+#: includes/Admin/Pages/Slot_Offers_Page.php:57
+msgid "No slot offers yet"
+msgstr ""
+
+#: includes/Admin/Pages/Slot_Offers_Page.php:58
+msgid "Send an offer from a booking detail when a requested time is full."
+msgstr ""
+
+#: includes/Admin/Pages/Slot_Offers_Page.php:63
+msgid "Proposed"
+msgstr ""
+
+#: includes/Admin/Pages/Slot_Offers_Page.php:65
+msgid "Expires"
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:64
+msgid "Search surcharges…"
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:76
+msgid "No matching surcharges"
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:76
+msgid "No surcharges"
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:77
+msgid "Holiday and seasonal surcharges go here. Leave dates empty until the client confirms."
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:80
+#: includes/Admin/Pages/Surcharges.php:121
+msgid "Value"
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:102
+msgid "Edit surcharge"
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:103
+msgid "Delete this surcharge?"
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:122
+msgid "Start date"
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:123
+msgid "End date"
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:127
+msgid "Save surcharge"
+msgstr ""
+
+#: includes/Admin/Pages/Surcharges.php:129
+msgid "Add surcharge"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:67
+msgid "Search vehicles…"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:75
+msgid "No matching vehicles"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:75
+msgid "No vehicles"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:76
+msgid "Add fleet units."
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:79
+msgid "Pax"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:106
+msgid "Edit vehicle"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:107
+msgid "Delete vehicle"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:107
+msgid "Delete this vehicle from the fleet?"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:118
+msgid "Leave bag capacities empty until the client confirms numbers."
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:121
+msgid "Vehicle type"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:122
+msgid "Customer display name"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:123
+msgid "Description"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:124
+msgid "Passenger capacity"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:125
+msgid "Checked bag capacity"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:126
+msgid "Carry-on bag capacity"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:130
+msgid "Available for booking"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:132
+msgid "Save vehicle"
+msgstr ""
+
+#: includes/Admin/Pages/Vehicles.php:134
+msgid "Add vehicle"
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:62
+#: includes/I18n/Script_Strings.php:47
+msgid "Search zones…"
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:70
+msgid "No matching zones"
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:70
+msgid "No zones yet"
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:71
+msgid "Add pickup and destination zones."
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:103
+msgid "Edit zone"
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:104
+msgid "Delete zone"
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:104
+msgid "Delete this zone? Routes using it may break until updated."
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:120
+msgid "Pickup instructions"
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:126
+msgid "Save zone"
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:130
+msgid "Locations / Zones"
+msgstr ""
+
+#: includes/Admin/Pages/Zones.php:133
+msgid "Add zone"
+msgstr ""
+
+#: includes/Admin/Table_List.php:178
+#: includes/I18n/Script_Strings.php:221
+msgid "Search…"
+msgstr ""
+
+#: includes/Admin/Table_List.php:190
+msgid "Inactive"
+msgstr ""
+
+#: includes/Admin/Table_List.php:202
+msgid "Filter by type"
+msgstr ""
+
+#: includes/Admin/Table_List.php:204
+msgid "All types"
+msgstr ""
+
+#: includes/Admin/Table_List.php:229
+msgid "Search"
+msgstr ""
+
+#. translators: 1: from, 2: to, 3: total
+#: includes/Admin/Table_List.php:268
+#: includes/Admin/View.php:182
+#, php-format
+msgid "Showing %1$d–%2$d of %3$d"
+msgstr ""
+
+#: includes/Admin/Table_List.php:276
+#: includes/Admin/View.php:189
+msgid "Pagination"
+msgstr ""
+
+#: includes/Admin/Table_List.php:277
+#: includes/Admin/View.php:192
+msgid "Prev"
+msgstr ""
+
+#: includes/Admin/Table_List.php:292
+#: includes/Admin/View.php:199
+msgid "Next"
+msgstr ""
+
+#: includes/Admin/View.php:187
+#: includes/I18n/Script_Strings.php:235
+msgid "Showing 0 of 0"
+msgstr ""
+
+#: includes/Bookings/Amendments.php:118
+msgid "Amendments are only allowed on confirmed, completed, or no-show bookings."
+msgstr ""
+
+#: includes/Bookings/Amendments.php:124
+msgid "Unknown amendment type."
+msgstr ""
+
+#: includes/Bookings/Amendments.php:129
+msgid "Quantity must be greater than zero."
+msgstr ""
+
+#: includes/Bookings/Amendments.php:132
+msgid "Quantity is too large."
+msgstr ""
+
+#: includes/Bookings/Amendments.php:143
+msgid "Amount cannot be negative."
+msgstr ""
+
+#: includes/Bookings/Amendments.php:146
+msgid "Amount is too large."
+msgstr ""
+
+#: includes/Bookings/Amendments.php:149
+msgid "Enter a manual amount greater than zero."
+msgstr ""
+
+#: includes/Bookings/Amendments.php:154
+msgid "Could not price this amendment — enter an amount manually."
+msgstr ""
+
+#: includes/Bookings/Amendments.php:195
+msgid "Could not save amendment."
+msgstr ""
+
+#. translators: 1: type label, 2: qty, 3: money
+#: includes/Bookings/Amendments.php:218
+#, php-format
+msgid "Amendment — %1$s × %2$s: +%3$s"
+msgstr ""
+
+#: includes/Bookings/Coupons.php:30
+#: includes/I18n/Script_Strings.php:73
+msgid "Enter a coupon code."
+msgstr ""
+
+#. translators: %s discount amount
+#: includes/Bookings/Coupons.php:118
+#, php-format
+msgid "Coupon applied: −%s"
+msgstr ""
+
+#: includes/Bookings/Coupons.php:130
+msgid "This coupon is not valid."
+msgstr ""
+
+#: includes/Bookings/Creator.php:52
+#: includes/Bookings/Creator.php:120
+#: includes/Bookings/Creator.php:468
+#: includes/I18n/Script_Strings.php:33
+#: includes/Services/Config_Compiler.php:214
+msgid "Your transfer request is Pending Confirmation."
+msgstr ""
+
+#: includes/Bookings/Creator.php:83
+#: includes/Pricing/Engine.php:27
+msgid "Service is required."
+msgstr ""
+
+#: includes/Bookings/Creator.php:95
+msgid "Please accept the terms to continue."
+msgstr ""
+
+#. translators: 1: coupon code, 2: discount amount
+#: includes/Bookings/Creator.php:163
+#, php-format
+msgid "Coupon %1$s: −%2$s"
+msgstr ""
+
+#: includes/Bookings/Creator.php:335
+msgid "Could not save booking. Please try again."
+msgstr ""
+
+#: includes/Bookings/Creator.php:371
+msgid "Please enter your name."
+msgstr ""
+
+#: includes/Bookings/Creator.php:374
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: includes/Bookings/Creator.php:377
+msgid "Please enter a valid phone number."
+msgstr ""
+
+#: includes/Bookings/Creator.php:404
+msgid "Pickup date is required."
+msgstr ""
+
+#: includes/Bookings/Creator.php:407
+msgid "Pickup time is required."
+msgstr ""
+
+#: includes/Bookings/Lookup.php:34
+#: includes/I18n/Script_Strings.php:290
+msgid "We could not find a booking with those details."
+msgstr ""
+
+#: includes/Bookings/Occupancy.php:38
+#: includes/Bookings/Pickup_Rules.php:124
+#: includes/REST/Controller.php:286
+msgid "Pickup date and time are required."
+msgstr ""
+
+#: includes/Bookings/Occupancy.php:55
+msgid "No fleet capacity configured — staff will confirm manually."
+msgstr ""
+
+#: includes/Bookings/Occupancy.php:78
+msgid "Vehicle available for this window."
+msgstr ""
+
+#: includes/Bookings/Occupancy.php:79
+msgid "Selected vehicle is busy in this window."
+msgstr ""
+
+#: includes/Bookings/Occupancy.php:97
+msgid "A vehicle is available for this window."
+msgstr ""
+
+#: includes/Bookings/Occupancy.php:98
+msgid "All vehicles are busy in this window."
+msgstr ""
+
+#: includes/Bookings/Pickup_Rules.php:130
+msgid "Invalid pickup date or time."
+msgstr ""
+
+#: includes/Bookings/Pickup_Rules.php:137
+#: includes/I18n/Script_Strings.php:89
+msgid "Pickup date cannot be in the past."
+msgstr ""
+
+#: includes/Bookings/Pickup_Rules.php:143
+#: includes/I18n/Script_Strings.php:92
+msgid "Same-day bookings are not available. Please choose a later date."
+msgstr ""
+
+#. translators: %s: hours
+#. translators: %s: minimum lead time in hours
+#: includes/Bookings/Pickup_Rules.php:154
+#: includes/I18n/Script_Strings.php:91
+#, php-format
+msgid "Pickup must be at least %s hours from now."
+msgstr ""
+
+#: includes/Bookings/Slot_Offers.php:34
+msgid "Invalid proposed datetime."
+msgstr ""
+
+#: includes/Bookings/Slot_Offers.php:53
+msgid "That window is not free."
+msgstr ""
+
+#: includes/Bookings/Slot_Offers.php:75
+msgid "Could not create offer."
+msgstr ""
+
+#: includes/Bookings/Slot_Offers.php:127
+#: includes/Bookings/Slot_Offers.php:134
+msgid "Offer not found."
+msgstr ""
+
+#: includes/Bookings/Slot_Offers.php:137
+msgid "This offer was already accepted."
+msgstr ""
+
+#: includes/Bookings/Slot_Offers.php:140
+msgid "This offer has expired."
+msgstr ""
+
+#: includes/Bookings/Slot_Offers.php:143
+msgid "This offer is no longer available."
+msgstr ""
+
+#: includes/Bookings/Slot_Offers.php:228
+msgid "Could not accept offer."
+msgstr ""
+
+#: includes/Bookings/Slot_Offers.php:241
+#: includes/Frontend/Shortcodes.php:281
+msgid "Thank you — your new pickup time is confirmed pending Prime Fleet final review."
+msgstr ""
+
+#: includes/Bookings/Submit_Token.php:55
+msgid "Invalid booking session. Please reload and try again."
+msgstr ""
+
+#: includes/Bookings/Submit_Token.php:61
+msgid "Your booking session expired. Please reload and try again."
+msgstr ""
+
+#: includes/Bookings/Submit_Token.php:64
+msgid "This booking was already submitted."
+msgstr ""
+
+#: includes/Bookings/Submit_Token.php:69
+msgid "Please wait a moment and try again."
+msgstr ""
+
+#: includes/Bookings/Submit_Token.php:82
+msgid "Your booking session could not be verified. Please reload and try again."
+msgstr ""
+
+#: includes/Frontend/Book_Paths.php:133
+#: includes/Frontend/Home_Landing.php:131
+#: includes/Frontend/Home_Landing.php:226
+#: includes/Frontend/Sticky_Cta.php:115
+msgid "Book Now"
+msgstr ""
+
+#: includes/Frontend/Book_Paths.php:143
+msgid "Booking status"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:128
+msgid "Arrive relaxed. Travel in style."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:129
+msgid "Private chauffeur transfers — airport to villa, resort, or marina."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:141
+msgid "How it works"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:142
+msgid "Three steps to your chauffeur"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:143
+msgid "Request online. Prime Fleet confirms. Your driver meets you on time."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:149
+msgid "Request"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:150
+msgid "Choose service, route, and schedule in the booking form."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:155
+msgid "Our team confirms your transfer and sends payment details."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:159
+msgid "Ride"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:160
+msgid "Your chauffeur arrives — discreet, punctual, and ready."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:169
+msgid "Luxury vehicles, cleaned daily"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:170
+msgid "Select the Escalade or Sprinter when you book — published fares, no guesswork."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:178
+msgid "Up to 6 guests"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:179
+msgid "Cadillac Escalade ESV"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:180
+msgid "Executive comfort for airport runs and villa transfers — quiet cabin, room for luggage."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:188
+msgid "Up to 13 guests"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:189
+msgid "Mercedes-Benz Sprinter"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:190
+msgid "Spacious for families and groups — bookable online with published group fares."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:202
+msgid "Guest voices"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:203
+msgid "Trusted island hospitality"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:205
+msgid "Fantastic service. The driver was punctual, polite, and the Escalade was spotless."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:209
+msgid "Licensed, discreet chauffeurs"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:210
+msgid "24/7 availability"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:211
+msgid "On-time airport & villa transfers"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:223
+msgid "Ready for your transfer?"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:224
+msgid "Book online in minutes. Concierge confirmation follows."
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:228
+#: includes/Frontend/Shortcodes.php:283
+#: includes/I18n/Script_Strings.php:285
+msgid "Check booking status"
+msgstr ""
+
+#: includes/Frontend/Home_Landing.php:260
+#: includes/Frontend/Sticky_Cta.php:165
+msgid "Hello Prime Fleet — I would like to book a transfer."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:76
+msgid "Prime Fleet — Payment"
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:102
+msgid "Link not found"
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:104
+msgid "This payment link is invalid or has expired. Contact Prime Fleet with your booking reference."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:130
+msgid "Payment received"
+msgstr ""
+
+#. translators: %s booking reference
+#: includes/Frontend/Pay_Page.php:133
+#, php-format
+msgid "Thank you — payment for %s is confirmed."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:136
+msgid "Amount paid"
+msgstr ""
+
+#. translators: %s booking reference
+#: includes/Frontend/Pay_Page.php:142
+#, php-format
+msgid "The payment for %s has been refunded. Contact Prime Fleet if you have questions."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:147
+msgid "Received"
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:148
+msgid "Awaiting verification"
+msgstr ""
+
+#. translators: %s booking reference
+#: includes/Frontend/Pay_Page.php:151
+#, php-format
+msgid "Thanks — we received your payment notice for %s. Prime Fleet will confirm shortly."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:154
+#: includes/Frontend/Pay_Page.php:163
+#: includes/Frontend/Pay_Page.php:172
+msgid "Amount due"
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:157
+msgid "Link expired"
+msgstr ""
+
+#. translators: %s booking reference
+#: includes/Frontend/Pay_Page.php:160
+#, php-format
+msgid "This payment link for %s is no longer valid. Please contact Prime Fleet for a new link."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:166
+msgid "Complete payment"
+msgstr ""
+
+#. translators: %s booking reference
+#: includes/Frontend/Pay_Page.php:169
+#, php-format
+msgid "Please complete payment for booking %s."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:181
+#: includes/REST/Controller.php:410
+msgid "Thanks — Prime Fleet will verify your payment shortly."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:183
+msgid "Could not record your confirmation. Please try again or contact Prime Fleet."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:202
+msgid "Payment instructions"
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:214
+msgid "Pay with card"
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:215
+msgid "Continue to payment"
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:225
+msgid "I’ve paid — notify Prime Fleet"
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:230
+msgid "Questions? Reply to your Prime Fleet email or contact concierge with your reference."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:232
+msgid "If you just paid, confirmation may take a few seconds while Stripe notifies us. Refresh this page shortly."
+msgstr ""
+
+#: includes/Frontend/Pay_Page.php:235
+msgid "Checkout was cancelled. You can try Pay with card again when ready."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:202
+#: includes/I18n/Script_Strings.php:24
+msgid "Loading booking options…"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:268
+msgid "Alternative pickup time"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:269
+msgid "Your requested window was full. Accept this alternative pickup if it works for you."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:270
+msgid "Accept this time"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:271
+msgid "Accepting offer…"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:272
+msgid "Loading offer…"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:273
+msgid "This offer is not available."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:274
+msgid "Offer unavailable"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:276
+msgid "Current pickup"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:278
+msgid "New pickup"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:279
+msgid "Offer accepted"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:280
+msgid "You're all set"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:282
+msgid "Back to home"
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:284
+msgid "Keep your reference handy for updates."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:310
+msgid "Prime Fleet — Slot offer"
+msgstr ""
+
+#: includes/Frontend/Sticky_Cta.php:70
+msgid "Quick actions"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:25
+msgid "Could not load booking configuration."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:26
+#: includes/I18n/Script_Strings.php:229
+msgid "Request failed"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:27
+msgid "Continue"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:29
+msgid "Could not calculate fare."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:30
+msgid "Filter by type, then pick one option to continue."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:31
+#: includes/Services/Config_Compiler.php:215
+msgid "Submit request"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:32
+msgid "Could not submit booking."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:34
+msgid "Your transfer request is Pending Confirmation. Prime Fleet will verify vehicle availability and contact you shortly."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:35
+msgid "Estimated fare"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:36
+msgid "Estimate only — final amount confirmed after review."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:37
+msgid "Your quote"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:38
+msgid "Your estimate updates as you build the trip."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:39
+msgid "No service selected"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:40
+msgid "Choose a service to begin your quote."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:41
+msgid "Add pickup and drop-off to unlock an estimate."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:42
+msgid "Estimate pending"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:43
+msgid "Finish schedule details and your estimate will appear here."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:44
+msgid "Estimating"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:45
+msgid "Checking rates for this route."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:46
+msgid "Updating estimate…"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:48
+msgid "Search options"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:49
+#: includes/I18n/Script_Strings.php:220
+msgid "No matches"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:50
+msgid "Select…"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:53
+msgid "Try adjusting trip details, or continue for a custom quote."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:54
+msgid "We’ll review this trip and send a written quotation."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:55
+msgid "No published rate for this route yet."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:56
+msgid "I agree to the booking terms and understand this request is Pending Confirmation."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:57
+msgid "Book a drive"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:58
+msgid "Pick a service, confirm details, and we’ll take it from there."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:59
+msgid "Private fleet booking"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:60
+msgid "Request received"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:62
+msgid "Your reference"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:63
+msgid "Book another transfer"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:64
+msgid "Copy reference"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:65
+msgid "Reference copied."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:66
+msgid "Use your reference and booking email anytime with Check booking status."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:67
+msgid "Choose a service"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:68
+msgid "Coupon code"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:69
+msgid "Apply"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:70
+msgid "Remove"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:71
+msgid "Applying coupon…"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:72
+msgid "Coupon applied."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:74
+msgid "Calculate a fare before applying a coupon."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:75
+msgid "Invalid coupon."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:76
+msgid "Security check"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:77
+#: includes/Security/Captcha.php:82
+msgid "Please complete the security check and try again."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:78
+msgid "This time looks full. Try an alternative:"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:79
+msgid "Vehicle window looks open."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:80
+msgid "Calculating estimate…"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:82
+msgid "Trip details needed"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:83
+msgid "Please choose a service first."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:84
+msgid "Complete this step before continuing."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:85
+msgid "Select pickup and destination zones first."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:86
+msgid "Pickup and destination must be different."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:87
+msgid "Submitting…"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:88
+msgid "Choose a pickup date and time first."
+msgstr ""
+
+#. translators: %s: earliest clock time today
+#: includes/I18n/Script_Strings.php:94
+#, php-format
+msgid "Earliest available today: %s"
+msgstr ""
+
+#. translators: %s: minimum same-day notice in hours
+#: includes/I18n/Script_Strings.php:96
+#, php-format
+msgid "Same-day pickups need at least %s hours notice."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:97
+msgid "Select time"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:98
+#: includes/I18n/Script_Strings.php:218
+msgid "Select date"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:102
+msgid "today"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:103
+msgid "No times left today — please choose another date."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:104
+msgid "Please choose a vehicle to continue."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:105
+msgid "Choose a vehicle that fits your party (Escalade or Sprinter)."
+msgstr ""
+
+#. translators: %s: passenger capacity
+#: includes/I18n/Script_Strings.php:107
+#, php-format
+msgid "Up to %s passengers"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:108
+msgid "Up to 13 guests (Mercedes-Benz Sprinter). Larger parties use Custom Transportation Request."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:109
+msgid "Enter your name, email, and phone first."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:110
+msgid "Enter a valid phone number (at least 7 digits)."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:111
+msgid "Please accept the booking terms to continue."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:112
+msgid "Add at least one passenger to continue."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:113
+msgid "Zone-to-zone rate (not per guest)."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:114
+msgid "Party size needs"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:115
+msgid "Some vehicles are too small for this party — options update on the Vehicle step."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:116
+msgid "Party size exceeds listed vehicles — staff will confirm the right fleet."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:119
+msgid "Book"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:123
+msgid "Guests in the vehicle"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:124
+msgid "Checked bags"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:125
+msgid "Suitcases in the hold"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:126
+msgid "Carry-on bags"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:127
+msgid "Bags in the cabin"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:128
+msgid "Guests & luggage"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:129
+msgid "Trip details"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:130
+msgid "Pickup and destination zones for this transfer."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:131
+msgid "Trip type"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:132
+msgid "Pickup zone"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:134
+msgid "Schedule"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:135
+msgid "When should we meet you?"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:138
+msgid "No listed vehicle fits this party — Prime Fleet will confirm the right fleet after review. Fare still applies where published."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:139
+msgid "Decrease"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:140
+msgid "Increase"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:142
+msgid "We use this to confirm your transfer."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:143
+msgid "Full name"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:147
+msgid "Review & submit"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:148
+msgid "Requests default to Pending Confirmation."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:151
+msgid "Optional extras. Meet & Greet stays included on Airport VIP."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:152
+msgid "Airport & aviation"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:153
+msgid "Private transfers"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:154
+msgid "Hourly chauffeur"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:155
+msgid "Experiences"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:156
+msgid "Custom"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:157
+msgid "Hourly chauffeur — zones aren’t required for this estimate."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:158
+msgid "Fixed package — continue to set your schedule."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:159
+msgid "Custom request — continue to share schedule and contact details."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:160
+msgid "We match vehicles to your party."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:161
+msgid "Suitable options for your party size."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:162
+msgid "Remove coupon"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:163
+msgid "Hourly chauffeur service"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:164
+msgid "Fixed package experience"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:165
+msgid "Custom request · quoted after review"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:166
+msgid "Private VIP transfer"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:169
+msgid "Guests"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:170
+msgid "guests"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:172
+msgid "Trip summary"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:173
+msgid "Edit trip"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:174
+msgid "Edit fleet"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:175
+msgid "Sending your request"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:176
+msgid "Please wait while we confirm details with dispatch."
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:178
+#: includes/I18n/Script_Strings.php:262
+msgid "Jan"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:179
+#: includes/I18n/Script_Strings.php:263
+msgid "Feb"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:180
+#: includes/I18n/Script_Strings.php:264
+msgid "Mar"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:181
+#: includes/I18n/Script_Strings.php:265
+msgid "Apr"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:182
+#: includes/I18n/Script_Strings.php:266
+msgid "May"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:183
+#: includes/I18n/Script_Strings.php:267
+msgid "Jun"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:184
+#: includes/I18n/Script_Strings.php:268
+msgid "Jul"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:185
+#: includes/I18n/Script_Strings.php:269
+msgid "Aug"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:186
+#: includes/I18n/Script_Strings.php:270
+msgid "Sep"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:187
+#: includes/I18n/Script_Strings.php:271
+msgid "Oct"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:188
+#: includes/I18n/Script_Strings.php:272
+msgid "Nov"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:189
+#: includes/I18n/Script_Strings.php:273
+msgid "Dec"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:192
+msgid "Su"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:193
+msgid "Mo"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:194
+msgid "Tu"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:195
+msgid "We"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:196
+msgid "Th"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:197
+msgid "Fr"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:198
+msgid "Sa"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:210
+msgid "Saved"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:211
+msgid "Couldn’t save"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:212
+msgid "Notice"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:214
+msgid "Saving…"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:215
+msgid "Exporting…"
+msgstr ""
+
+#. translators: %s: HTTP status code
+#: includes/I18n/Script_Strings.php:217
+#, php-format
+msgid "Export failed (%s)"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:219
+msgid "Select date & time"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:223
+msgid "Operations console"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:225
+msgid "Are you sure?"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:227
+msgid "Are you sure you want to continue?"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:230
+msgid "Network error"
+msgstr ""
+
+#. translators: %s: HTTP status code
+#: includes/I18n/Script_Strings.php:232
+#, php-format
+msgid "Server error (%s). Check PHP logs."
+msgstr ""
+
+#. translators: 1: first row number, 2: last row number, 3: total rows
+#: includes/I18n/Script_Strings.php:234
+#, php-format
+msgid "Showing %1$s–%2$s of %3$s"
+msgstr ""
+
+#. translators: %s: copied merge tag or value
+#: includes/I18n/Script_Strings.php:237
+#, php-format
+msgid "Copied %s"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:238
+msgid "Copy merge tag:"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:245
+msgid "Hour"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:246
+msgid "Minute"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:249
+msgid "Done"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:250
+msgid "CSV downloaded"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:251
+msgid "CSV export failed"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:252
+msgid "CSV export failed — try again"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:254
+msgid "This payment method is coming soon."
+msgstr ""
+
+#. translators: %d: notification count
+#: includes/I18n/Script_Strings.php:260
+#, php-format
+msgid "%d notifications"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:287
+msgid "Booking reference"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:288
+msgid "Email used at booking"
+msgstr ""
+
+#: includes/I18n/Script_Strings.php:289
+msgid "Look up"
+msgstr ""
+
+#: includes/Install/Capabilities.php:31
+msgid "Prime Fleet Dispatcher"
+msgstr ""
+
+#: includes/Messaging/Job_Runner.php:34
+msgid "Every five minutes (Prime Fleet)"
+msgstr ""
+
+#: includes/Messaging/Merge_Vars.php:59
+msgid "discount"
+msgstr ""
+
+#: includes/Messaging/Templates.php:177
+msgid "Guest full name"
+msgstr ""
+
+#: includes/Messaging/Templates.php:178
+msgid "Guest email"
+msgstr ""
+
+#: includes/Messaging/Templates.php:179
+msgid "Guest phone"
+msgstr ""
+
+#: includes/Messaging/Templates.php:180
+msgid "Guest WhatsApp (falls back to phone)"
+msgstr ""
+
+#: includes/Messaging/Templates.php:181
+msgid "PF- reference"
+msgstr ""
+
+#: includes/Messaging/Templates.php:183
+msgid "Formatted pickup date/time"
+msgstr ""
+
+#: includes/Messaging/Templates.php:184
+msgid "Passenger count"
+msgstr ""
+
+#: includes/Messaging/Templates.php:185
+msgid "Fare total or custom-quote label"
+msgstr ""
+
+#: includes/Messaging/Templates.php:186
+msgid "Applied coupon code"
+msgstr ""
+
+#: includes/Messaging/Templates.php:187
+msgid "Coupon discount amount"
+msgstr ""
+
+#: includes/Messaging/Templates.php:188
+msgid "HTML coupon rows (email tables)"
+msgstr ""
+
+#: includes/Messaging/Templates.php:189
+msgid "HTML coupon note"
+msgstr ""
+
+#: includes/Messaging/Templates.php:190
+msgid "Assigned vehicle display name"
+msgstr ""
+
+#: includes/Messaging/Templates.php:191
+msgid "Assigned chauffeur name"
+msgstr ""
+
+#: includes/Messaging/Templates.php:192
+msgid "Assigned chauffeur phone"
+msgstr ""
+
+#: includes/Messaging/Templates.php:193
+msgid "Payment URL (staff paste until M4 gateway)"
+msgstr ""
+
+#: includes/Messaging/Templates.php:194
+msgid "Slot offer proposed pickup"
+msgstr ""
+
+#: includes/Messaging/Templates.php:195
+msgid "Slot offer accept URL"
+msgstr ""
+
+#: includes/Messaging/Templates.php:196
+msgid "Slot offer expiry"
+msgstr ""
+
+#: includes/Messaging/Templates.php:197
+msgid "Site / blog name"
+msgstr ""
+
+#: includes/Messaging/Templates.php:244
+msgid "Could not save template."
+msgstr ""
+
+#: includes/Messaging/Templates.php:303
+msgid "Questions? Reply to this email or contact Prime Fleet concierge."
+msgstr ""
+
+#: includes/Messaging/WhatsApp/OpenWA_Channel.php:90
+msgid "OpenWA is blocked outside WP_DEBUG. Use Stub/Meta, or set PRIME_FLEET_ALLOW_OPENWA in wp-config for local tests."
+msgstr ""
+
+#: includes/Messaging/WhatsApp/OpenWA_Channel.php:105
+msgid "OpenWA base URL must be localhost / 127.0.0.1 only."
+msgstr ""
+
+#: includes/Messaging/WhatsApp/OpenWA_Channel.php:111
+msgid "OpenWA session ID is missing (Settings → WhatsApp)."
+msgstr ""
+
+#: includes/Messaging/WhatsApp/OpenWA_Channel.php:123
+msgid "OpenWA API key missing. Prefer PRIME_FLEET_OPENWA_API_KEY in wp-config.php."
+msgstr ""
+
+#. translators: %s: transport error
+#: includes/Messaging/WhatsApp/OpenWA_Channel.php:168
+#, php-format
+msgid "OpenWA request failed: %s"
+msgstr ""
+
+#. translators: 1: HTTP status, 2: short body
+#: includes/Messaging/WhatsApp/OpenWA_Channel.php:183
+#, php-format
+msgid "OpenWA HTTP %1$d: %2$s"
+msgstr ""
+
+#: includes/Messaging/WhatsApp/OpenWA_Channel.php:220
+msgid "Empty WhatsApp recipient."
+msgstr ""
+
+#: includes/Messaging/WhatsApp/OpenWA_Channel.php:227
+msgid "Invalid WhatsApp number for OpenWA."
+msgstr ""
+
+#: includes/Payments/Methods/Authorize_Net_Method.php:19
+msgid "Authorize.net"
+msgstr ""
+
+#: includes/Payments/Methods/Authorize_Net_Method.php:38
+#: includes/Payments/Methods/Paypal_Method.php:38
+#: includes/Payments/Methods/Stripe_Method.php:38
+msgid "Mode"
+msgstr ""
+
+#: includes/Payments/Methods/Authorize_Net_Method.php:40
+#: includes/Payments/Methods/Paypal_Method.php:40
+msgid "Sandbox"
+msgstr ""
+
+#: includes/Payments/Methods/Authorize_Net_Method.php:41
+#: includes/Payments/Methods/Paypal_Method.php:41
+#: includes/Payments/Methods/Stripe_Method.php:41
+msgid "Live"
+msgstr ""
+
+#: includes/Payments/Methods/Authorize_Net_Method.php:46
+msgid "API Login ID"
+msgstr ""
+
+#: includes/Payments/Methods/Authorize_Net_Method.php:50
+msgid "Transaction Key"
+msgstr ""
+
+#: includes/Payments/Methods/Authorize_Net_Method.php:54
+msgid "Signature Key"
+msgstr ""
+
+#: includes/Payments/Methods/Custom_Link_Method.php:19
+msgid "Custom payment link"
+msgstr ""
+
+#: includes/Payments/Methods/Custom_Link_Method.php:38
+msgid "Default outbound URL"
+msgstr ""
+
+#: includes/Payments/Methods/Custom_Link_Method.php:42
+msgid "Instructions shown on pay page"
+msgstr ""
+
+#: includes/Payments/Methods/Instructions_Method.php:19
+msgid "Bank / instructions"
+msgstr ""
+
+#: includes/Payments/Methods/Instructions_Method.php:38
+msgid "Default payment instructions"
+msgstr ""
+
+#: includes/Payments/Methods/Paypal_Method.php:19
+msgid "PayPal"
+msgstr ""
+
+#: includes/Payments/Methods/Paypal_Method.php:46
+msgid "Client ID"
+msgstr ""
+
+#: includes/Payments/Methods/Paypal_Method.php:50
+msgid "Client secret"
+msgstr ""
+
+#: includes/Payments/Methods/Paypal_Method.php:54
+msgid "Webhook ID"
+msgstr ""
+
+#: includes/Payments/Methods/Stripe_Method.php:19
+msgid "Stripe"
+msgstr ""
+
+#: includes/Payments/Methods/Stripe_Method.php:40
+msgid "Test"
+msgstr ""
+
+#: includes/Payments/Methods/Stripe_Method.php:46
+msgid "Test publishable key"
+msgstr ""
+
+#: includes/Payments/Methods/Stripe_Method.php:50
+msgid "Test secret key (or PRIME_FLEET_STRIPE_SECRET_KEY)"
+msgstr ""
+
+#: includes/Payments/Methods/Stripe_Method.php:54
+msgid "Live publishable key"
+msgstr ""
+
+#: includes/Payments/Methods/Stripe_Method.php:58
+msgid "Live secret key"
+msgstr ""
+
+#: includes/Payments/Methods/Stripe_Method.php:62
+msgid "Webhook signing secret (or PRIME_FLEET_STRIPE_WEBHOOK_SECRET)"
+msgstr ""
+
+#: includes/Payments/Payment_Service.php:153
+msgid "No payment methods enabled. Enable Bank/instructions or Custom link under Payments."
+msgstr ""
+
+#: includes/Payments/Payment_Service.php:162
+msgid "That payment method is not available."
+msgstr ""
+
+#: includes/Payments/Payment_Service.php:174
+msgid "Payment method row missing."
+msgstr ""
+
+#: includes/Payments/Payment_Service.php:226
+msgid "Could not create payment record."
+msgstr ""
+
+#: includes/Payments/Payment_Service.php:582
+#: includes/Payments/Payment_Service.php:620
+msgid "Payment link not found."
+msgstr ""
+
+#: includes/Payments/Payment_Service.php:629
+msgid "This payment method does not support guest acknowledgement."
+msgstr ""
+
+#: includes/Payments/Payment_Service.php:635
+msgid "Payment is already finalized."
+msgstr ""
+
+#: includes/Payments/Payment_Service.php:638
+msgid "This payment link has expired."
+msgstr ""
+
+#: includes/Payments/Stripe_Gateway.php:82
+#: includes/Payments/Stripe_Gateway.php:401
+msgid "Stripe secret key is not configured."
+msgstr ""
+
+#: includes/Payments/Stripe_Gateway.php:89
+msgid "Amount is too low for Stripe Checkout."
+msgstr ""
+
+#. translators: %s booking reference
+#: includes/Payments/Stripe_Gateway.php:96
+#, php-format
+msgid "Prime Fleet transfer %s"
+msgstr ""
+
+#: includes/Payments/Stripe_Gateway.php:127
+msgid "Stripe did not return a Checkout URL."
+msgstr ""
+
+#: includes/Payments/Stripe_Gateway.php:146
+msgid "Stripe webhook secret is not configured."
+msgstr ""
+
+#: includes/Payments/Stripe_Gateway.php:159
+msgid "Invalid Stripe signature header."
+msgstr ""
+
+#: includes/Payments/Stripe_Gateway.php:164
+msgid "Stripe signature timestamp out of range."
+msgstr ""
+
+#: includes/Payments/Stripe_Gateway.php:177
+msgid "Stripe signature verification failed."
+msgstr ""
+
+#: includes/Payments/Stripe_Gateway.php:182
+msgid "Invalid Stripe event payload."
+msgstr ""
+
+#: includes/Payments/Stripe_Gateway.php:222
+msgid "No matching Prime Fleet payment for Checkout session."
+msgstr ""
+
+#: includes/Payments/Stripe_Gateway.php:421
+#: includes/Payments/Stripe_Gateway.php:453
+msgid "Stripe API request failed."
+msgstr ""
+
+#: includes/Pricing/Engine.php:38
+msgid "Service not available."
+msgstr ""
+
+#: includes/Pricing/Engine.php:45
+#: includes/Services/Config_Compiler.php:216
+msgid "This request requires a custom quotation. Prime Fleet will review the details and contact you shortly."
+msgstr ""
+
+#: includes/Pricing/Engine.php:73
+msgid "Custom quote — price shown only after Prime Fleet review."
+msgstr ""
+
+#: includes/Pricing/Engine.php:88
+msgid "No published rate for this zone pair — Prime Fleet will quote after review."
+msgstr ""
+
+#. translators: %s price
+#: includes/Pricing/Engine.php:97
+#, php-format
+msgid "Round-trip route fare: %s"
+msgstr ""
+
+#. translators: %s price
+#: includes/Pricing/Engine.php:104
+#, php-format
+msgid "One-way route fare: %s"
+msgstr ""
+
+#. translators: %s hours
+#: includes/Pricing/Engine.php:122
+#, php-format
+msgid "Hours raised to service minimum (%s)."
+msgstr ""
+
+#: includes/Pricing/Engine.php:127
+msgid "Hours required for hourly service."
+msgstr ""
+
+#. translators: 1: hours 2: rate 3: total
+#: includes/Pricing/Engine.php:133
+#, php-format
+msgid "%1$s h × %2$s = %3$s"
+msgstr ""
+
+#. translators: 1: package name 2: price
+#: includes/Pricing/Engine.php:148
+#, php-format
+msgid "Package “%1$s”: %2$s"
+msgstr ""
+
+#: includes/Pricing/Engine.php:154
+msgid "Unsupported booking type."
+msgstr ""
+
+#: includes/Pricing/Engine.php:203
+msgid "Pickup and destination zones are required."
+msgstr ""
+
+#: includes/Pricing/Engine.php:206
+msgid "Pickup and destination must differ."
+msgstr ""
+
+#: includes/Pricing/Engine.php:256
+msgid "No hourly rate configured for this service."
+msgstr ""
+
+#: includes/Pricing/Engine.php:287
+msgid "No package found for this service."
+msgstr ""
+
+#. translators: %s addon name
+#: includes/Pricing/Engine.php:335
+#, php-format
+msgid "%s is included (not charged)."
+msgstr ""
+
+#: includes/Pricing/Engine.php:459
+msgid "Not enough passenger capacity."
+msgstr ""
+
+#: includes/Pricing/Engine.php:465
+msgid "Checked bag capacity may be exceeded."
+msgstr ""
+
+#: includes/Pricing/Engine.php:469
+msgid "Carry-on capacity may be exceeded."
+msgstr ""
+
+#: includes/Pricing/Engine.php:472
+msgid "Luggage capacity not configured — flagged for review."
+msgstr ""
+
+#. translators: 1: percent 2: discount amount
+#: includes/Pricing/Engine.php:528
+#, php-format
+msgid "Slow-season rate (−%1$s%%): −%2$s"
+msgstr ""
+
+#: includes/REST/Controller.php:196
+msgid "Authentication required."
+msgstr ""
+
+#: includes/REST/Rate_Limiter.php:79
+msgid "Too many requests. Please wait and try again."
+msgstr ""
+
+#: includes/Security/Captcha.php:64
+msgid "Booking security is misconfigured. Please contact the site administrator."
+msgstr ""
+
+#: includes/Security/Captcha.php:109
+msgid "Security check temporarily unavailable. Please try again."
+msgstr ""
+
+#: includes/Security/Captcha.php:119
+msgid "Security check failed. Please try again."
+msgstr ""
+
+#: includes/Security/Self_Test.php:47
+msgid "Invalid security token."
+msgstr ""
